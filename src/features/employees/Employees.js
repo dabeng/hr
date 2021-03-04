@@ -16,8 +16,19 @@ export const Employees = () => {
 
   return (
     <div>
-      <h2>Employees</h2>
-      <ul>
+      <div class="columns">
+  <div class="column">
+  <div class="field">
+  <p class="control has-icons-left has-icons-right">
+    <input class="input" type="text" placeholder="Name"/>
+    <span class="icon is-small is-right">
+      <i class="fas fa-search"></i>
+    </span>
+  </p>
+</div>
+  </div>
+  <div class="column">
+  <ul>
         <li>
           <Link to={`${url}`}>list view</Link>
         </li>
@@ -28,6 +39,9 @@ export const Employees = () => {
           <Link to={`${url}/chart-view`}>chart view</Link>
         </li>
       </ul>
+  </div>
+</div>
+
 
       <Switch>
         <Route exact path={path}>
