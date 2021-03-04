@@ -48,7 +48,7 @@ function App() {
             </a>
           </div>
 
-          <div id="navbarBasicExample" class="navbar-menu">
+          <div class="navbar-menu">
             <div class="navbar-start">
               <NavLink
                 to="/"
@@ -72,6 +72,16 @@ function App() {
               >
                 Departments
               </NavLink>
+            </div>
+          </div>
+
+          <div class="navbar-end">
+            <div class="navbar-item">
+              <div class="buttons">
+                <a class="button is-light">
+                  <i class="fas fa-user-circle fa-2x"></i>
+                </a>
+              </div>
             </div>
           </div>
         </nav>
