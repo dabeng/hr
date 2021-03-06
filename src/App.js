@@ -9,7 +9,7 @@ import {
   useRouteMatch,
 } from "react-router-dom";
 
-import { Profile } from "./features/profile/profile";
+import { Profile } from "./features/profile/Profile";
 import { Employees } from "./features/employees/Employees";
 import { Departments } from "./features/departments/Departments";
 

@@ -17,8 +17,10 @@ export const Employees = () => {
   const [activeView, setActiveView] = useState('list-view');
 
   function openView(e) {
-    setActiveView(e.target.href.split('/').slice(-1)[0] === 'employees' ?
-      'list-view' : e.target.href.split('/').slice(-1)[0]);
+    if (e.target.nodeName === 'A') {
+      setActiveView(e.target.href.split('/').slice(-1)[0] === 'employees' ?
+        'list-view' : e.target.href.split('/').slice(-1)[0]);
+    }
   };
 
   return (
