@@ -7,7 +7,7 @@ import {
   useParams,
   useRouteMatch,
 } from "react-router-dom";
-import { DepartmentListView } from "./DepartmentListView";
+import { DepartmentTableView } from "./DepartmentTableView";
 import { DepartmentCardView } from "./DepartmentCardView";
 import { DepartmentChartView } from "./DepartmentChartView";
 
@@ -15,12 +15,12 @@ import { DepartmentChartView } from "./DepartmentChartView";
 
 export const Departments = () => {
   let { path, url } = useRouteMatch();
-  const [activeView, setActiveView] = useState('list-view');
+  const [activeView, setActiveView] = useState('table-view');
 
   function openView(e) {
     if (e.target.nodeName === 'A') {
       setActiveView(e.target.href.split('/').slice(-1)[0] === 'employees' ?
-        'list-view' : e.target.href.split('/').slice(-1)[0]);
+        'table-view' : e.target.href.split('/').slice(-1)[0]);
     }
   };
 
@@ -42,8 +42,8 @@ export const Departments = () => {
 
       <div class="tabs is-right" onClick={openView}>
         <ul>
-          <li className={`${activeView === 'list-view' ? 'is-active': ''}`}>
-            <Link to={`${url}`}>list view</Link>
+          <li className={`${activeView === 'table-view' ? 'is-active': ''}`}>
+            <Link to={`${url}`}>table view</Link>
           </li>
           <li className={`${activeView === 'card-view' ? 'is-active': ''}`}>
             <Link to={`${url}/card-view`}>card view</Link>
@@ -56,7 +56,7 @@ export const Departments = () => {
 
       <Switch>
         <Route exact path={path}>
-          <DepartmentListView />
+          <DepartmentTableView />
         </Route>
         <Route path={`${path}/card-view`}>
           <DepartmentCardView />

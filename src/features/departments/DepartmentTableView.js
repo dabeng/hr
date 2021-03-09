@@ -1,4 +1,5 @@
 import React from "react";
+import { useSelector, useDispatch } from 'react-redux';
 import {
   BrowserRouter as Router,
   Switch,
@@ -8,12 +9,12 @@ import {
   useRouteMatch,
 } from "react-router-dom";
 
-export const EmployeeListView = () => {
+export const DepartmentTableView = () => {
   let { path, url } = useRouteMatch();
 
   return (
     <div>
-      <h2>Employee List View</h2>
+      <h2>Department Table View</h2>
     </div>
   );
 };
