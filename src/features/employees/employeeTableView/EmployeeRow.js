@@ -7,9 +7,13 @@ import {
 import {
   selectEmployeeById,
 } from '../employeesSlice';
+import {
+  selectDepartmentById,
+} from '../../departments/departmentsSlice';
 
 export const EmployeeRow = ({ employeeId }) => {
   const employee = useSelector(state => selectEmployeeById(state, employeeId));
+  const department = useSelector(state => selectDepartmentById(state, employee.department));
   const superior = useSelector(state => selectEmployeeById(state, employee.superior));
 
   return (
@@ -21,7 +25,7 @@ export const EmployeeRow = ({ employeeId }) => {
       </td>
       <td>{employee.title}</td>
       <td>{employee.email}</td>
-      <td>{employee.department}</td>
+      <td>{department.name}</td>
       <td>{superior.name}</td>
       <td>{employee.joined_date}</td>
       <td>{employee.description}</td>

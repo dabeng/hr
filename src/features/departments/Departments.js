@@ -7,9 +7,9 @@ import {
   useParams,
   useRouteMatch,
 } from "react-router-dom";
-import { DepartmentTableView } from "./DepartmentTableView";
-import { DepartmentCardView } from "./DepartmentCardView";
-import { DepartmentChartView } from "./DepartmentChartView";
+import { DepartmentTableView } from "./DepartmentTableView/DepartmentTableView";
+import { DepartmentCardView } from "./DepartmentCardView/DepartmentCardView";
+import { DepartmentChartView } from "./DepartmentChartView/DepartmentChartView";
 
 
 
