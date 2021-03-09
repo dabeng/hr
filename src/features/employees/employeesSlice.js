@@ -7,7 +7,6 @@ import {
 
 const employeesAdapter = createEntityAdapter({
   sortComparer: (a, b) => {
-    var c = 1;
     return b.joined_date.localeCompare(a.joined_date);
   }
 });
