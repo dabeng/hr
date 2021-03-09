@@ -15,26 +15,9 @@ import {
   selectEmployeeIds,
   selectEmployeeById,
 } from '../employeesSlice';
+import { EmployeeRow } from './EmployeeRow';
 
-const EmployeeRow = ({ employeeId }) => {
-  const employee = useSelector(state => selectEmployeeById(state, employeeId));
-
-  return (
-    <tr key={employee.id}>
-      <td>
-        <Link to={`/employees/${employee.id}`}>
-          {employee.name}
-        </Link>
-      </td>
-      <td>{employee.title}</td>
-      <td>{employee.email}</td>
-      <td>{employee.department}</td>
-      <td>{employee.leader}</td>
-      <td>{employee.joined_date}</td>
-      <td>{employee.description}</td>
-    </tr>
-  );
-}
+import styles from "./EmployeeTableView.module.scss";
 
 export const EmployeeTableView = () => {
   let { path, url } = useRouteMatch();
@@ -52,8 +35,7 @@ export const EmployeeTableView = () => {
   }, [employeesStatus, dispatch]);
 
   return (
-    <div>
-      <table class="table">
+      <table className={"table " + styles.table_view_wrapper}>
         <thead>
           <tr>
             <th>Name</th>
@@ -78,6 +60,5 @@ export const EmployeeTableView = () => {
           }
         </tbody>
       </table>
-    </div>
   );
 };
