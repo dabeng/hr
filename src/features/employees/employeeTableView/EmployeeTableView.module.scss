@@ -1,5 +1,8 @@
 .table_view_wrapper {
-  td {
+  thead th {
+    font-size: 0.875rem;
+  }
+  tbody td {
     font-size: 0.875rem;
   }
 }

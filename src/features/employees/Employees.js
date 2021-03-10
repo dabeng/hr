@@ -39,7 +39,7 @@ export const Employees = () => {
         <div class="column"></div>
       </div>
 
-      <div class="tabs is-right" onClick={openView}>
+      <div class="tabs is-right" style={{ "margin": "-3rem 0 1rem" }} onClick={openView}>
         <ul>
           <li className={`${activeView === 'table-view' ? 'is-active': ''}`}>
             <Link to={`${url}`}>table view</Link>

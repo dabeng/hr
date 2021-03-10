@@ -16,9 +16,10 @@ const initialState = employeesAdapter.getInitialState({
   error: null,
 });
 
-export const fetchEmployees = createAsyncThunk("employees/fetchEmployees", async () => {
-  let response = await fetch("http://localhost:3001/employees");
+export const fetchEmployees = createAsyncThunk("employees/fetchEmployees", async (page) => {
+  let response = await fetch("http://localhost:3001/employees?_page=" + page);
   let employees = await response.json();
+  // let total = response.headers.get('X-Total-Count');
   return employees;
 });
 
@@ -34,7 +35,7 @@ const employeesSlice = createSlice({
     },
     [fetchEmployees.fulfilled]: (state, action) => {
       state.status = "succeeded";
-      employeesAdapter.upsertMany(state, action.payload);
+      employeesAdapter.setAll(state, action.payload);
     },
     [fetchEmployees.rejected]: (state, action) => {
       state.status = "failed";

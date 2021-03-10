@@ -14,7 +14,6 @@ import {
 export const EmployeeRow = ({ employeeId }) => {
   const employee = useSelector(state => selectEmployeeById(state, employeeId));
   const department = useSelector(state => selectDepartmentById(state, employee.department));
-  const superior = useSelector(state => selectEmployeeById(state, employee.superior));
 
   return (
     <tr key={employee.id}>
@@ -26,9 +25,8 @@ export const EmployeeRow = ({ employeeId }) => {
       <td>{employee.title}</td>
       <td>{employee.email}</td>
       <td>{department.name}</td>
-      <td>{superior.name}</td>
+      <td>{employee.superiorName}</td>
       <td>{employee.joined_date}</td>
-      <td>{employee.description}</td>
     </tr>
   );
 }
