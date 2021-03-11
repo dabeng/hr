@@ -29,6 +29,10 @@ export const EmployeeTableView = () => {
 
   const status = useSelector((state) => state.employees.status);
   const error = useSelector((state) => state.employees.error);
+  const total = useSelector((state) => state.employees.total);
+
+  let isNextBtnDisabled = currentPage * 10 >= total;
+  let isPrevBtnDisabled = currentPage === 1;
 
   useEffect(() => {
     // if (status === "idle") {
@@ -40,10 +44,10 @@ export const EmployeeTableView = () => {
     setCurrentPage(currentPage - 1);
   };
 
-  const nextPage = () => {
+  const nextPage = (e) => {
     setCurrentPage(currentPage + 1);
   };
-
+  
   return (
     <div>
       <table
@@ -84,8 +88,8 @@ export const EmployeeTableView = () => {
         role="navigation"
         aria-label="pagination"
       >
-        <a className="pagination-previous" onClick={previousPage}>Previous</a>
-        <a className="pagination-next" onClick={nextPage}>Next page</a>
+        <a className="pagination-previous" onClick={!isPrevBtnDisabled ? previousPage : undefined} disabled={isPrevBtnDisabled}>Previous</a>
+        <a className="pagination-next" onClick={!isNextBtnDisabled ? nextPage : undefined} disabled={isNextBtnDisabled}>Next page</a>
         <ul class="pagination-list">
           <li>
             <a class="pagination-link" aria-label="Goto page 1">
