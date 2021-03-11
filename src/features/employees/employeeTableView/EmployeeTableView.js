@@ -47,6 +47,10 @@ export const EmployeeTableView = () => {
   const nextPage = (e) => {
     setCurrentPage(currentPage + 1);
   };
+
+  const gotoPage = (e) => {
+    setCurrentPage(parseInt(e.target.textContent));
+  };
   
   return (
     <div>
@@ -91,41 +95,14 @@ export const EmployeeTableView = () => {
         <a className="pagination-previous" onClick={!isPrevBtnDisabled ? previousPage : undefined} disabled={isPrevBtnDisabled}>Previous</a>
         <a className="pagination-next" onClick={!isNextBtnDisabled ? nextPage : undefined} disabled={isNextBtnDisabled}>Next page</a>
         <ul class="pagination-list">
-          <li>
-            <a class="pagination-link" aria-label="Goto page 1">
-              1
-            </a>
-          </li>
-          <li>
-            <span class="pagination-ellipsis">&hellip;</span>
-          </li>
-          <li>
-            <a class="pagination-link" aria-label="Goto page 45">
-              45
-            </a>
-          </li>
-          <li>
-            <a
-              class="pagination-link is-current"
-              aria-label="Page 46"
-              aria-current="page"
-            >
-              46
-            </a>
-          </li>
-          <li>
-            <a class="pagination-link" aria-label="Goto page 47">
-              47
-            </a>
-          </li>
-          <li>
-            <span class="pagination-ellipsis">&hellip;</span>
-          </li>
-          <li>
-            <a class="pagination-link" aria-label="Goto page 86">
-              86
-            </a>
-          </li>
+          {status === "succeeded" &&
+            Array(Math.ceil(total/10)).fill(0).map((v, index) => (
+              <li key={index}>
+                <a className="pagination-link" aria-label={"Goto page " + (index + 1)} onClick={gotoPage}>
+                  {index + 1}
+                </a>
+            </li>
+            ))}
         </ul>
       </nav>
     </div>
