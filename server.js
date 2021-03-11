@@ -7,7 +7,8 @@ const middlewares = jsonServer.defaults();
 router.render = (req, res) => {
   if (req.method === "GET" && req.path === "/employees") {
     res.locals.data.forEach(e1 => {
-      e1.superiorName = db.employees.find(e2 => e2.id === e1.superior).name;
+      e1.superior_name = db.employees.find(e2 => e2.id === e1.superior).name;
+      e1.department_name = db.departments.find(d => d.id === e1.department).name;
     });
   }
   res.jsonp(res.locals.data);

@@ -7,6 +7,7 @@ import {
 
 const employeesAdapter = createEntityAdapter({
   sortComparer: (a, b) => {
+    // descending order according to joined date
     return b.joined_date.localeCompare(a.joined_date);
   }
 });
@@ -17,7 +18,7 @@ const initialState = employeesAdapter.getInitialState({
 });
 
 export const fetchEmployees = createAsyncThunk("employees/fetchEmployees", async (page) => {
-  let response = await fetch("http://localhost:3001/employees?_page=" + page);
+  let response = await fetch("http://localhost:3001/employees?_sort=joined_date&_order=desc&_page=" + page);
   let employees = await response.json();
   // let total = response.headers.get('X-Total-Count');
   return employees;

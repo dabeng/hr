@@ -27,18 +27,13 @@ export const EmployeeTableView = () => {
   const dispatch = useDispatch();
   const orderedEmployeeIds = useSelector(selectEmployeeIds);
 
-  const employeesStatus = useSelector((state) => state.employees.status);
-  const employeesError = useSelector((state) => state.employees.error);
-  const departmentsStatus = useSelector((state) => state.departments.status);
-  const departmentsError = useSelector((state) => state.departments.error);
+  const status = useSelector((state) => state.employees.status);
+  const error = useSelector((state) => state.employees.error);
 
   useEffect(() => {
-    // if (employeesStatus === "idle") {
+    // if (status === "idle") {
       dispatch(fetchEmployees(currentPage));
     // }
-    if (departmentsStatus === "idle") {
-      dispatch(fetchDepartments());
-    }
   }, [dispatch, currentPage]);
 
   const previousPage = () => {
@@ -68,19 +63,18 @@ export const EmployeeTableView = () => {
           </tr>
         </thead>
         <tbody>
-          {employeesStatus === "loading" && (
+          {status === "loading" && (
             <tr>
               <td className="loader">Loading...</td>
             </tr>
           )}
-          {employeesStatus === "succeeded" &&
-            departmentsStatus === "succeeded" &&
+          {status === "succeeded" &&
             orderedEmployeeIds.map((id) => (
               <EmployeeRow key={id} employeeId={id} />
             ))}
-          {employeesStatus === "failed" && (
+          {status === "failed" && (
             <tr>
-              <td>{employeesError}</td>
+              <td>{error}</td>
             </tr>
           )}
         </tbody>
