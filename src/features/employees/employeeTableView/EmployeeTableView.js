@@ -36,7 +36,7 @@ export const EmployeeTableView = () => {
 
   useEffect(() => {
     // if (status === "idle") {
-      dispatch(fetchEmployees(currentPage));
+    dispatch(fetchEmployees(currentPage));
     // }
   }, [dispatch, currentPage]);
 
@@ -51,7 +51,7 @@ export const EmployeeTableView = () => {
   const gotoPage = (e) => {
     setCurrentPage(parseInt(e.target.textContent));
   };
-  
+
   return (
     <div>
       <table
@@ -92,17 +92,39 @@ export const EmployeeTableView = () => {
         role="navigation"
         aria-label="pagination"
       >
-        <a className="pagination-previous" onClick={!isPrevBtnDisabled ? previousPage : undefined} disabled={isPrevBtnDisabled}>Previous</a>
-        <a className="pagination-next" onClick={!isNextBtnDisabled ? nextPage : undefined} disabled={isNextBtnDisabled}>Next page</a>
+        <a
+          className="pagination-previous"
+          onClick={!isPrevBtnDisabled ? previousPage : undefined}
+          disabled={isPrevBtnDisabled}
+        >
+          Previous
+        </a>
+        <a
+          className="pagination-next"
+          onClick={!isNextBtnDisabled ? nextPage : undefined}
+          disabled={isNextBtnDisabled}
+        >
+          Next page
+        </a>
         <ul class="pagination-list">
           {status === "succeeded" &&
-            Array(Math.ceil(total/10)).fill(0).map((v, index) => (
-              <li key={index}>
-                <a className={"pagination-link" + (index + 1 === currentPage ? " is-current" : "")} aria-label={"Goto page " + (index + 1)} onClick={gotoPage}>
-                  {index + 1}
-                </a>
-            </li>
-            ))}
+            Array(Math.ceil(total / 10))
+              .fill(0)
+              .map((v, index) => (
+                <li key={index}>
+                  <a
+                    className={
+                      "pagination-link" +
+                      (index + 1 === currentPage ? " is-current" : "")
+                    }
+                    aria-label={"Goto page " + (index + 1)}
+                    aria-current={index + 1 === currentPage ? "page" : undefined}
+                    onClick={gotoPage}
+                  >
+                    {index + 1}
+                  </a>
+                </li>
+              ))}
         </ul>
       </nav>
     </div>
