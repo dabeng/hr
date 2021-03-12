@@ -98,7 +98,7 @@ export const EmployeeTableView = () => {
           {status === "succeeded" &&
             Array(Math.ceil(total/10)).fill(0).map((v, index) => (
               <li key={index}>
-                <a className="pagination-link" aria-label={"Goto page " + (index + 1)} onClick={gotoPage}>
+                <a className={"pagination-link" + (index + 1 === currentPage ? " is-current" : "")} aria-label={"Goto page " + (index + 1)} onClick={gotoPage}>
                   {index + 1}
                 </a>
             </li>
