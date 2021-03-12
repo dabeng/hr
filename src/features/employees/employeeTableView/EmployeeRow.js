@@ -14,7 +14,7 @@ export const EmployeeRow = ({ employeeId }) => {
   return (
     <tr key={employee.id}>
       <td>
-        <Link to={`/employees/${employee.id}`}>
+        <Link to={`/profile?employeeId=${employee.id}`}>
           {employee.name}
         </Link>
       </td>

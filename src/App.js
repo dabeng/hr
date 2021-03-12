@@ -21,7 +21,7 @@ function App() {
   return (
     <Router>
       <div>
-        <div class="columns is-desktop">
+        <div class="columns">
           <div class="column is-offset-2 is-8">
             <nav
               class="navbar is-light"
@@ -53,9 +53,8 @@ function App() {
               <div class="navbar-menu">
                 <div class="navbar-start">
                   <NavLink
-                    to="/"
+                    to="/profile"
                     className="navbar-item"
-                    exact
                     activeClassName="is-active"
                   >
                     profile
@@ -90,10 +89,13 @@ function App() {
           </div>
         </div>
 
-        <div class="columns is-desktop">
+        <div class="columns">
           <div class="column is-offset-2 is-8">
             <Switch>
-              <Route exact path="/">
+              {/* <Route exact path="/">
+                <Profile />
+              </Route> */}
+              <Route path="/profile">
                 <Profile />
               </Route>
               <Route path="/employees">
