@@ -31,12 +31,14 @@ export const EmployeeTableView = () => {
   const error = useSelector((state) => state.employees.error);
   const total = useSelector((state) => state.employees.total);
 
-  let isNextBtnDisabled = currentPage * 10 >= total;
+  const PAGE_SIZE = 6;
+
+  let isNextBtnDisabled = currentPage * PAGE_SIZE >= total;
   let isPrevBtnDisabled = currentPage === 1;
 
   useEffect(() => {
     // if (status === "idle") {
-    dispatch(fetchEmployees(currentPage));
+    dispatch(fetchEmployees({page: currentPage, pageSize: PAGE_SIZE}));
     // }
   }, [dispatch, currentPage]);
 
@@ -108,7 +110,7 @@ export const EmployeeTableView = () => {
         </a>
         <ul class="pagination-list">
           {status === "succeeded" &&
-            Array(Math.ceil(total / 10))
+            Array(Math.ceil(total / PAGE_SIZE))
               .fill(0)
               .map((v, index) => (
                 <li key={index}>
