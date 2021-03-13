@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   BrowserRouter as Router,
   useLocation,
@@ -11,24 +11,40 @@ import {
 import { useSelector, useDispatch } from "react-redux";
 
 import {
+  fetchEmployee,
+  setEmployee,
+  selectEmployee,
+} from "../employees/employeeSlice";
+import {
   selectEmployeeById,
 } from "../employees/employeesSlice";
 
 import styles from "./Profile.module.scss";
 
-// A custom hook that builds on useLocation to parse
-// the query string for you.
-function useQuery() {
-  return new URLSearchParams(useLocation().search);
-}
 
 export const Profile = () => {
   let { path, url } = useRouteMatch();
+  const dispatch = useDispatch();
 
   const employeeId = new URLSearchParams(useLocation().search).get("employeeId");
   
+  const employees = useSelector(state => state.employees);
 
-  const employee = useSelector((state) => selectEmployeeById(state, employeeId));
+  const employee = useSelector(employees.ids.length ? state => selectEmployeeById(state, employeeId) : selectEmployee);
+
+    // const status = useSelector(state => state.employee.status);
+    // const error = useSelector(state => state.employee.error);
+    useEffect(() => {
+      // if (status === "idle") {
+      // dispatch(fetchEmployee(employeeId));
+      // }
+      if (employees.ids.length) {
+        dispatch(setEmployee(employee));
+      } else {
+        dispatch(fetchEmployee(employeeId));
+      }
+    }, [dispatch, employees, employeeId]);
+  
 
   return (
     <div class="columns">
@@ -36,14 +52,23 @@ export const Profile = () => {
       <i class="fas fa-address-card fa-10x"></i>
       </div>
       <div class="column is-8">
+      {employee && employee.status === "loading" && (
+        <i class="fas fa-circle-notch fa-spin fa-4x"></i>
+      )}
       <div class="field">
         <label class="label">Name</label>
         <div class="control">
-          <p className="has-text-dark">{employee.name}</p>
+          <p className="has-text-dark">{
+            employees.ids.length
+            ? employee.name
+            : (employee.status === "succeeded"
+              ? employee.value.name
+              : "")
+          }</p>
           {/* <input class="input" type="text" placeholder="Text input"/> */}
         </div>
       </div>
-      <div class="field">
+      {/* <div class="field">
         <label class="label">Title</label>
         <div class="control">
           <p className="has-text-dark">{employee.title}</p>
@@ -89,7 +114,7 @@ export const Profile = () => {
         <div class="control">
           <p className="has-text-dark">{employee.description}</p>
         </div>
-      </div>
+      </div> */}
       </div>
     </div>
   );

@@ -24,7 +24,6 @@ export const fetchEmployees = createAsyncThunk("employees/fetchEmployees", async
   return employees;
 });
 
-
 const employeesSlice = createSlice({
   name: "employees",
   initialState,
