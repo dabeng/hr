@@ -25,21 +25,21 @@ export const Employees = () => {
 
   return (
     <div>
-      <div class="columns">
-        <div class="column">
-          <div class="field">
-            <p class="control has-icons-left has-icons-right">
-              <input class="input" type="text" placeholder="Name" />
-              <span class="icon is-small is-right">
-                <i class="fas fa-search"></i>
+      <div className="columns">
+        <div className="column">
+          <div className="field">
+            <p className="control has-icons-left has-icons-right">
+              <input className="input" type="text" placeholder="Name" />
+              <span className="icon is-small is-right">
+                <i className="fas fa-search"></i>
               </span>
             </p>
           </div>
         </div>
-        <div class="column"></div>
+        <div className="column"></div>
       </div>
 
-      <div class="tabs is-right" style={{ "margin": "-3rem 0 1rem" }} onClick={openView}>
+      <div className="tabs is-right" style={{ "margin": "-3rem 0 1rem" }} onClick={openView}>
         <ul>
           <li className={`${activeView === 'table-view' ? 'is-active': ''}`}>
             <Link to={`${url}`}>table view</Link>

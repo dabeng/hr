@@ -21,15 +21,15 @@ function App() {
   return (
     <Router>
       <div>
-        <div class="columns">
-          <div class="column is-offset-2 is-8">
+        <div className="columns">
+          <div className="column is-offset-2 is-8">
             <nav
-              class="navbar is-light"
+              className="navbar is-light"
               role="navigation"
               aria-label="main navigation"
             >
-              <div class="navbar-brand">
-                <a class="navbar-item" href="https://github.com/dabeng/hr">
+              <div className="navbar-brand">
+                <a className="navbar-item" href="https://github.com/dabeng/hr">
                   <img
                     src="https://dabeng.github.io/OrgChart/img/logo.png"
                     width="28"
@@ -39,7 +39,7 @@ function App() {
 
                 <a
                   role="button"
-                  class="navbar-burger"
+                  className="navbar-burger"
                   aria-label="menu"
                   aria-expanded="false"
                   data-target="navbarBasicExample"
@@ -50,8 +50,8 @@ function App() {
                 </a>
               </div>
 
-              <div class="navbar-menu">
-                <div class="navbar-start">
+              <div className="navbar-menu">
+                <div className="navbar-start">
                   <NavLink
                     to="/profile"
                     className="navbar-item"
@@ -76,11 +76,11 @@ function App() {
                 </div>
               </div>
 
-              <div class="navbar-end">
-                <div class="navbar-item">
-                  <div class="buttons">
-                    <a class="button is-white">
-                      <i class="fas fa-user-circle fa-2x"></i>
+              <div className="navbar-end">
+                <div className="navbar-item">
+                  <div className="buttons">
+                    <a className="button is-white">
+                      <i className="fas fa-user-circle fa-2x"></i>
                     </a>
                   </div>
                 </div>
@@ -89,8 +89,8 @@ function App() {
           </div>
         </div>
 
-        <div class="columns">
-          <div class="column is-offset-2 is-8">
+        <div className="columns">
+          <div className="column is-offset-2 is-8">
             <Switch>
               {/* <Route exact path="/">
                 <Profile />

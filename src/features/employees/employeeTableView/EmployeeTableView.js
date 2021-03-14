@@ -75,7 +75,9 @@ export const EmployeeTableView = () => {
         <tbody>
           {status === "loading" && (
             <tr>
-              <td className="loader">Loading...</td>
+              <td colSpan="6" style={{"textAlign": "center"}}>
+                <i className={"fas fa-circle-notch fa-spin fa-4x " + styles.spinner}></i>
+              </td>
             </tr>
           )}
           {status === "succeeded" &&
@@ -108,7 +110,7 @@ export const EmployeeTableView = () => {
         >
           Next page
         </a>
-        <ul class="pagination-list">
+        <ul className="pagination-list">
           {status === "succeeded" &&
             Array(Math.ceil(total / PAGE_SIZE))
               .fill(0)

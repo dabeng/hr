@@ -1,3 +1,9 @@
-.wrapper {
-  padding: 1rem;
+.form_column {
+  position: relative;
+}
+
+.spinner {
+  position: absolute;
+  top: 10rem;
+  left: calc(50% - 2rem);
 }

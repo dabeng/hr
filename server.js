@@ -4,15 +4,31 @@ const db = require("./db");
 const router = jsonServer.router(db);
 const middlewares = jsonServer.defaults();
 
+// Add delay to responses(ms)
+server.use(function(req, res, next){
+  setTimeout(next, 1000);
+});
+
 router.render = (req, res) => {
-  if (req.method === "GET" && req.path === "/employees") {
-    res.locals.data.forEach(e1 => {
-      e1.superior_name = db.employees.find(e2 => e2.id === e1.superior).name;
-      e1.department_name = db.departments.find(d => d.id === e1.department).name;
-      if (e1.inferiors && e1.inferiors.length) {
-        e1.inferior_names = e1.inferiors.map(inferiorId => db.employees.find(e2 => e2.id === inferiorId).name);
+  if (req.method === "GET") {
+    if (req.path === "/employees") {
+      res.locals.data.forEach(e1 => {
+        e1.superior_name = db.employees.find(e2 => e2.id === e1.superior).name;
+        e1.department_name = db.departments.find(d => d.id === e1.department).name;
+        if (e1.inferiors && e1.inferiors.length) {
+          e1.inferior_names = e1.inferiors.map(inferiorId => db.employees.find(e2 => e2.id === inferiorId).name);
+        }
+      });
+    }
+
+    if (req.path === "/employees/" + res.locals.data.id) {
+      const employee = res.locals.data;
+      employee.superior_name = db.employees.find(e => e.id === employee.superior).name;
+      employee.department_name = db.departments.find(d => d.id === employee.department).name;
+      if (employee.inferiors && employee.inferiors.length) {
+        employee.inferior_names = employee.inferiors.map(inferiorId => db.employees.find(e => e.id === inferiorId).name);
       }
-    });
+    }
   }
   res.jsonp(res.locals.data);
 };
