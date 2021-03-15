@@ -80,10 +80,15 @@ export const EmployeeTableView = (props) => {
               </td>
             </tr>
           )}
-          {status === "succeeded" &&
-            orderedEmployeeIds.map((id) => (
-              <EmployeeRow key={id} employeeId={id} />
-            ))}
+          {status === "succeeded" && (
+            orderedEmployeeIds.length
+            ? orderedEmployeeIds.map(id => (
+                <EmployeeRow key={id} employeeId={id} />
+              ))
+            : <tr>
+                <td colSpan="6" style={{"textAlign": "center"}}>No results found</td>
+              </tr>
+          )}
           {status === "failed" && (
             <tr>
               <td>{error}</td>

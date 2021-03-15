@@ -36,7 +36,6 @@ export const Employees = () => {
   };
 
   const updateKeyword = e => {
-    
     setKeyword(e.target.value);
   };
 
@@ -45,7 +44,7 @@ export const Employees = () => {
   };
 
   const handleKeyPress = e => {
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' && keyword.trim().length) {
       search();
     }
   };

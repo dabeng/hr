@@ -18,7 +18,14 @@ const initialState = employeesAdapter.getInitialState({
 });
 
 export const fetchEmployees = createAsyncThunk("employees/fetchEmployees", async ({page, pageSize, keyword}) => {
-  let response = await fetch("http://localhost:3001/employees?_sort=joined_date&_order=desc&_page=" + page + '&_limit=' + pageSize + (keyword ? "&q=" + keyword : ""));
+  const params = new URLSearchParams({
+    "_sort": "joined_date",
+    "_order": "desc",
+    "_page": page,
+    "_limit": pageSize,
+    "q": keyword
+  });
+  let response = await fetch("http://localhost:3001/employees?" + params.toString());
   let employees = await response.json();
   employees.total = parseInt(response.headers.get('X-Total-Count'));
   return employees;
