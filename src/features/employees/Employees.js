@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import {
   BrowserRouter as Router,
   Switch,
@@ -12,9 +13,20 @@ import { EmployeeTableView } from "./employeeTableView/EmployeeTableView";
 import { EmployeeCardView } from "./employeeCardView/EmployeeCardView";
 import { EmployeeChartView } from "./employeeChartView/EmployeeChartView";
 
+import {
+  fetchEmployees,
+  selectAllEmployees,
+  selectEmployeeIds,
+  selectEmployeeById,
+} from "./employeesSlice";
+
 export const Employees = () => {
   let { path, url } = useRouteMatch();
+  const dispatch = useDispatch();
   const [activeView, setActiveView] = useState('table-view');
+
+  const [keyword, setKeyword] = useState("");
+  const PAGE_SIZE = 6;
 
   function openView(e) {
     if (e.target.nodeName === 'A') {
@@ -23,13 +35,29 @@ export const Employees = () => {
     }
   };
 
+  const updateKeyword = e => {
+    
+    setKeyword(e.target.value);
+  };
+
+  const search = e => {
+    dispatch(fetchEmployees({page: 1, pageSize: PAGE_SIZE, keyword}));
+  };
+
+  const handleKeyPress = e => {
+    if (e.key === 'Enter') {
+      search();
+    }
+  };
+
+
   return (
     <div>
       <div className="columns">
         <div className="column">
           <div className="field">
             <p className="control has-icons-left has-icons-right">
-              <input className="input" type="text" placeholder="Name" />
+              <input className="input" type="text" placeholder="Key Word" value={keyword} onChange={updateKeyword} onKeyPress={handleKeyPress}/>
               <span className="icon is-small is-right">
                 <i className="fas fa-search"></i>
               </span>
@@ -54,8 +82,8 @@ export const Employees = () => {
       </div>
 
       <Switch>
-        <Route exact path={path}>
-          <EmployeeTableView />
+        <Route exact path={path} >
+          <EmployeeTableView keyword={keyword}/>
         </Route>
         <Route path={`${path}/card-view`}>
           <EmployeeCardView />

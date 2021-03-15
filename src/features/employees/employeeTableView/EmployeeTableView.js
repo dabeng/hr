@@ -20,7 +20,7 @@ import { EmployeeRow } from "./EmployeeRow";
 
 import styles from "./EmployeeTableView.module.scss";
 
-export const EmployeeTableView = () => {
+export const EmployeeTableView = (props) => {
   let { path, url } = useRouteMatch();
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -38,7 +38,7 @@ export const EmployeeTableView = () => {
 
   useEffect(() => {
     // if (status === "idle") {
-    dispatch(fetchEmployees({page: currentPage, pageSize: PAGE_SIZE}));
+    dispatch(fetchEmployees({page: currentPage, pageSize: PAGE_SIZE, keyword: props.keyword}));
     // }
   }, [dispatch, currentPage]);
 
