@@ -8,6 +8,7 @@ import {
   NavLink,
   useParams,
   useRouteMatch,
+  useLocation
 } from "react-router-dom";
 import { EmployeeTableView } from "./employeeTableView/EmployeeTableView";
 import { EmployeeCardView } from "./employeeCardView/EmployeeCardView";
@@ -23,7 +24,8 @@ import {
 export const Employees = () => {
   let { path, url } = useRouteMatch();
   const dispatch = useDispatch();
-  const [activeView, setActiveView] = useState('table-view');
+  const location = useLocation();
+  const [activeView, setActiveView] = useState(location.pathname === '/employees' ? 'table-view' : location.pathname.split('/').slice(-1)[0]);
 
   const [keyword, setKeyword] = useState("");
   const PAGE_SIZE = 6;
