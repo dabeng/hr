@@ -49,9 +49,9 @@ export const Profile = () => {
   
 
   return (
-    <div class="columns">
-      <div class="column is-4">
-      <i class="fas fa-address-card fa-10x"></i>
+    <div className="columns">
+      <div className="column is-4">
+      <i className="fas fa-address-card fa-10x"></i>
       </div>
       <div className={"column is-8 " + styles.form_column}>
       {employee && employee.status === "loading" && (

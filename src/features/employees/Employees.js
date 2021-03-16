@@ -85,7 +85,7 @@ export const Employees = () => {
           <EmployeeTableView keyword={keyword}/>
         </Route>
         <Route path={`${path}/card-view`}>
-          <EmployeeCardView />
+          <EmployeeCardView keyword={keyword}/>
         </Route>
         <Route path={`${path}/chart-view`}>
           <EmployeeChartView />

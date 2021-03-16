@@ -31,7 +31,7 @@ export const ProfileForm = (props) => {
         </div>
       </div>
       <div className="field">
-        <label class="label">Email</label>
+        <label className="label">Email</label>
         <div className="control">
           <p className="has-text-dark">{employee.email}</p>
         </div>
@@ -54,7 +54,7 @@ export const ProfileForm = (props) => {
           <p className="has-text-dark">
           {employee.inferior_names &&  employee.inferior_names.length &&
             employee.inferior_names.map((name, index, names) => (
-              <span>{name + (index < names.length - 1 ? ",\u00A0\u00A0" : "")}</span>
+              <span key={index}>{name + (index < names.length - 1 ? ",\u00A0\u00A0" : "")}</span>
             ))}
           </p>
         </div>

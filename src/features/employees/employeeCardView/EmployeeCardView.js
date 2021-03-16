@@ -1,13 +1,5 @@
 import React from "react";
-import { useSelector, useDispatch } from "react-redux";
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link,
-  useParams,
-  useRouteMatch,
-} from "react-router-dom";
+import { useSelector } from "react-redux";
 import {
   fetchEmployees,
   selectAllEmployees,
@@ -19,11 +11,8 @@ import { Pagination } from "../../shared/Pagination";
 
 import styles from "./EmployeeCardView.module.scss";
 
-export const EmployeeCardView = () => {
-  let { path, url } = useRouteMatch();
-
+export const EmployeeCardView = ({keyword}) => {
   const orderedEmployeeIds = useSelector(selectEmployeeIds);
-
   const status = useSelector((state) => state.employees.status);
   const error = useSelector((state) => state.employees.error);
 
@@ -44,10 +33,10 @@ export const EmployeeCardView = () => {
           : <h3 style={{"textAlign": "center"}}>No results found</h3>
         )
       }
-        <Pagination />
       {status === "failed" && (
         <h3>{error}</h3>
       )}
+      <Pagination keyword={keyword}/>
     </div>
   );
 };

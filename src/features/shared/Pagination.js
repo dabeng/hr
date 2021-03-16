@@ -9,7 +9,7 @@ import {
 } from "../employees/employeesSlice";
 
 
-export const Pagination = (props) => {
+export const Pagination = ({keyword}) => {
   const [currentPage, setCurrentPage] = useState(1);
   const status = useSelector((state) => state.employees.status);
   const dispatch = useDispatch();
@@ -22,7 +22,7 @@ export const Pagination = (props) => {
 
   useEffect(() => {
     // if (status === "idle") {
-    dispatch(fetchEmployees({page: currentPage, pageSize: PAGE_SIZE, keyword: props.keyword}));
+    dispatch(fetchEmployees({page: currentPage, pageSize: PAGE_SIZE, keyword}));
     // }
   }, [dispatch, currentPage]);
 
