@@ -38,6 +38,7 @@
     ]
   },
   "devDependencies": {
-    "json-server": "^0.16.3"
+    "json-server": "^0.16.3",
+    "jsonwebtoken": "^8.5.1"
   }
 }

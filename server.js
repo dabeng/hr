@@ -3,10 +3,50 @@ const server = jsonServer.create();
 const db = require("./db");
 const router = jsonServer.router(db);
 const middlewares = jsonServer.defaults();
+const jwt = require('jsonwebtoken');
+const accessTokenSecret = 'youraccesstokensecret';
+
+// Set default middlewares (logger, static, cors and no-cache)
+server.use(middlewares);
 
 // Add delay to responses(ms)
 server.use(function(req, res, next){
   setTimeout(next, 1000);
+});
+
+server.use(jsonServer.bodyParser);
+
+server.post('/login', (req, res) => {
+  // Read username and password from request body
+  const { username, password } = req.body;
+  // Filter user from the users array by username and password
+  const user = db.employees.find(u => { return u.email === username && u.password === password });
+  if (user) {
+    // Generate an access token
+    const accessToken = jwt.sign({ username: user.email,  role: user.role }, accessTokenSecret, { expiresIn: '1h' });
+    res.json({
+      accessToken
+    });
+  } else {
+    res.send('Username or password incorrect');
+  }
+});
+
+server.use((req, res, next) => {
+  const authHeader = req.headers.authorization;
+
+  if (authHeader) {
+    jwt.verify(authHeader.split(' ')[1], accessTokenSecret, (err, userInfo) => {
+      if (err) {
+        return res.sendStatus(403);
+      }
+
+      req.user = userInfo;
+      next();
+    });
+  } else {
+    res.sendStatus(401);
+  }
 });
 
 router.render = (req, res) => {
@@ -33,8 +73,7 @@ router.render = (req, res) => {
   res.jsonp(res.locals.data);
 };
 
-// Set default middlewares (logger, static, cors and no-cache)
-server.use(middlewares);
+
 
 // Add custom routes before JSON Server router
 server.get("/echo", (req, res) => {
