@@ -18,14 +18,15 @@ server.use(jsonServer.bodyParser);
 
 server.post('/login', (req, res) => {
   // Read username and password from request body
-  const { username, password } = req.body;
+  const { email, password } = req.body;
   // Filter user from the users array by username and password
-  const user = db.employees.find(u => { return u.email === username && u.password === password });
+  const user = db.employees.find(u => { return u.email === email && u.password === password });
   if (user) {
     // Generate an access token
-    const accessToken = jwt.sign({ username: user.email,  role: user.role }, accessTokenSecret, { expiresIn: '1h' });
+    const token = jwt.sign({ username: user.email,  role: user.role }, accessTokenSecret, { expiresIn: '1h' });
     res.json({
-      accessToken
+      token,
+      user
     });
   } else {
     res.send('Username or password incorrect');

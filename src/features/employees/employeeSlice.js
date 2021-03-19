@@ -6,7 +6,11 @@ import {
 } from "@reduxjs/toolkit";
 
 export const fetchEmployee = createAsyncThunk("employees/fetchEmployee", async (employeeId) => {
-  let response = await fetch("http://localhost:3001/employees/" + employeeId);
+  let response = await fetch("http://localhost:3001/employees/" + employeeId, {
+    headers: {
+      "Authorization": "Bearer " + localStorage.getItem('accessToken')
+    }
+  });
   let employee = await response.json();
   return employee;
 });

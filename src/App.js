@@ -9,6 +9,7 @@ import {
   useRouteMatch,
 } from "react-router-dom";
 
+import { LoginPage } from "./features/core/LoginPage";
 import { Profile } from "./features/profile/Profile";
 import { Employees } from "./features/employees/Employees";
 import { Departments } from "./features/departments/Departments";
@@ -92,9 +93,12 @@ function App() {
         <div className="columns">
           <div className="column is-offset-2 is-8">
             <Switch>
-              {/* <Route exact path="/">
+              <Route exact path="/login">
+                <LoginPage />
+              </Route>
+              <Route exact path="/">
                 <Profile />
-              </Route> */}
+              </Route>
               <Route path="/profile">
                 <Profile />
               </Route>
