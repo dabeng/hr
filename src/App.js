@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   BrowserRouter as Router,
   Switch,
@@ -19,6 +19,12 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 import "./App.scss";
 
 function App() {
+  const [showMenu, setShowMenu] = useState(false);
+
+  const toggleAccountMenu = e => {
+    setShowMenu(prev => !prev);
+  };
+
   return (
     <Router>
       <div>
@@ -80,9 +86,22 @@ function App() {
               <div className="navbar-end">
                 <div className="navbar-item">
                   <div className="buttons">
-                    <a className="button is-white">
-                      <i className="fas fa-user-circle fa-2x"></i>
-                    </a>
+                    <div className={"dropdown is-right" + (showMenu ? " is-active" : "")}>
+                      <div className="dropdown-trigger">
+                        <button className="button" ariaHaspopup="true" ariaControls="account_menu" onClick={toggleAccountMenu}>
+                          <span className="icon">
+                            <i className="fas fa-user-circle" aria-hidden="true"></i>
+                          </span>
+                        </button>
+                      </div>
+                      <div className="dropdown-menu" id="account_menu" role="menu">
+                        <div className="dropdown-content">
+                          <div className="dropdown-item">
+                            <p>Add the <code>is-right</code> modifier for a <strong>right-aligned</strong> dropdown.</p>
+                          </div>
+                        </div>
+                     </div>
+                   </div>
                   </div>
                 </div>
               </div>

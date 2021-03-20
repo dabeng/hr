@@ -23,7 +23,7 @@ server.post('/login', (req, res) => {
   const user = db.employees.find(u => { return u.email === email && u.password === password });
   if (user) {
     // Generate an access token
-    const token = jwt.sign({ username: user.email,  role: user.role }, accessTokenSecret, { expiresIn: '1h' });
+    const token = jwt.sign({ role: user.role }, accessTokenSecret, { expiresIn: '1h' });
     res.json({
       token,
       user
