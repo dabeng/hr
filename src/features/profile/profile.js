@@ -11,6 +11,9 @@ import {
 import { useSelector, useDispatch } from "react-redux";
 
 import {
+  selectUser,
+} from "../core/userSlice";
+import {
   fetchEmployee,
   setEmployee,
   selectEmployee,
@@ -28,25 +31,20 @@ export const Profile = () => {
   let { path, url } = useRouteMatch();
   const dispatch = useDispatch();
 
+  const { id: userId } = useSelector(selectUser);
   const employeeId = new URLSearchParams(useLocation().search).get("employeeId");
-  
   const employees = useSelector(state => state.employees);
-
   const employee = useSelector(employees.ids.length && employeeId ? state => selectEmployeeById(state, employeeId) : selectEmployee);
 
-    // const status = useSelector(state => state.employee.status);
-    // const error = useSelector(state => state.employee.error);
-    useEffect(() => {
-      // if (status === "idle") {
-      // dispatch(fetchEmployee(employeeId));
-      // }
-      if (employees.ids.length) {
-        dispatch(setEmployee(employee));
-      } else {
-        dispatch(fetchEmployee(employeeId));
-      }
-    }, [dispatch, employees, employeeId]);
-  
+  useEffect(() => {
+    if (employees.ids.length) {
+      dispatch(setEmployee(employee));
+    } else if (employeeId) {
+      dispatch(fetchEmployee(employeeId));
+    } else {
+      dispatch(fetchEmployee(userId));
+    }
+  }, [dispatch, employees, employeeId, userId]);
 
   return (
     <div className="columns">

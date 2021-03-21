@@ -41,7 +41,10 @@ export const userSlice = createSlice({
     error: null,
   },
   reducers: {
-
+    clearLoginState: (state) => {
+      state.status = "idle";
+      state.error = null;
+    },
   },
   extraReducers: {
     [loginUser.pending]: (state, action) => {
@@ -61,7 +64,7 @@ export const userSlice = createSlice({
   },
 });
 
-export const { clearState } = userSlice.actions;
+export const { clearLoginState } = userSlice.actions;
 
 export const selectUser = state => state.user;
 

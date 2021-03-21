@@ -45,7 +45,7 @@ export const LoginPage = () => {
     // const error = useSelector(state => state.employee.error);
     useEffect(() => {
       if (status === "succeeded") {
-        history.push('/profile?employeeId=' + id);
+        history.push('/profile');
       }
     }, [status]);
 
