@@ -52,11 +52,10 @@ export const MainPage = () => {
 
   return (
     <>
-      {!localStorage.getItem("accessToken") ? (
-        <Redirect to="/login" />
-      ) : (
-        <Router>
-          <div className="columns">
+      {!localStorage.getItem("accessToken")
+        ? <Redirect to="/login" />
+        : <Router>
+            <div className="columns">
             <div className="column is-offset-2 is-8">
               <nav
                 className="navbar is-light"
@@ -161,26 +160,26 @@ export const MainPage = () => {
               </nav>
             </div>
           </div>
-          <div className="columns">
-            <div className="column is-offset-2 is-8">
-              <Switch>
-                <Route exact path="/">
-                  <Profile />
-                </Route>
-                <Route path="/profile">
-                  <Profile />
-                </Route>
-                <Route path="/employees">
-                  <Employees />
-                </Route>
-                <Route path="/departments">
-                  <Departments />
-                </Route>
-              </Switch>
+            <div className="columns">
+              <div className="column is-offset-2 is-8">
+                <Switch>
+                  <Route exact path="/">
+                    <Profile />
+                  </Route>
+                  <Route path="/profile">
+                    <Profile />
+                  </Route>
+                  <Route path="/employees">
+                    <Employees />
+                  </Route>
+                  <Route path="/departments">
+                    <Departments />
+                  </Route>
+                </Switch>
+              </div>
             </div>
-          </div>
-        </Router>
-      )}
+          </Router>
+      }
     </>
   );
 };
