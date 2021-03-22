@@ -53,7 +53,7 @@ export const LoginPage = () => {
   
 
   return (
-    <div className="columns">
+    <div className="columns" style={{"position": "relative", "margin-top": "5rem"}}>
       <div className="column is-offset-4 is-4">
         <form onSubmit={login}>
           <div className="field">
@@ -75,7 +75,10 @@ export const LoginPage = () => {
           </div>
         </form>
         {status === "loading" && (
-          <i className={"fas fa-circle-notch fa-spin fa-4x " + styles.spinner}></i>
+          <>
+            <div className={styles.mask}></div>
+            <i className={"fas fa-circle-notch fa-spin fa-4x " + styles.spinner}></i>
+          </>
         )}
       </div>
     </div>
