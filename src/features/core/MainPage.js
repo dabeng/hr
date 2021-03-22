@@ -18,8 +18,6 @@ import { Profile } from "../profile/Profile";
 import { Employees } from "../employees/Employees";
 import { Departments } from "../departments/Departments";
 
-// import styles from "./MainPage.module.scss";
-
 export const MainPage = () => {
   const dispatch = useDispatch();
   const history = useHistory();
@@ -164,7 +162,7 @@ export const MainPage = () => {
               <div className="column is-offset-2 is-8">
                 <Switch>
                   <Route exact path="/">
-                    <Profile />
+                    <Redirect to="/profile" />
                   </Route>
                   <Route path="/profile">
                     <Profile />
