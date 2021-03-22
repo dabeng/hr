@@ -24,7 +24,7 @@ export const MainPage = () => {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const { name: username, email } = useSelector(selectUser);
+  const { name: username, email, status } = useSelector(selectUser);
   const [showMenu, setShowMenu] = useState(false);
 
   const toggleAccountMenu = e => {
@@ -38,10 +38,17 @@ export const MainPage = () => {
   };
 
   useEffect(() => {
-    if (!username) {
+    if (!username) { // 如果当前登陆用户信息不存在，则根据浏览器里的缓存token去服务器端取一次
       dispatch(fetchUserBytoken(localStorage.getItem('accessToken')));
     }
   }, []);
+
+  useEffect(() => {
+    if (status === "failed") {
+      dispatch(clearUserState());
+      history.push('/login');
+    }
+  }, [status]);
 
   return (
     <>

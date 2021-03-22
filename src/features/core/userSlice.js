@@ -29,6 +29,7 @@ export const loginUser = createAsyncThunk('users/login', async ({ email, passwor
   }
 });
 
+// fetch user info when user bypasses login process and directly accesses any procted pages
 export const fetchUserBytoken = createAsyncThunk('users/fetchUserByToken', async (token, thunkAPI) => {
   try {
     const response = await fetch('http://localhost:3001/user', {
