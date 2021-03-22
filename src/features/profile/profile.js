@@ -37,11 +37,11 @@ export const Profile = () => {
   const employee = useSelector(employees.ids.length && employeeId ? state => selectEmployeeById(state, employeeId) : selectEmployee);
 
   useEffect(() => {
-    if (employees.ids.length) {
+    if (employees.ids.length && employeeId) {
       dispatch(setEmployee(employee));
     } else if (employeeId) {
       dispatch(fetchEmployee(employeeId));
-    } else {
+    } else if (userId) {
       dispatch(fetchEmployee(userId));
     }
   }, [dispatch, employees, employeeId, userId]);

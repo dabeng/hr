@@ -13,7 +13,7 @@ import {
 } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 
-import { loginUser, selectUser, clearLoginState } from "./userSlice";
+import { loginUser, fetchUserBytoken, selectUser, clearUserState } from "./userSlice";
 import { Profile } from "../profile/Profile";
 import { Employees } from "../employees/Employees";
 import { Departments } from "../departments/Departments";
@@ -24,7 +24,7 @@ export const MainPage = () => {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const { id: userId, name: username, email } = useSelector(selectUser);
+  const { name: username, email } = useSelector(selectUser);
   const [showMenu, setShowMenu] = useState(false);
 
   const toggleAccountMenu = e => {
@@ -33,9 +33,15 @@ export const MainPage = () => {
 
   const logout = () => {
     localStorage.removeItem('accessToken');
-    dispatch(clearLoginState());
+    dispatch(clearUserState());
     history.push('/login');
   };
+
+  useEffect(() => {
+    if (!username) {
+      dispatch(fetchUserBytoken(localStorage.getItem('accessToken')));
+    }
+  }, []);
 
   return (
     <>

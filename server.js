@@ -23,7 +23,7 @@ server.post('/login', (req, res) => {
   const user = db.employees.find(u => { return u.email === email && u.password === password });
   if (user) {
     // Generate an access token
-    const token = jwt.sign({ role: user.role }, accessTokenSecret, { expiresIn: '1h' });
+    const token = jwt.sign({ id:user.id, role: user.role }, accessTokenSecret, { expiresIn: '1h' });
     res.json({
       token,
       user
@@ -32,6 +32,8 @@ server.post('/login', (req, res) => {
     res.send('Username or password incorrect');
   }
 });
+
+
 
 server.use((req, res, next) => {
   const authHeader = req.headers.authorization;
@@ -47,6 +49,15 @@ server.use((req, res, next) => {
     });
   } else {
     res.sendStatus(401);
+  }
+});
+
+server.get('/user', (req, res) => {
+  const user = db.employees.find(u => { return u.id === req.user.id });
+  if (user) {
+    res.json(user);
+  } else {
+    res.json({});
   }
 });
 

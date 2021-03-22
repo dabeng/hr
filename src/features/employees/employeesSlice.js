@@ -27,7 +27,11 @@ export const fetchEmployees = createAsyncThunk("employees/fetchEmployees", async
   if (keyword) {
     params.append("q", keyword);
   }
-  let response = await fetch("http://localhost:3001/employees?" + params.toString());
+  let response = await fetch("http://localhost:3001/employees?" + params.toString(),{
+    headers: {
+      "Authorization": "Bearer " + localStorage.getItem('accessToken')
+    }
+  });
   let employees = await response.json();
   employees.total = parseInt(response.headers.get('X-Total-Count'));
   return employees;

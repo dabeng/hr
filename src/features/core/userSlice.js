@@ -24,9 +24,26 @@ export const loginUser = createAsyncThunk('users/login', async ({ email, passwor
     } else {
       return thunkAPI.rejectWithValue(data);
     }
-  } catch (e) {
-    console.log('Error', e.response.data);
-    thunkAPI.rejectWithValue(e.response.data);
+  } catch (err) {
+    thunkAPI.rejectWithValue(err);
+  }
+});
+
+export const fetchUserBytoken = createAsyncThunk('users/fetchUserByToken', async (token, thunkAPI) => {
+  try {
+    const response = await fetch('http://localhost:3001/user', {
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    });
+    let data = await response.json();
+    if (response.status === 200) {
+      return { ...data };
+    } else {
+      return thunkAPI.rejectWithValue(data);
+    }
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err);
   }
 });
 
@@ -41,7 +58,7 @@ export const userSlice = createSlice({
     error: null,
   },
   reducers: {
-    clearLoginState: (state) => {
+    clearUserState: (state) => {
       state.status = "idle";
       state.error = null;
     },
@@ -60,11 +77,25 @@ export const userSlice = createSlice({
     [loginUser.rejected]: (state, action) => {
       state.status = "failed";
       state.error = action.payload;
+    },
+    [fetchUserBytoken.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [fetchUserBytoken.fulfilled]: (state, action) => {
+      state.id = action.payload.id;
+      state.role = action.payload.role;
+      state.name = action.payload.name;
+      state.email = action.payload.email;
+      state.status = "succeeded";
+    },
+    [fetchUserBytoken.rejected]: (state, action) => {
+      state.status = "failed";
+      state.error = action.payload;
     }
   },
 });
 
-export const { clearLoginState } = userSlice.actions;
+export const { clearUserState } = userSlice.actions;
 
 export const selectUser = state => state.user;
 
