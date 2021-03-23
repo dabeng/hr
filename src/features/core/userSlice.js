@@ -16,8 +16,7 @@ export const loginUser = createAsyncThunk('users/login', async ({ email, passwor
         }),
       }
     );
-    let data = await response.json();
-    console.log('response', data);
+    const data = await response.json();
     if (response.status === 200) {
       localStorage.setItem('accessToken', data.token);
       return data.user;
@@ -37,9 +36,9 @@ export const fetchUserBytoken = createAsyncThunk('users/fetchUserByToken', async
         Authorization: "Bearer " + token,
       },
     });
-    let data = await response.json();
+    const data = await response.json();
     if (response.status === 200) {
-      return { ...data };
+      return data;
     } else {
       return thunkAPI.rejectWithValue(data);
     }
