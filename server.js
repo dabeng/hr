@@ -29,7 +29,7 @@ server.post('/login', (req, res) => {
       user
     });
   } else {
-    res.send('Username or password incorrect');
+    res.status(404).send({ message: 'email or password incorrect' });
   }
 });
 

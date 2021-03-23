@@ -47,7 +47,7 @@ export const fetchUserBytoken = createAsyncThunk('users/fetchUserByToken', async
     return thunkAPI.rejectWithValue(err);
   }
 });
-
+// 权限验证相关的state可以放在一个slice中，包括注册，登陆，用token取用户信息等等
 export const userSlice = createSlice({
   name: 'user',
   initialState: {
