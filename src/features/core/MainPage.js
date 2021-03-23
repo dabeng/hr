@@ -36,7 +36,8 @@ export const MainPage = () => {
   };
 
   useEffect(() => {
-    if (!username) { // 如果当前登陆用户信息不存在，则根据浏览器里的缓存token去服务器端取一次
+    // 只有当缓存的token过期时，才去服务器端取一次
+    if (localStorage.getItem('accessToken') && !username) {
       dispatch(fetchUserBytoken(localStorage.getItem('accessToken')));
     }
   }, []);
@@ -52,7 +53,7 @@ export const MainPage = () => {
     <>
       {!localStorage.getItem("accessToken")
         ? <Redirect to="/login" />
-        : <Router>
+        : <Router> {/* protected routes */}
             <div className="columns">
             <div className="column is-offset-2 is-8">
               <nav

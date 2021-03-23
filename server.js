@@ -9,7 +9,7 @@ const accessTokenSecret = 'youraccesstokensecret';
 // Set default middlewares (logger, static, cors and no-cache)
 server.use(middlewares);
 
-// Add delay to responses(ms)
+// Add delay to every response to mimic real-world behaviors
 server.use(function(req, res, next){
   setTimeout(next, 1000);
 });
@@ -34,7 +34,7 @@ server.post('/login', (req, res) => {
 });
 
 
-
+// create the Express middleware that handles the authentication process
 server.use((req, res, next) => {
   const authHeader = req.headers.authorization;
 
@@ -85,20 +85,9 @@ router.render = (req, res) => {
   res.jsonp(res.locals.data);
 };
 
-
-
 // Add custom routes before JSON Server router
 server.get("/echo", (req, res) => {
   res.jsonp(db.employees[1]);
-});
-
-// To handle POST, PUT and PATCH you need to use a body-parser
-// You can use the one used by JSON Server
-server.use(jsonServer.bodyParser);
-server.use((req, res, next) => {
-
-  // Continue to JSON Server router
-  next();
 });
 
 // Use default router
