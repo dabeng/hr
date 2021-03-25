@@ -29,9 +29,6 @@ function App() {
         <Route path="/">
           <MainPage />
         </Route>
-        {/* <Route exact path="/">
-          <Profile />
-        </Route> */}
       </Switch>
     </Router>
   );
