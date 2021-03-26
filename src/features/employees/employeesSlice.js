@@ -5,6 +5,8 @@ import {
   createEntityAdapter,
 } from "@reduxjs/toolkit";
 
+import userAPI from "../core/userAPI";
+
 const employeesAdapter = createEntityAdapter({
   sortComparer: (a, b) => {
     // descending order according to joined date
@@ -17,24 +19,27 @@ const initialState = employeesAdapter.getInitialState({
   error: null,
 });
 
-export const fetchEmployees = createAsyncThunk("employees/fetchEmployees", async ({page, pageSize, keyword}) => {
-  const params = new URLSearchParams({
-    "_sort": "joined_date",
-    "_order": "desc",
-    "_page": page,
-    "_limit": pageSize
-  });
-  if (keyword) {
-    params.append("q", keyword);
-  }
-  let response = await fetch("http://localhost:3001/employees?" + params.toString(),{
-    headers: {
-      "Authorization": "Bearer " + localStorage.getItem('accessToken')
+export const fetchEmployees = createAsyncThunk("employees/fetchEmployees", async ({page, pageSize, keyword}, thunkAPI) => {
+  try {
+    const params = new URLSearchParams({
+      "_sort": "joined_date",
+      "_order": "desc",
+      "_page": page,
+      "_limit": pageSize
+    });
+    if (keyword) {
+      params.append("q", keyword);
     }
-  });
-  let employees = await response.json();
-  employees.total = parseInt(response.headers.get('X-Total-Count'));
-  return employees;
+    const response = await userAPI.fetchEmployees("http://localhost:3001/employees", params, localStorage.getItem('accessToken'));
+    if (response.status === 200) {
+      response.data.total = parseInt(response.headers['x-total-count']);
+      return response.data;
+    } else {
+      return thunkAPI.rejectWithValue(response.data);
+    }
+  } catch (err) {
+    thunkAPI.rejectWithValue(err.response.data);
+  }
 });
 
 const employeesSlice = createSlice({

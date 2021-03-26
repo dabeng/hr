@@ -1,49 +1,31 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import userAPI from './userAPI';
 
 export const loginUser = createAsyncThunk('users/login', async ({ email, password }, thunkAPI) => {
   try {
-    const response = await fetch(
-      'http://localhost:3001/login',
-      {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email,
-          password
-        }),
-      }
-    );
-    const data = await response.json();
+    const response = await userAPI.loginUser("http://localhost:3001/login", {email, password});
     if (response.status === 200) {
-      localStorage.setItem('accessToken', data.token);
-      return data.user;
+      localStorage.setItem('accessToken', response.data.token);
+      return response.data.user;
     } else {
-      return thunkAPI.rejectWithValue(data);
+      return thunkAPI.rejectWithValue(response.data);
     }
   } catch (err) {
-    thunkAPI.rejectWithValue(err);
+    thunkAPI.rejectWithValue(err.response.data);
   }
 });
 
 // fetch user info when user bypasses login process and directly accesses any procted pages
 export const fetchUserBytoken = createAsyncThunk('users/fetchUserByToken', async (token, thunkAPI) => {
   try {
-    const response = await fetch('http://localhost:3001/user', {
-      headers: {
-        Authorization: "Bearer " + token,
-      },
-    });
-    const data = await response.json();
+    const response = await userAPI.fetchUserByToken("http://localhost:3001/user", token);
     if (response.status === 200) {
-      return data;
+      return response.data;
     } else {
-      return thunkAPI.rejectWithValue(data);
+      return thunkAPI.rejectWithValue(response.data);
     }
   } catch (err) {
-    return thunkAPI.rejectWithValue(err);
+    return thunkAPI.rejectWithValue(err.response.data);
   }
 });
 // 权限验证相关的state可以放在一个slice中，包括注册，登陆，用token取用户信息等等
