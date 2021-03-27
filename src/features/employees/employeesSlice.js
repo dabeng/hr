@@ -5,7 +5,7 @@ import {
   createEntityAdapter,
 } from "@reduxjs/toolkit";
 
-import userAPI from "../core/userAPI";
+import clientAPI from "../core/clientAPI";
 
 const employeesAdapter = createEntityAdapter({
   sortComparer: (a, b) => {
@@ -30,7 +30,7 @@ export const fetchEmployees = createAsyncThunk("employees/fetchEmployees", async
     if (keyword) {
       params.append("q", keyword);
     }
-    const response = await userAPI.fetchEmployees("http://localhost:3001/employees", params, localStorage.getItem('accessToken'));
+    const response = await clientAPI.fetchEmployees("http://localhost:3001/employees", params, localStorage.getItem('accessToken'));
     if (response.status === 200) {
       response.data.total = parseInt(response.headers['x-total-count']);
       return response.data;

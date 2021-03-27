@@ -5,6 +5,8 @@ const router = jsonServer.router(db);
 const middlewares = jsonServer.defaults();
 const jwt = require('jsonwebtoken');
 const accessTokenSecret = 'youraccesstokensecret';
+const refreshTokenSecret = 'yourrefreshtokensecret';
+const refreshTokens = [];
 
 // Set default middlewares (logger, static, cors and no-cache)
 server.use(middlewares);
@@ -23,14 +25,41 @@ server.post('/login', (req, res) => {
   const user = db.employees.find(u => { return u.email === email && u.password === password });
   if (user) {
     // Generate an access token
-    const token = jwt.sign({ id:user.id, role: user.role }, accessTokenSecret, { expiresIn: '1h' });
+    const accessToken = jwt.sign({ id: user.id, role: user.role }, accessTokenSecret, { expiresIn: '1m' });
+    const refreshToken = jwt.sign({ id: user.id, role: user.role }, refreshTokenSecret);
+    refreshTokens.push(refreshToken);
     res.json({
-      token,
+      accessToken,
+      refreshToken,
       user
     });
   } else {
     res.status(404).send({ message: 'email or password incorrect' });
   }
+});
+
+server.post('/token', (req, res) => {
+  const { refreshToken } = req.body;
+
+  if (!refreshToken) {
+      return res.sendStatus(401);
+  }
+
+  if (!refreshTokens.includes(refreshToken)) {
+      return res.sendStatus(403);
+  }
+
+  jwt.verify(refreshToken, refreshTokenSecret, (err, userInfo) => {
+      if (err) {
+          return res.sendStatus(403);
+      }
+
+      const accessToken = jwt.sign({ id: userInfo.id, role: userInfo.role }, accessTokenSecret, { expiresIn: '1m' });
+
+      res.json({
+          accessToken
+      });
+  });
 });
 
 
@@ -41,6 +70,9 @@ server.use((req, res, next) => {
   if (authHeader) {
     jwt.verify(authHeader.split(' ')[1], accessTokenSecret, (err, userInfo) => {
       if (err) {
+        if (err.name === 'TokenExpiredError') {
+          return res.sendStatus(401);
+        }
         return res.sendStatus(403);
       }
 

@@ -5,6 +5,8 @@ import {
   createEntityAdapter,
 } from "@reduxjs/toolkit";
 
+import clientAPI from "../core/clientAPI";
+
 const departmentsAdapter = createEntityAdapter({
   sortComparer: (a, b) => {
     return b.name.localeCompare(a.name);
@@ -16,10 +18,30 @@ const initialState = departmentsAdapter.getInitialState({
   error: null,
 });
 
-export const fetchDepartments = createAsyncThunk("departments/fetchDepartments", async () => {
-  let response = await fetch("http://localhost:3001/departments");
-  let departments = await response.json();
-  return departments;
+export const fetchDepartments = createAsyncThunk("departments/fetchDepartments", async ({page, pageSize, keyword}, thunkAPI) => {
+  // let response = await fetch("http://localhost:3001/departments");
+  // let departments = await response.json();
+  // return departments;
+  try {
+    const params = new URLSearchParams({
+      "_sort": "establish_date",
+      "_order": "desc",
+      "_page": page,
+      "_limit": pageSize
+    });
+    if (keyword) {
+      params.append("q", keyword);
+    }
+    const response = await clientAPI.fetchDepartments("http://localhost:3001/departments", params, localStorage.getItem('accessToken'));
+    if (response.status === 200) {
+      response.data.total = parseInt(response.headers['x-total-count']);
+      return response.data;
+    } else {
+      return thunkAPI.rejectWithValue(response.data);
+    }
+  } catch (err) {
+    thunkAPI.rejectWithValue(err.response.data);
+  }
 });
 
 

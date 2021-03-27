@@ -1,11 +1,12 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import userAPI from './userAPI';
+import clientAPI from './clientAPI';
 
 export const loginUser = createAsyncThunk('users/login', async ({ email, password }, thunkAPI) => {
   try {
-    const response = await userAPI.loginUser("http://localhost:3001/login", {email, password});
+    const response = await clientAPI.loginUser("http://localhost:3001/login", {email, password});
     if (response.status === 200) {
-      localStorage.setItem('accessToken', response.data.token);
+      localStorage.setItem('accessToken', response.data.accessToken);
+      localStorage.setItem('refreshToken', response.data.refreshToken);
       return response.data.user;
     } else {
       return thunkAPI.rejectWithValue(response.data);
@@ -18,7 +19,7 @@ export const loginUser = createAsyncThunk('users/login', async ({ email, passwor
 // fetch user info when user bypasses login process and directly accesses any procted pages
 export const fetchUserBytoken = createAsyncThunk('users/fetchUserByToken', async (token, thunkAPI) => {
   try {
-    const response = await userAPI.fetchUserByToken("http://localhost:3001/user", token);
+    const response = await clientAPI.fetchUserByToken("http://localhost:3001/user", token);
     if (response.status === 200) {
       return response.data;
     } else {
