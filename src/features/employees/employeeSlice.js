@@ -8,13 +8,6 @@ import {
 import clientAPI from "../core/clientAPI";
 
 export const fetchEmployee = createAsyncThunk("employees/fetchEmployee", async (employeeId, thunkAPI) => {
-  // let response = await fetch("http://localhost:3001/employees/" + employeeId, {
-  //   headers: {
-  //     "Authorization": "Bearer " + localStorage.getItem('accessToken')
-  //   }
-  // });
-  // let employee = await response.json();
-  // return employee;
   try {
     const response = await clientAPI.fetchEmployee("http://localhost:3001/employees/" + employeeId, localStorage.getItem('accessToken'));
     if (response.status === 200) {

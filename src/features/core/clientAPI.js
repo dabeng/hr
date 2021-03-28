@@ -4,6 +4,9 @@ const clientAPI = {
   loginUser(url, userInfo) {
     return axios.post(url, userInfo);
   },
+  logoutUser(url, refreshToken) {
+    return axios.post(url, { refreshToken });
+  },
   getNewToken(url, refreshToken) {
     return axios.post(url, { refreshToken });
   },

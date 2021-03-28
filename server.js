@@ -25,7 +25,7 @@ server.post('/login', (req, res) => {
   const user = db.employees.find(u => { return u.email === email && u.password === password });
   if (user) {
     // Generate an access token
-    const accessToken = jwt.sign({ id: user.id, role: user.role }, accessTokenSecret, { expiresIn: '1m' });
+    const accessToken = jwt.sign({ id: user.id, role: user.role }, accessTokenSecret, { expiresIn: '1h' });
     const refreshToken = jwt.sign({ id: user.id, role: user.role }, refreshTokenSecret);
     refreshTokens.push(refreshToken);
     res.json({
@@ -35,6 +35,17 @@ server.post('/login', (req, res) => {
     });
   } else {
     res.status(404).send({ message: 'email or password incorrect' });
+  }
+});
+
+server.post('/logout', (req, res) => {
+  const { refreshToken } = req.body;
+  const index = refreshTokens.indexOf(refreshToken);
+  if (index === -1) {
+    res.send("Loutout failed");
+  } else {
+    refreshTokens.splice(index, 1);
+    res.send("Logout successful");
   }
 });
 
@@ -54,14 +65,13 @@ server.post('/token', (req, res) => {
           return res.sendStatus(403);
       }
 
-      const accessToken = jwt.sign({ id: userInfo.id, role: userInfo.role }, accessTokenSecret, { expiresIn: '1m' });
+      const accessToken = jwt.sign({ id: userInfo.id, role: userInfo.role }, accessTokenSecret, { expiresIn: '1h' });
 
       res.json({
           accessToken
       });
   });
 });
-
 
 // create the Express middleware that handles the authentication process
 server.use((req, res, next) => {

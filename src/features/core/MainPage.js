@@ -13,6 +13,7 @@ import {
 } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 
+import clientAPI from './clientAPI';
 import { loginUser, fetchUserBytoken, selectUser, clearUserState } from "./userSlice";
 import { Profile } from "../profile/Profile";
 import { Employees } from "../employees/Employees";
@@ -29,14 +30,25 @@ export const MainPage = () => {
     setShowMenu(prev => !prev);
   };
 
-  const logout = () => {
-    localStorage.removeItem('accessToken');
-    dispatch(clearUserState());
-    history.push('/login');
+  const logout = async () => {
+    try {
+    const response = await clientAPI.logoutUser("http://localhost:3001/logout", localStorage.getItem('refreshToken'));
+
+      if (response.status === 200) {
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        dispatch(clearUserState());
+        history.push('/login');
+      } else {
+        console.log("failed to logout");
+      }
+    } catch (err) {
+      console.log("failed to logout");
+    }
   };
 
   useEffect(() => {
-    // 只有当缓存的token过期时，才去服务器端取一次
+    // render account menu with user info
     if (localStorage.getItem('accessToken') && !username) {
       dispatch(fetchUserBytoken(localStorage.getItem('accessToken')));
     }

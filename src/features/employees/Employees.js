@@ -51,7 +51,6 @@ export const Employees = () => {
     }
   };
 
-
   return (
     <div>
       <div className="columns">
