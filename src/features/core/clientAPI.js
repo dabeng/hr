@@ -1,38 +1,34 @@
 import axios from "axios";
 
+// Set config defaults when creating the instance
+export const instance = axios.create({
+  baseURL: 'http://localhost:3001',
+  headers: {
+    Authorization: localStorage.getItem('accessToken') ? `Bearer ${localStorage.getItem('accessToken')}` : ''
+  }
+});
+
 const clientAPI = {
   loginUser(url, userInfo) {
-    return axios.post(url, userInfo);
+    return instance.post(url, userInfo);
   },
   logoutUser(url, refreshToken) {
-    return axios.post(url, { refreshToken });
+    return instance.post(url, { refreshToken });
   },
   getNewToken(url, refreshToken) {
-    return axios.post(url, { refreshToken });
+    return instance.post(url, { refreshToken });
   },
-  fetchUserByToken(url, token) {
-    const headers = {
-      Authorization: "Bearer " + token,
-    };
-    return axios.get(url, { headers });
+  fetchUserByToken(url) {
+    return instance.get(url);
   },
-  fetchEmployees(url, params, token) {
-    const headers = {
-      Authorization: "Bearer " + token,
-    };
-    return axios.get(url, { headers, params });
+  fetchEmployees(url, params) {
+    return instance.get(url, { params });
   },
-  fetchEmployee(url, token) {
-    const headers = {
-      Authorization: "Bearer " + token,
-    };
-    return axios.get(url, { headers });
+  fetchEmployee(url) {
+    return instance.get(url);
   },
-  fetchDepartments(url, params, token) {
-    const headers = {
-      Authorization: "Bearer " + token,
-    };
-    return axios.get(url, { headers, params });
+  fetchDepartments(url, params) {
+    return instance.get(url, { params });
   }
 };
 

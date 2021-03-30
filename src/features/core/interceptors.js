@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-import clientAPI from './clientAPI';
+import clientAPI, { instance } from './clientAPI';
 
-axios.interceptors.response.use(null, (error) => {
+instance.interceptors.response.use(null, (error) => {
 	if (
 		error.response && error.response.status === 401 && 
 		error.config && !error.config.__isRetry && // TODO: what is __isRetry
@@ -10,7 +10,7 @@ axios.interceptors.response.use(null, (error) => {
 	) {
     return new Promise(async (resolve, reject) => {
       try {
-        const response = await clientAPI.getNewToken("http://localhost:3001/token", localStorage.getItem('refreshToken'));
+        const response = await clientAPI.getNewToken("/token", localStorage.getItem('refreshToken'));
         localStorage.setItem('accessToken', response.data.accessToken);
         error.config.headers.Authorization = 'Bearer ' + response.data.accessToken;
         // Repeat the initial request

@@ -9,7 +9,7 @@ import clientAPI from "../core/clientAPI";
 
 export const fetchEmployee = createAsyncThunk("employees/fetchEmployee", async (employeeId, thunkAPI) => {
   try {
-    const response = await clientAPI.fetchEmployee("http://localhost:3001/employees/" + employeeId, localStorage.getItem('accessToken'));
+    const response = await clientAPI.fetchEmployee("/employees/" + employeeId);
     if (response.status === 200) {
       return response.data;
     } else {
