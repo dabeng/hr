@@ -15,6 +15,9 @@ import {
   selectEmployeeIds,
   selectEmployeeById,
 } from "../employeesSlice";
+import {
+  selectEmployee,
+} from "../employeeSlice";
 import { fetchDepartments } from "../../departments/departmentsSlice";
 import { EmployeeRow } from "./EmployeeRow";
 
@@ -25,6 +28,7 @@ export const EmployeeTableView = (props) => {
   const [currentPage, setCurrentPage] = useState(1);
 
   const dispatch = useDispatch();
+  const activeEmployee = useSelector(selectEmployee);
   const orderedEmployeeIds = useSelector(selectEmployeeIds);
 
   const status = useSelector((state) => state.employees.status);
@@ -38,9 +42,14 @@ export const EmployeeTableView = (props) => {
 
   useEffect(() => {
     // if (status === "idle") {
-    dispatch(fetchEmployees({page: currentPage, pageSize: PAGE_SIZE, keyword: props.keyword}));
+    dispatch(fetchEmployees({
+      page: currentPage,
+      pageSize: PAGE_SIZE,
+      keyword: props.keyword,
+      activeEmployee: activeEmployee.value.id
+    }));
     // }
-  }, [dispatch, currentPage]);
+  }, [dispatch, currentPage, activeEmployee.value.id]);
 
   const previousPage = () => {
     setCurrentPage(currentPage - 1);

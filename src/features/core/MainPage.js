@@ -50,7 +50,7 @@ export const MainPage = () => {
   useEffect(() => {
     // render account menu with user info
     if (localStorage.getItem('accessToken') && !username) {
-      dispatch(fetchUserBytoken(localStorage.getItem('accessToken')));
+      dispatch(fetchUserBytoken());
     }
   }, []);
 

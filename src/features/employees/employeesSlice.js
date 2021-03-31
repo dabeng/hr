@@ -19,16 +19,19 @@ const initialState = employeesAdapter.getInitialState({
   error: null,
 });
 
-export const fetchEmployees = createAsyncThunk("employees/fetchEmployees", async ({page, pageSize, keyword}, thunkAPI) => {
+export const fetchEmployees = createAsyncThunk("employees/fetchEmployees", async ({page, pageSize, keyword, activeEmployee}, thunkAPI) => {
   try {
     const params = new URLSearchParams({
-      "_sort": "joined_date",
-      "_order": "desc",
+      // "_sort": "joined_date",
+      // "_order": "desc",
       "_page": page,
       "_limit": pageSize
     });
     if (keyword) {
       params.append("q", keyword);
+    }
+    if (activeEmployee) {
+      params.append("activeEmployee", activeEmployee);
     }
     const response = await clientAPI.fetchEmployees("/employees", params);
     if (response.status === 200) {
