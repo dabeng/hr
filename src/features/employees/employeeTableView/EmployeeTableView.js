@@ -18,6 +18,7 @@ import {
 import {
   selectEmployee,
 } from "../employeeSlice";
+import { selectUser } from "../../core/userSlice";
 import { fetchDepartments } from "../../departments/departmentsSlice";
 import { EmployeeRow } from "./EmployeeRow";
 
@@ -28,10 +29,13 @@ export const EmployeeTableView = (props) => {
   const [currentPage, setCurrentPage] = useState(1);
 
   const dispatch = useDispatch();
+  const { id: userId } = useSelector(selectUser);
   const activeEmployee = useSelector(selectEmployee);
   const orderedEmployeeIds = useSelector(selectEmployeeIds);
 
-  const status = useSelector((state) => state.employees.status);
+  const status = useSelector((state) => {
+    return state.employees.status
+  });
   const error = useSelector((state) => state.employees.error);
   const total = useSelector((state) => state.employees.total);
 
@@ -39,6 +43,7 @@ export const EmployeeTableView = (props) => {
 
   let isNextBtnDisabled = currentPage * PAGE_SIZE >= total;
   let isPrevBtnDisabled = currentPage === 1;
+  let activeEmployeeId = activeEmployee.value ? activeEmployee.value.id : userId;
 
   useEffect(() => {
     // if (status === "idle") {
@@ -46,10 +51,10 @@ export const EmployeeTableView = (props) => {
       page: currentPage,
       pageSize: PAGE_SIZE,
       keyword: props.keyword,
-      activeEmployee: activeEmployee.value.id
+      activeEmployee: activeEmployeeId
     }));
     // }
-  }, [dispatch, currentPage, activeEmployee.value.id]);
+  }, [dispatch, currentPage, activeEmployeeId]);
 
   const previousPage = () => {
     setCurrentPage(currentPage - 1);

@@ -173,6 +173,7 @@ export const MainPage = () => {
           </div>
             <div className="columns">
               <div className="column is-offset-2 is-8">
+              { status === "succeeded" &&
                 <Switch>
                   <Route exact path="/">
                     <Redirect to="/profile" />
@@ -187,6 +188,7 @@ export const MainPage = () => {
                     <Departments />
                   </Route>
                 </Switch>
+              }
               </div>
             </div>
           </Router>

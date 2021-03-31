@@ -9,7 +9,7 @@ import {
 } from "../employees/employeesSlice";
 
 
-export const Pagination = ({keyword}) => {
+export const Pagination = ({keyword, activeEmployeeId}) => {
   const [currentPage, setCurrentPage] = useState(1);
   const status = useSelector((state) => state.employees.status);
   const dispatch = useDispatch();
@@ -22,9 +22,9 @@ export const Pagination = ({keyword}) => {
 
   useEffect(() => {
     // if (status === "idle") {
-    dispatch(fetchEmployees({page: currentPage, pageSize: PAGE_SIZE, keyword}));
+    dispatch(fetchEmployees({page: currentPage, pageSize: PAGE_SIZE, keyword, activeEmployee: activeEmployeeId}));
     // }
-  }, [dispatch, currentPage]);
+  }, [currentPage, keyword, activeEmployeeId]);
 
   const previousPage = () => {
     setCurrentPage(currentPage - 1);

@@ -137,15 +137,6 @@ server.get("/employees", (req, res, next) => {
 
 router.render = (req, res) => {
   if (req.method === "GET") {
-    if (req.path === "/employees") {
-      res.locals.data.forEach(e1 => {
-        e1.superior_name = db.employees.find(e2 => e2.id === e1.superior).name;
-        e1.department_name = db.departments.find(d => d.id === e1.department).name;
-        if (e1.inferiors && e1.inferiors.length) {
-          e1.inferior_names = e1.inferiors.map(inferiorId => db.employees.find(e2 => e2.id === inferiorId).name);
-        }
-      });
-    }
 
     if (req.path === "/employees/" + res.locals.data.id) {
       const employee = res.locals.data;
@@ -154,9 +145,10 @@ router.render = (req, res) => {
       if (employee.inferiors && employee.inferiors.length) {
         employee.inferior_names = employee.inferiors.map(inferiorId => db.employees.find(e => e.id === inferiorId).name);
       }
+      res.json(res.locals.data);
     }
   }
-  res.jsonp(res.locals.data);
+  
 };
 
 // Use default router

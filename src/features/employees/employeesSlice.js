@@ -29,8 +29,7 @@ export const fetchEmployees = createAsyncThunk("employees/fetchEmployees", async
     });
     if (keyword) {
       params.append("q", keyword);
-    }
-    if (activeEmployee) {
+    } else if (activeEmployee) {
       params.append("activeEmployee", activeEmployee);
     }
     const response = await clientAPI.fetchEmployees("/employees", params);

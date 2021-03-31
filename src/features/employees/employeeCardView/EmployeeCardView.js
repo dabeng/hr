@@ -6,15 +6,22 @@ import {
   selectEmployeeIds,
   selectEmployeeById,
 } from "../employeesSlice";
+import {
+  selectEmployee,
+} from "../employeeSlice";
+import { selectUser } from "../../core/userSlice";
 import { EmployeeCard } from "./EmployeeCard";
 import { Pagination } from "../../shared/Pagination";
 
 import styles from "./EmployeeCardView.module.scss";
 
 export const EmployeeCardView = ({keyword}) => {
+  const { id: userId } = useSelector(selectUser);
+  const activeEmployee = useSelector(selectEmployee);
   const orderedEmployeeIds = useSelector(selectEmployeeIds);
   const status = useSelector((state) => state.employees.status);
   const error = useSelector((state) => state.employees.error);
+  let activeEmployeeId = activeEmployee.value ? activeEmployee.value.id : userId;
 
   return (
     <div>
@@ -36,7 +43,7 @@ export const EmployeeCardView = ({keyword}) => {
       {status === "failed" && (
         <h3>{error}</h3>
       )}
-      <Pagination keyword={keyword}/>
+      <Pagination keyword={keyword} activeEmployeeId={activeEmployeeId}/>
     </div>
   );
 };
