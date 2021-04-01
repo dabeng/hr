@@ -105,7 +105,7 @@ server.get('/user', (req, res) => {
 
 // Add custom routes before JSON Server router
 server.get("/employees", (req, res, next) => {
-  if (req._parsedUrl.query.includes("activeEmployee")) {
+  if (req.query.activeEmployee) {
     const data = [];
     const beginIndex = (parseInt(req.query._page) - 1) * parseInt(req.query._limit);
     const endIndex = beginIndex + parseInt(req.query._limit);
@@ -117,9 +117,11 @@ server.get("/employees", (req, res, next) => {
     superior.inferiors.forEach(inferiorId => {
       data.push(db.employees.find(e => e.id === inferiorId));
     });
-    activeEmployee.inferiors.forEach(inferiorId => {
-      data.push(db.employees.find(e => e.id === inferiorId));
-    });
+    if (activeEmployee.inferiors) {
+      activeEmployee.inferiors.forEach(inferiorId => {
+        data.push(db.employees.find(e => e.id === inferiorId));
+      });
+    }
     res.header('X-Total-Count', data.length);
     res.header('Access-Control-Expose-Headers', 'X-Total-Count');
     const singPageData = data.slice(beginIndex, endIndex);
@@ -137,6 +139,16 @@ server.get("/employees", (req, res, next) => {
 
 router.render = (req, res) => {
   if (req.method === "GET") {
+    if (req.path === "/employees" && !req.query.activeEmployee) {
+      res.locals.data.forEach(e1 => {
+        e1.superior_name = db.employees.find(e2 => e2.id === e1.superior).name;
+        e1.department_name = db.departments.find(d => d.id === e1.department).name;
+        if (e1.inferiors && e1.inferiors.length) {
+          e1.inferior_names = e1.inferiors.map(inferiorId => db.employees.find(e2 => e2.id === inferiorId).name);
+        }
+      });
+      res.json(res.locals.data);
+    }
 
     if (req.path === "/employees/" + res.locals.data.id) {
       const employee = res.locals.data;
@@ -148,7 +160,6 @@ router.render = (req, res) => {
       res.json(res.locals.data);
     }
   }
-  
 };
 
 // Use default router

@@ -24,7 +24,7 @@ export const Pagination = ({keyword, activeEmployeeId}) => {
     // if (status === "idle") {
     dispatch(fetchEmployees({page: currentPage, pageSize: PAGE_SIZE, keyword, activeEmployee: activeEmployeeId}));
     // }
-  }, [currentPage, keyword, activeEmployeeId]);
+  }, [currentPage, activeEmployeeId]);
 
   const previousPage = () => {
     setCurrentPage(currentPage - 1);

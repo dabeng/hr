@@ -173,7 +173,7 @@ export const MainPage = () => {
           </div>
             <div className="columns">
               <div className="column is-offset-2 is-8">
-              { status === "succeeded" &&
+              { username && // 这里没有用status===“succeeded”，是因为触发fetchUserByToken，成功获取登陆用户信息后，status会恢复初始值“idle”
                 <Switch>
                   <Route exact path="/">
                     <Redirect to="/profile" />

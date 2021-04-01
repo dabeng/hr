@@ -42,6 +42,7 @@ export const userSlice = createSlice({
   },
   reducers: {
     clearUserState: (state) => {
+      // 注意这里只恢复Ajax请求相关的初始值
       state.status = "idle";
       state.error = null;
     },

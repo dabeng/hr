@@ -46,6 +46,7 @@ export const Employees = () => {
   };
 
   const handleKeyPress = e => {
+    var a = 1;
     if (e.key === 'Enter' && keyword.trim().length) {
       search();
     }
