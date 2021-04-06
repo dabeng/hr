@@ -1,16 +1,4 @@
-import React, { useState, useEffect } from "react";
-import {
-  BrowserRouter as Router,
-  useLocation,
-  Switch,
-  Route,
-  Link,
-  useParams,
-  useRouteMatch,
-} from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
-
-import styles from "./ProfileForm.module.scss";
+import React from "react";
 
 export const ProfileForm = (props) => {
   const employee = props.employee;

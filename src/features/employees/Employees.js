@@ -1,12 +1,9 @@
 import React, { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import {
-  BrowserRouter as Router,
   Switch,
   Route,
   Link,
-  NavLink,
-  useParams,
   useRouteMatch,
   useLocation
 } from "react-router-dom";
@@ -16,9 +13,6 @@ import { EmployeeChartView } from "./employeeChartView/EmployeeChartView";
 
 import {
   fetchEmployees,
-  selectAllEmployees,
-  selectEmployeeIds,
-  selectEmployeeById,
 } from "./employeesSlice";
 
 export const Employees = () => {
@@ -46,7 +40,6 @@ export const Employees = () => {
   };
 
   const handleKeyPress = e => {
-    var a = 1;
     if (e.key === 'Enter' && keyword.trim().length) {
       search();
     }

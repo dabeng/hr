@@ -1,13 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {
-  BrowserRouter as Router,
-  useLocation,
   useHistory,
-  Switch,
-  Route,
-  Link,
-  useParams,
-  useRouteMatch,
 } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -25,7 +18,7 @@ export const LoginPage = () => {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const {status, id, error } = useSelector(selectUser);
+  const {status, error } = useSelector(selectUser);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -53,7 +46,7 @@ export const LoginPage = () => {
       dispatch(clearUserState());
       history.push('/');
     }
-  }, [status]);
+  }, [dispatch, history, status]);
 
   return (
     <>

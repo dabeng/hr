@@ -1,12 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import {
-  BrowserRouter as Router,
   useLocation,
-  Switch,
-  Route,
-  Link,
-  useParams,
-  useRouteMatch,
 } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -28,18 +22,18 @@ import styles from "./Profile.module.scss";
 
 
 export const Profile = () => {
-  let { path, url } = useRouteMatch();
   const dispatch = useDispatch();
 
   const { id: userId } = useSelector(selectUser);
   const employeeId = new URLSearchParams(useLocation().search).get("employeeId");
+  const existingEmployee = useSelector(state => selectEmployeeById(state, employeeId));
   const employees = useSelector(state => state.employees);
-  const employee = useSelector(employees.ids.length && employeeId ? state => selectEmployeeById(state, employeeId) : selectEmployee);
+  const employee = useSelector(selectEmployee);
 
   // 跳转到“员工简介”页面的方式有很多种
   useEffect(() => {
     if (employees.ids.length && employeeId) { // 从employees页面跳转过来
-      dispatch(setEmployee(employee));
+      dispatch(setEmployee(existingEmployee));
     } else if (employeeId) { // 在浏览器地址栏中用查询参数直接访问某员工简介页面
       dispatch(fetchEmployee(employeeId));
     } else if (userId) {
@@ -50,7 +44,7 @@ export const Profile = () => {
       */
       dispatch(fetchEmployee(userId));
     }
-  }, [employees, employeeId, userId]);
+  }, [dispatch, employees, employeeId, existingEmployee, userId]);
 
   return (
     <div className="columns">
@@ -62,7 +56,7 @@ export const Profile = () => {
         <i className={"fas fa-circle-notch fa-spin fa-4x " + styles.spinner}></i>
       )}
       {employees.ids.length > 0 && employeeId && (
-        <ProfileForm employee={employee}/>
+        <ProfileForm employee={existingEmployee}/>
       )}
       {employee.status === "succeeded" && (
         <ProfileForm employee={employee.value}/>

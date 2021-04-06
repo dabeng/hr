@@ -1,20 +1,16 @@
 import React, { useState, useEffect } from "react";
 import {
   BrowserRouter as Router,
-  useLocation,
   useHistory,
   Switch,
   Route,
-  Link,
   NavLink,
-  useParams,
-  useRouteMatch,
   Redirect
 } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 
 import clientAPI from './clientAPI';
-import { loginUser, fetchUserBytoken, selectUser, clearUserState } from "./userSlice";
+import { fetchUserBytoken, selectUser, clearUserState } from "./userSlice";
 import { Profile } from "../profile/Profile";
 import { Employees } from "../employees/Employees";
 import { Departments } from "../departments/Departments";
@@ -52,14 +48,14 @@ export const MainPage = () => {
     if (localStorage.getItem('accessToken') && !username) {
       dispatch(fetchUserBytoken());
     }
-  }, []);
+  }, [dispatch, username]);
 
   useEffect(() => {
     if (status === "failed") {
       dispatch(clearUserState());
       history.push('/login');
     }
-  }, [status]);
+  }, [dispatch, history, status]);
 
   return (
     <>
@@ -80,12 +76,13 @@ export const MainPage = () => {
                   >
                     <img
                       src="https://dabeng.github.io/OrgChart/img/logo.png"
+                      alt="logo"
                       width="28"
                       height="28"
                     />
                   </a>
-
                   <a
+                    href={() => false}
                     role="button"
                     className="navbar-burger"
                     aria-label="menu"

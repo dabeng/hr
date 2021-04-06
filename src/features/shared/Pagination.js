@@ -3,9 +3,6 @@ import { useSelector, useDispatch } from "react-redux";
 
 import {
   fetchEmployees,
-  selectAllEmployees,
-  selectEmployeeIds,
-  selectEmployeeById,
 } from "../employees/employeesSlice";
 
 
@@ -24,7 +21,7 @@ export const Pagination = ({keyword, activeEmployeeId}) => {
     // if (status === "idle") {
     dispatch(fetchEmployees({page: currentPage, pageSize: PAGE_SIZE, keyword, activeEmployee: activeEmployeeId}));
     // }
-  }, [currentPage, activeEmployeeId]);
+  }, [dispatch, currentPage, keyword, activeEmployeeId]);
 
   const previousPage = () => {
     setCurrentPage(currentPage - 1);
@@ -45,6 +42,7 @@ export const Pagination = ({keyword, activeEmployeeId}) => {
     aria-label="pagination"
   >
     <a
+      href={() => false}
       className="pagination-previous"
       onClick={!isPrevBtnDisabled ? previousPage : undefined}
       disabled={isPrevBtnDisabled}
@@ -52,6 +50,7 @@ export const Pagination = ({keyword, activeEmployeeId}) => {
       Previous
     </a>
     <a
+      href={() => false}
       className="pagination-next"
       onClick={!isNextBtnDisabled ? nextPage : undefined}
       disabled={isNextBtnDisabled}
@@ -65,6 +64,7 @@ export const Pagination = ({keyword, activeEmployeeId}) => {
           .map((v, index) => (
             <li key={index}>
               <a
+                href={() => false}
                 className={
                   "pagination-link" +
                   (index + 1 === currentPage ? " is-current" : "")

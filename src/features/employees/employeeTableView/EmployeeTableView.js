@@ -1,31 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link,
-  useParams,
-  useRouteMatch,
-} from "react-router-dom";
 
 import {
   fetchEmployees,
-  selectAllEmployees,
   selectEmployeeIds,
-  selectEmployeeById,
 } from "../employeesSlice";
 import {
   selectEmployee,
 } from "../employeeSlice";
 import { selectUser } from "../../core/userSlice";
-import { fetchDepartments } from "../../departments/departmentsSlice";
 import { EmployeeRow } from "./EmployeeRow";
 
 import styles from "./EmployeeTableView.module.scss";
 
-export const EmployeeTableView = (props) => {
-  let { path, url } = useRouteMatch();
+export const EmployeeTableView = ({keyword}) => {
   const [currentPage, setCurrentPage] = useState(1);
 
   const dispatch = useDispatch();
@@ -50,11 +38,11 @@ export const EmployeeTableView = (props) => {
     dispatch(fetchEmployees({
       page: currentPage,
       pageSize: PAGE_SIZE,
-      keyword: props.keyword,
+      keyword: keyword,
       activeEmployee: activeEmployeeId
     }));
     // }
-  }, [dispatch, currentPage, activeEmployeeId]);
+  }, [dispatch, currentPage, keyword, activeEmployeeId]);
 
   const previousPage = () => {
     setCurrentPage(currentPage - 1);
@@ -116,6 +104,7 @@ export const EmployeeTableView = (props) => {
         aria-label="pagination"
       >
         <a
+          href={() => false}
           className="pagination-previous"
           onClick={!isPrevBtnDisabled ? previousPage : undefined}
           disabled={isPrevBtnDisabled}
@@ -123,6 +112,7 @@ export const EmployeeTableView = (props) => {
           Previous
         </a>
         <a
+          href={() => false}
           className="pagination-next"
           onClick={!isNextBtnDisabled ? nextPage : undefined}
           disabled={isNextBtnDisabled}
@@ -136,6 +126,7 @@ export const EmployeeTableView = (props) => {
               .map((v, index) => (
                 <li key={index}>
                   <a
+                    href={() => false}
                     className={
                       "pagination-link" +
                       (index + 1 === currentPage ? " is-current" : "")

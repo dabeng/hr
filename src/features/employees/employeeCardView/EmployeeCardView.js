@@ -1,10 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import {
-  fetchEmployees,
-  selectAllEmployees,
   selectEmployeeIds,
-  selectEmployeeById,
 } from "../employeesSlice";
 import {
   selectEmployee,

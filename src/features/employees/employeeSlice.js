@@ -1,8 +1,6 @@
 import {
   createSlice,
   createAsyncThunk,
-  createSelector,
-  createEntityAdapter,
 } from "@reduxjs/toolkit";
 
 import clientAPI from "../core/clientAPI";
