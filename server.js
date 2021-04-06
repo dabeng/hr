@@ -134,7 +134,6 @@ server.get("/employees", (req, res, next) => {
     });
     res.json(singPageData);
   }
-  next();
 });
 
 router.render = (req, res) => {
