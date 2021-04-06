@@ -49,18 +49,18 @@ export const Profile = () => {
   return (
     <div className="columns">
       <div className="column is-4">
-      <i className="fas fa-address-card fa-10x"></i>
+        <i className="fas fa-address-card fa-10x"></i>
       </div>
       <div className={"column is-8 " + styles.form_column}>
-      {employee && employee.status === "loading" && (
-        <i className={"fas fa-circle-notch fa-spin fa-4x " + styles.spinner}></i>
-      )}
-      {employees.ids.length > 0 && employeeId && (
-        <ProfileForm employee={existingEmployee}/>
-      )}
-      {employee.status === "succeeded" && (
-        <ProfileForm employee={employee.value}/>
-      )}
+        {!existingEmployee && employee.status === "loading" && (
+          <i className={"fas fa-circle-notch fa-spin fa-4x " + styles.spinner}></i>
+        )}
+        {!existingEmployee && employee.status === "succeeded" && (
+          <ProfileForm employee={employee.value}/>
+        )}
+        {existingEmployee && (
+          <ProfileForm employee={employee.value}/>
+        )}
       </div>
     </div>
   );
