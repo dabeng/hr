@@ -31,7 +31,7 @@ export const fetchDepartments = createAsyncThunk("departments/fetchDepartments",
     if (keyword) {
       params.append("q", keyword);
     }
-    const response = await clientAPI.fetchDepartments("/departments", params);
+    const response = await clientAPI.fetchDepartments(params);
     if (response.status === 200) {
       response.data.total = parseInt(response.headers['x-total-count']);
       return response.data;

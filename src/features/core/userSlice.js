@@ -3,7 +3,7 @@ import clientAPI from './clientAPI';
 
 export const loginUser = createAsyncThunk('users/login', async ({ email, password }, thunkAPI) => {
   try {
-    const response = await clientAPI.loginUser("/login", {email, password});
+    const response = await clientAPI.loginUser({email, password});
     if (response.status === 200) {
       localStorage.setItem('accessToken', response.data.accessToken);
       localStorage.setItem('refreshToken', response.data.refreshToken);
@@ -19,7 +19,7 @@ export const loginUser = createAsyncThunk('users/login', async ({ email, passwor
 // fetch user info when user bypasses login process and directly accesses any procted pages
 export const fetchUserBytoken = createAsyncThunk('users/fetchUserByToken', async (thunkAPI) => {
   try {
-    const response = await clientAPI.fetchUserByToken("/user");
+    const response = await clientAPI.fetchUserByToken();
     if (response.status === 200) {
       return response.data;
     } else {

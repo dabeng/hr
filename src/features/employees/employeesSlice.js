@@ -31,7 +31,7 @@ export const fetchEmployees = createAsyncThunk("employees/fetchEmployees", async
     } else if (activeEmployee) {
       params.append("activeEmployee", activeEmployee);
     }
-    const response = await clientAPI.fetchEmployees("/employees", params);
+    const response = await clientAPI.fetchEmployees(params);
     if (response.status === 200) {
       response.data.total = parseInt(response.headers['x-total-count']);
       return response.data;

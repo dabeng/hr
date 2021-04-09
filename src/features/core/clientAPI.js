@@ -9,26 +9,26 @@ export const instance = axios.create({
 });
 
 const clientAPI = {
-  loginUser(url, userInfo) {
-    return instance.post(url, userInfo);
+  loginUser(userInfo) {
+    return instance.post("/login", userInfo);
   },
-  logoutUser(url, refreshToken) {
-    return instance.post(url, { refreshToken });
+  logoutUser(refreshToken) {
+    return instance.post("/logout", { refreshToken });
   },
-  getNewToken(url, refreshToken) {
-    return instance.post(url, { refreshToken });
+  getNewToken(refreshToken) {
+    return instance.post("/token", { refreshToken });
   },
-  fetchUserByToken(url) {
-    return instance.get(url);
+  fetchUserByToken() {
+    return instance.get("/user");
   },
-  fetchEmployees(url, params) {
-    return instance.get(url, { params });
+  fetchEmployees(params) {
+    return instance.get("/employees", { params });
   },
-  fetchEmployee(url) {
-    return instance.get(url);
+  fetchEmployee(employeeId) {
+    return instance.get("/employees/" + employeeId);
   },
-  fetchDepartments(url, params) {
-    return instance.get(url, { params });
+  fetchDepartments(params) {
+    return instance.get("/departments", { params });
   }
 };
 

@@ -10,7 +10,7 @@ instance.interceptors.response.use(null, (error) => {
 	) {
     return new Promise(async (resolve, reject) => {
       try {
-        const response = await clientAPI.getNewToken("/token", localStorage.getItem('refreshToken'));
+        const response = await clientAPI.getNewToken(localStorage.getItem('refreshToken'));
         localStorage.setItem('accessToken', response.data.accessToken);
         error.config.headers.Authorization = 'Bearer ' + response.data.accessToken;
         // Repeat the initial request

@@ -28,7 +28,7 @@ export const MainPage = () => {
 
   const logout = async () => {
     try {
-    const response = await clientAPI.logoutUser("/logout", localStorage.getItem('refreshToken'));
+    const response = await clientAPI.logoutUser(localStorage.getItem('refreshToken'));
 
       if (response.status === 200) {
         localStorage.removeItem('accessToken');
