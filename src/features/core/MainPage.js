@@ -82,7 +82,6 @@ export const MainPage = () => {
                     />
                   </a>
                   <a
-                    href={() => false}
                     role="button"
                     className="navbar-burger"
                     aria-label="menu"

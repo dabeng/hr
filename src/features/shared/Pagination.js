@@ -42,7 +42,6 @@ export const Pagination = ({keyword, activeEmployeeId}) => {
     aria-label="pagination"
   >
     <a
-      href={() => false}
       className="pagination-previous"
       onClick={!isPrevBtnDisabled ? previousPage : undefined}
       disabled={isPrevBtnDisabled}
@@ -50,7 +49,6 @@ export const Pagination = ({keyword, activeEmployeeId}) => {
       Previous
     </a>
     <a
-      href={() => false}
       className="pagination-next"
       onClick={!isNextBtnDisabled ? nextPage : undefined}
       disabled={isNextBtnDisabled}
@@ -64,7 +62,6 @@ export const Pagination = ({keyword, activeEmployeeId}) => {
           .map((v, index) => (
             <li key={index}>
               <a
-                href={() => false}
                 className={
                   "pagination-link" +
                   (index + 1 === currentPage ? " is-current" : "")

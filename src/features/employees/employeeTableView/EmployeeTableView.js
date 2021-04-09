@@ -104,7 +104,6 @@ export const EmployeeTableView = ({keyword}) => {
         aria-label="pagination"
       >
         <a
-          href={() => false}
           className="pagination-previous"
           onClick={!isPrevBtnDisabled ? previousPage : undefined}
           disabled={isPrevBtnDisabled}
@@ -112,7 +111,6 @@ export const EmployeeTableView = ({keyword}) => {
           Previous
         </a>
         <a
-          href={() => false}
           className="pagination-next"
           onClick={!isNextBtnDisabled ? nextPage : undefined}
           disabled={isNextBtnDisabled}
@@ -126,7 +124,6 @@ export const EmployeeTableView = ({keyword}) => {
               .map((v, index) => (
                 <li key={index}>
                   <a
-                    href={() => false}
                     className={
                       "pagination-link" +
                       (index + 1 === currentPage ? " is-current" : "")
