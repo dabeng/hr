@@ -29,6 +29,12 @@ const clientAPI = {
   },
   fetchDepartments(params) {
     return instance.get("/departments", { params });
+  },
+  fetchEmployeeOrgChart(params) {
+    return instance.get("/employees/orgchart", { params });
+  },
+  fetchDepartmentOrgChart(params) {
+    return instance.get("/departments/orgchart", { params });
   }
 };
 

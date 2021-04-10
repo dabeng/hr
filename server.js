@@ -136,6 +136,28 @@ server.get("/employees", (req, res, next) => {
   }
 });
 
+server.get("/employees/orgchart", (req, res, next) => {
+  if (req.query.employeeId) {
+    const currentEmployeeId = parseInt(req.query.employeeId);
+    const currentEmployee = db.employees.find(e => e.id === currentEmployeeId);
+    const superiorId = currentEmployee.superior;
+    const superior = db.employees.find(e => e.id === superiorId);
+    const data = {...superior, children:[]};
+    superior.inferiors.forEach(inferiorId => {
+      if (inferiorId === currentEmployeeId && currentEmployee.inferiors) {
+        currentEmployee.inferiors.forEach(inferiorId => {
+          currentEmployee.children.push(db.employees.find(e => e.id === inferiorId));
+        });
+        data.children.push(currentEmployee);
+      } else {
+        data.children.push(db.employees.find(e => e.id === inferiorId));
+      }
+    });
+
+    res.json(data);
+  }
+});
+
 router.render = (req, res) => {
   if (req.method === "GET") {
     if (req.path === "/employees" && !req.query.activeEmployee) {
