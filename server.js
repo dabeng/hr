@@ -145,6 +145,7 @@ server.get("/employees/orgchart", (req, res, next) => {
     const data = {...superior, children:[]};
     superior.inferiors.forEach(inferiorId => {
       if (inferiorId === currentEmployeeId && currentEmployee.inferiors) {
+        currentEmployee.children = [];
         currentEmployee.inferiors.forEach(inferiorId => {
           currentEmployee.children.push(db.employees.find(e => e.id === inferiorId));
         });

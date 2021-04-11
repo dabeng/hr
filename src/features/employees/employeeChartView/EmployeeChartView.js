@@ -1,9 +1,21 @@
 import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+import OrganizationChart from "@dabeng/react-orgchart";
+import JSONDigger from "json-digger";
+
+import {
+  selectEmployee,
+} from "../employeeSlice";
+import { selectUser } from "../../core/userSlice";
 import clientAPI from "../../core/clientAPI";
 
 export const EmployeeChartView = () => {
 
-  // const [state, setState] = useState([])
+  const { id: userId } = useSelector(selectUser);
+  const activeEmployee = useSelector(selectEmployee);
+  const activeEmployeeId = activeEmployee.value ? activeEmployee.value.id : userId;
+
+  const [ds, setDS] = useState({});
   useEffect(() => {
 
     const fetchEmployeeOrgChart = async () => {
@@ -12,11 +24,11 @@ export const EmployeeChartView = () => {
  
       try {
         const params = new URLSearchParams({
-          "employeeId": 16
+          "employeeId": activeEmployeeId
         });
         const response = await clientAPI.fetchEmployeeOrgChart(params);
         console.log(response.data);
-        // setData(result.data);
+        setDS(response.data);
       } catch (error) {
         // setIsError(true);
       }
@@ -29,7 +41,7 @@ export const EmployeeChartView = () => {
 
   return (
     <div>
-      <h2>Employee Chart View</h2>
+      <OrganizationChart datasource={ds} />
     </div>
   );
 };
