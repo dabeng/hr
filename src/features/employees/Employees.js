@@ -22,12 +22,14 @@ export const Employees = () => {
   const [activeView, setActiveView] = useState(location.pathname === '/employees' ? 'table-view' : location.pathname.split('/').slice(-1)[0]);
 
   const [keyword, setKeyword] = useState("");
+  const [isDisabled, setIsDisabled] = useState(false);
   const PAGE_SIZE = 6;
 
   function openView(e) {
     if (e.target.nodeName === 'A') {
-      setActiveView(e.target.href.split('/').slice(-1)[0] === 'employees' ?
-        'table-view' : e.target.href.split('/').slice(-1)[0]);
+      const targetView = e.target.href.split('/').slice(-1)[0];
+      setActiveView(targetView === 'employees' ? 'table-view' : e.target.href.split('/').slice(-1)[0]);
+      setIsDisabled(targetView === 'chart-view');
     }
   };
 
@@ -51,7 +53,7 @@ export const Employees = () => {
         <div className="column">
           <div className="field">
             <p className="control has-icons-left has-icons-right">
-              <input className="input" type="text" placeholder="Key Word" value={keyword} onChange={updateKeyword} onKeyPress={handleKeyPress}/>
+              <input disabled={isDisabled ? true : undefined} className="input" type="text" placeholder="Key Word" value={keyword} onChange={updateKeyword} onKeyPress={handleKeyPress}/>
               <span className="icon is-small is-right">
                 <i className="fas fa-search"></i>
               </span>
