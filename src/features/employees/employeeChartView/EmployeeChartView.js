@@ -9,39 +9,43 @@ import {
 import { selectUser } from "../../core/userSlice";
 import clientAPI from "../../core/clientAPI";
 
+import styles from "./EmployeeChartView.module.scss";
+
 export const EmployeeChartView = () => {
 
   const { id: userId } = useSelector(selectUser);
   const activeEmployee = useSelector(selectEmployee);
   const activeEmployeeId = activeEmployee.value ? activeEmployee.value.id : userId;
 
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
   const [ds, setDS] = useState({});
   useEffect(() => {
-
     const fetchEmployeeOrgChart = async () => {
-      // setIsError(false);
-      // setIsLoading(true);
- 
+      setIsLoading(true);
+      setIsError(false);
       try {
         const params = new URLSearchParams({
           "employeeId": activeEmployeeId
         });
         const response = await clientAPI.fetchEmployeeOrgChart(params);
-        console.log(response.data);
         setDS(response.data);
       } catch (error) {
-        // setIsError(true);
+        setIsError(true);
       }
- 
-      // setIsLoading(false);
+      setIsLoading(false);
     };
  
     fetchEmployeeOrgChart();
-  }, [])
+  }, []);
 
   return (
     <div>
-      <OrganizationChart datasource={ds} />
+      {isLoading ? (
+        <i className={"fas fa-circle-notch fa-spin fa-4x " + styles.spinner}></i>
+      ) : (
+        <OrganizationChart datasource={ds} />
+      )}
     </div>
   );
 };
