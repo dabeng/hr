@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import OrganizationChart from "@dabeng/react-orgchart";
 import JSONDigger from "json-digger";
 
+import { showError } from "./../../core/errorSlice";
 import {
   selectEmployee,
 } from "../employeeSlice";
@@ -12,7 +13,7 @@ import clientAPI from "../../core/clientAPI";
 import styles from "./EmployeeChartView.module.scss";
 
 export const EmployeeChartView = () => {
-
+  const dispatch = useDispatch();
   const { id: userId } = useSelector(selectUser);
   const activeEmployee = useSelector(selectEmployee);
   const activeEmployeeId = activeEmployee.value ? activeEmployee.value.id : userId;
@@ -32,6 +33,7 @@ export const EmployeeChartView = () => {
         setDS(response.data);
       } catch (error) {
         setIsError(true);
+        dispatch(showError('Failed to fetch orgchart data'));
       }
       setIsLoading(false);
     };
@@ -41,9 +43,10 @@ export const EmployeeChartView = () => {
 
   return (
     <div>
-      {isLoading ? (
+      {isLoading && (
         <i className={"fas fa-circle-notch fa-spin fa-4x " + styles.spinner}></i>
-      ) : (
+      )}
+      {!isLoading && !isError && (
         <OrganizationChart datasource={ds} />
       )}
     </div>
