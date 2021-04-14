@@ -9,7 +9,9 @@ export const ProfileForm = (props) => {
         <label className="label">Name</label>
         <div className="control">
           <p className="has-text-dark">{employee.name}</p>
-          {/* <input class="input" type="text" placeholder="Text input"/> */}
+          {employee.role === "admin" &&
+            <input className="input" type="text" placeholder="Text input"/>
+          }
         </div>
       </div>
       <div className="field">
