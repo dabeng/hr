@@ -1,7 +1,5 @@
 import React, { useEffect } from "react";
-import {
-  useLocation,
-} from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 
 import {
@@ -15,8 +13,6 @@ import {
 import {
   selectEmployeeById,
 } from "../employees/employeesSlice";
-
-import { ProfileForm } from "./ProfileForm";
 
 import styles from "./Profile.module.scss";
 
@@ -55,12 +51,66 @@ export const Profile = () => {
         {!existingEmployee && employee.status === "loading" && (
           <i className={"fas fa-circle-notch fa-spin fa-4x " + styles.spinner}></i>
         )}
-        {!existingEmployee && employee.status === "succeeded" && (
-          <ProfileForm employee={employee.value}/>
-        )}
-        {existingEmployee && (
-          <ProfileForm employee={employee.value}/>
-        )}
+        {(existingEmployee || employee.status === "succeeded") &&
+          <>
+          <div className="field">
+            <label className="label">Name</label>
+            <div className="control">
+              <p className="has-text-dark">{employee.value.name}</p>
+            </div>
+          </div>
+          <div className="field">
+            <label className="label">Title</label>
+            <div className="control">
+              <p className="has-text-dark">{employee.value.title}</p>
+            </div>
+          </div>
+          <div className="field">
+            <label className="label">Email</label>
+            <div className="control">
+              <p className="has-text-dark">{employee.value.email}</p>
+            </div>
+          </div>
+          <div className="field">
+            <label className="label">Department</label>
+            <div className="control">
+              <p className="has-text-dark">{employee.value.department_name}</p>
+            </div>
+          </div>
+          <div className="field">
+            <label className="label">Reports to</label>
+            <div className="control">
+              <p className="has-text-dark">{employee.value.superior_name}</p>
+            </div>
+          </div>
+          <div className="field">
+            <label className="label">Reports</label>
+            <div className="control">
+              <p className="has-text-dark">
+              {employee.value.inferior_names &&  employee.value.inferior_names.length &&
+                employee.value.inferior_names.map((name, index, names) => (
+                  <span key={index}>{name + (index < names.length - 1 ? ",\u00A0\u00A0" : "")}</span>
+                ))}
+              </p>
+            </div>
+          </div>
+          <div className="field">
+            <label className="label">Joined Date</label>
+            <div className="control">
+              <p className="has-text-dark">{employee.value.joined_date}</p>
+            </div>
+          </div>
+          <div className="field">
+            <label className="label">Description</label>
+            <div className="control">
+              <p className="has-text-dark">{employee.value.description}</p>
+            </div>
+          </div>
+          {employee.value.role === "admin" &&
+            <Link to={`/profile/${employee.value.id}/edit`} className="button is-primary">Edit</Link>
+          }
+        </>
+        }
       </div>
     </div>
   );

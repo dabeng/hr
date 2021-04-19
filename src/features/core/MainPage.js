@@ -13,6 +13,7 @@ import clientAPI from './clientAPI';
 import { showError, hideError, selectMessage } from "./errorSlice";
 import { fetchUserBytoken, selectUser, clearUserState } from "./userSlice";
 import { Profile } from "../profile/Profile";
+import { EditProfile } from "../profile/EditProfile";
 import { Employees } from "../employees/Employees";
 import { Departments } from "../departments/Departments";
 
@@ -192,8 +193,14 @@ export const MainPage = () => {
                   <Route exact path="/">
                     <Redirect to="/profile" />
                   </Route>
-                  <Route path="/profile">
+                  <Route exact path="/profile">
                     <Profile />
+                  </Route>
+                  <Route exact path="/profile/:employeeId">
+                    <Profile />
+                  </Route>
+                  <Route exact path="/profile/:employeeId/edit">
+                    <EditProfile />
                   </Route>
                   <Route path="/employees">
                     <Employees />
