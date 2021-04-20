@@ -27,6 +27,9 @@ const clientAPI = {
   fetchEmployee(employeeId) {
     return instance.get("/employees/" + employeeId);
   },
+  updateEmployee(employeeId, data) {
+    return instance.patch("/employees/" + employeeId, data);
+  },
   fetchDepartments(params) {
     return instance.get("/departments", { params });
   },

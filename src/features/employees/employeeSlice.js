@@ -18,9 +18,9 @@ export const fetchEmployee = createAsyncThunk("employees/fetchEmployee", async (
   }
 });
 
-export const updateEmployee = createAsyncThunk("employees/updateEmployee", async (employeeId, thunkAPI) => {
+export const updateEmployee = createAsyncThunk("employees/updateEmployee", async (data, thunkAPI) => {
   try {
-    const response = await clientAPI.updateEmployee(employeeId);
+    const response = await clientAPI.updateEmployee(data.employeeId, data.fields);
     if (response.status === 200) {
       return response.data;
     } else {
@@ -38,6 +38,10 @@ const employeeSlice = createSlice({
     error: null,
   },
   reducers: {
+    clearEmployeeState: (state) => {
+      state.status = "idle";
+      state.error = null;
+    },
     setEmployee: (state, action) => {
       state.value = action.payload;
     },
@@ -68,7 +72,7 @@ const employeeSlice = createSlice({
   },
 });
 
-export const { setEmployee } = employeeSlice.actions;
+export const { setEmployee, clearEmployeeState } = employeeSlice.actions;
 
 export default employeeSlice.reducer;
 

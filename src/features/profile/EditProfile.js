@@ -1,29 +1,35 @@
-import React from "react";
+import React, { useEffect, unwrapResult } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
 
-import { selectEmployee, updateEmployee } from "../employees/employeeSlice";
+import { selectEmployee, updateEmployee, setEmployee, clearEmployeeState } from "../employees/employeeSlice";
 
 export const EditProfile = () => {
   const dispatch = useDispatch();
   const history = useHistory();
+  const { value: employee, status} = useSelector(selectEmployee);
 
-  const { value: employee } = useSelector(selectEmployee);
+  // useEffect(() => { // TODO: 不知道为什么组件加载时，该值仍是succeeded
+  //   if (status === 'succeeded') {
+  //     history.push(`/profile/${employee.id}`);
+  //   }
+  // }, [status]);
+
   const {
     register,
     handleSubmit,
     formState: { errors, dirtyFields },
   } = useForm();
 
-  const saveEdit = (data) => {
+  const saveEdit = async (data) => {
     const updatedData = {};
     for (const key of Object.keys(dirtyFields)) {
       updatedData[key] = data[key];
     }
     
-    dispatch(updateEmployee(updatedData));
-    // history.push(`/profile/${employee.id}`);
+    await dispatch(updateEmployee({employeeId: employee.id, fields: updatedData}));
+    history.push(`/profile/${employee.id}`);
   };
 
   return (

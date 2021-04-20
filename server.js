@@ -182,6 +182,9 @@ router.render = (req, res) => {
       res.json(res.locals.data);
     }
   }
+  if (req.method === "PATCH") {
+    res.json(res.locals.data);
+  }
 };
 
 // Use default router
