@@ -40,6 +40,10 @@ export const LoginPage = () => {
       setEmailError("email is required");
       valid = false;
     }
+    if (!/.+@tongyong.com/.test(email.trim())) {
+      setEmailError("Please provide only a TongYong corporate e-mail address");
+      valid = false;
+    }
     if (!password.trim()) {
       setPasswordError("password is required");
       valid = false;
