@@ -21,7 +21,9 @@ export const LoginPage = () => {
   const {status, error } = useSelector(selectUser);
 
   const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
 
   const updateEmail = e => {
     setEmail(e.target.value);
@@ -31,8 +33,23 @@ export const LoginPage = () => {
     setPassword(e.target.value);
   };
 
-  const login = e => {
+  const validateFields = e => {
     e.preventDefault();
+    let valid = true;
+    if (!email.trim()) {
+      setEmailError("email is required");
+      valid = false;
+    }
+    if (!password.trim()) {
+      setPasswordError("password is required");
+      valid = false;
+    }
+    if (valid) {
+      dispatch(loginUser({email, password}));
+    }
+  };
+
+  const login = () => {
     dispatch(loginUser({email, password}));
   };
 
@@ -62,18 +79,24 @@ export const LoginPage = () => {
       </div>
       <div className="columns" style={{"position": "relative"}}>
         <div className="column is-offset-4 is-4">
-          <form onSubmit={login}>
+          <form onSubmit={validateFields}>
             <div className="field">
               <label className="label">Email</label>
               <div className="control">
                 <input className="input" type="text" placeholder="email" onChange={updateEmail}/>
               </div>
+              {emailError &&
+                <p className="help is-danger">{emailError}</p>
+              }
             </div>
             <div className="field">
               <label className="label">Password</label>
               <div className="control">
                 <input className="input" type="password" placeholder="password" onChange={updatePassword}/>
               </div>
+              {passwordError &&
+                <p className="help is-danger">{passwordError}</p>
+              }
             </div>
             <div className="field">
               <div className="control">
