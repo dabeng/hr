@@ -34,7 +34,7 @@ server.post('/login', (req, res) => {
       user
     });
   } else {
-    res.status(404).send({ message: 'email or password incorrect' });
+    res.status(401).send({ message: 'email or password incorrect' });
   }
 });
 

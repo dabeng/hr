@@ -12,7 +12,7 @@ export const loginUser = createAsyncThunk('users/login', async ({ email, passwor
       return thunkAPI.rejectWithValue(response.data);
     }
   } catch (err) {
-    thunkAPI.rejectWithValue(err.response.data);
+    return thunkAPI.rejectWithValue(err.response.data);
   }
 });
 

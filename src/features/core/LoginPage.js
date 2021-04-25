@@ -49,7 +49,7 @@ export const LoginPage = () => {
       valid = false;
     }
     if (valid) {
-      dispatch(loginUser({email, password}));
+      login();
     }
   };
 
