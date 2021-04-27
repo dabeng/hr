@@ -83,7 +83,7 @@ export const EditProfile = () => {
           <div className="field">
             <label className="label">Joined Date</label>
             <div className="control">
-              <input type="date" className="input" {...register("joined_date", { required: true })}/>
+              <input type="date" className="input" defaultValue={employee.joined_date} {...register("joined_date", { required: true })}/>
             </div>
           </div>
           <div className="field">
