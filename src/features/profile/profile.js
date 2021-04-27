@@ -22,7 +22,7 @@ import styles from "./Profile.module.scss";
 export const Profile = () => {
   const dispatch = useDispatch();
 
-  const { id: userId } = useSelector(selectUser);
+  const { id: userId, role: userRole } = useSelector(selectUser);
   const employeeId = new URLSearchParams(useLocation().search).get("employeeId");
   const existingEmployee = useSelector(state => selectEmployeeById(state, employeeId));
   const employees = useSelector(state => state.employees);
@@ -120,7 +120,7 @@ export const Profile = () => {
               <p className="has-text-dark">{employee.description}</p>
             </div>
           </div>
-          {employee.role === "admin" &&
+          {(userRole === "admin" || employee.id === userId) &&
             <Link to={`/profile/${employee.id}/edit`} className="button is-primary">Edit</Link>
           }
         </>
