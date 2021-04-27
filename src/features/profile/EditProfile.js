@@ -22,6 +22,10 @@ export const EditProfile = () => {
     formState: { errors, dirtyFields },
   } = useForm();
 
+  const cancelEdit = e => {
+    history.push(`/profile/${employee.id}`);
+  };
+
   const saveEdit = async (data) => {
     const updatedData = {};
     for (const key of Object.keys(dirtyFields)) {
@@ -100,7 +104,7 @@ export const EditProfile = () => {
               <input type="submit" className="button is-link" value="Submit"/>
             </div>
             <div className="control">
-              <button className="button is-link is-light">Cancel</button>
+              <button className="button is-link is-light" onClick={cancelEdit}>Cancel</button>
             </div>
           </div>
         </form>
