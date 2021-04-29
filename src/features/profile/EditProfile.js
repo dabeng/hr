@@ -35,15 +35,19 @@ export const EditProfile = () => {
       temp0.splice(index, 1)
       return temp0;
     });
-    const temp = getValues("inferiors").split(',').map(item => parseInt(item));
+    const temp = getValues("inferiors").split(',');
     temp.splice(index, 1);
-    setValue('inferiors', temp, { shouldDirty: true });
+    setValue('inferiors', temp.join(','), { shouldDirty: true });
   };
 
   const saveEdit = async (data) => {
     const updatedData = {};
     for (const key of Object.keys(dirtyFields)) {
-      updatedData[key] = data[key];
+      if (key === 'inferiors') {
+        updatedData[key] = data[key] ? data[key].split(',').map(item => parseInt(item)) : [];
+      } else {
+        updatedData[key] = data[key];
+      }
     }
     
     await dispatch(updateEmployee({employeeId: employee.id, fields: updatedData}));
