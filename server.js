@@ -183,7 +183,15 @@ router.render = (req, res) => {
     }
   }
   if (req.method === "PATCH") {
-    res.json(res.locals.data);
+    if (req.path === "/employees/" + res.locals.data.id) {
+      const employee = res.locals.data;
+      employee.superior_name = db.employees.find(e => e.id === employee.superior).name;
+      employee.department_name = db.departments.find(d => d.id === employee.department).name;
+      if (employee.inferiors && employee.inferiors.length) {
+        employee.inferior_names = employee.inferiors.map(inferiorId => db.employees.find(e => e.id === inferiorId).name);
+      }
+      res.json(res.locals.data);
+    }
   }
 };
 

@@ -1,4 +1,4 @@
-import React, { useEffect, unwrapResult } from "react";
+import React, { useEffect, unwrapResult, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -9,6 +9,7 @@ export const EditProfile = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const { value: employee, status} = useSelector(selectEmployee);
+  const [inferiorNames, setInferiorNames] = useState(employee.inferior_names);
 
   // useEffect(() => { // TODO: 不知道为什么组件加载时，该值仍是succeeded
   //   if (status === 'succeeded') {
@@ -19,11 +20,24 @@ export const EditProfile = () => {
   const {
     register,
     handleSubmit,
+    setValue,
+    getValues,
     formState: { errors, dirtyFields },
   } = useForm();
 
   const cancelEdit = e => {
     history.push(`/profile/${employee.id}`);
+  };
+
+  const unbindRelation = (index) => {
+    setInferiorNames(prev => {
+      const temp0 = [...prev];
+      temp0.splice(index, 1)
+      return temp0;
+    });
+    const temp = getValues("inferiors").split(',').map(item => parseInt(item));
+    temp.splice(index, 1);
+    setValue('inferiors', temp, { shouldDirty: true });
   };
 
   const saveEdit = async (data) => {
@@ -81,8 +95,15 @@ export const EditProfile = () => {
           <div className="field">
             <label className="label">Inferiors</label>
             <div className="control">
-              <input type="text" className="input" placeholder="inferiors" {...register} />
+              <input type="hidden" defaultValue={employee.inferiors} {...register("inferiors")}/>
+              <input type="text" className="input" placeholder="inferiors"/>
             </div>
+            {inferiorNames.map((inferiorName, index) => (
+              <span key={index} className="tag is-info is-light" style={{margin: "0.5rem 0.5rem 0 0"}}>
+                {inferiorName}
+                <button type="button" className="delete" onClick={() => unbindRelation(index)}></button>
+              </span>
+            ))}
           </div>
           <div className="field">
             <label className="label">Joined Date</label>
