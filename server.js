@@ -134,6 +134,7 @@ server.get("/employees", (req, res, next) => {
     });
     res.json(singPageData);
   }
+  next();
 });
 
 server.get("/employees/orgchart", (req, res, next) => {

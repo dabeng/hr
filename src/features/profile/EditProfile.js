@@ -3,12 +3,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
 
+import { showError } from "../core/errorSlice";
+import clientAPI from "../core/clientAPI";
 import { selectEmployee, updateEmployee, setEmployee, clearEmployeeState } from "../employees/employeeSlice";
 
 export const EditProfile = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const { value: employee, status} = useSelector(selectEmployee);
+  const [searchedInferiors, setSearchedInferiors] = useState([]);
   const [inferiorNames, setInferiorNames] = useState(employee.inferior_names);
 
   // useEffect(() => { // TODO: 不知道为什么组件加载时，该值仍是succeeded
@@ -24,6 +27,18 @@ export const EditProfile = () => {
     getValues,
     formState: { errors, dirtyFields },
   } = useForm();
+
+  const searchInferiors = async (e) => {
+    try {
+      const response = await clientAPI.fetchEmployees({q: e.target.value.trim()});
+      
+        setSearchedInferiors(response.data);
+      
+    } catch (err) {
+      showError('Failed to fetch inferior info'); // for users
+      console.log('Error: ' + err.response.data); // for developers
+    }
+  };
 
   const cancelEdit = e => {
     history.push(`/profile/${employee.id}`);
@@ -100,7 +115,20 @@ export const EditProfile = () => {
             <label className="label">Inferiors</label>
             <div className="control">
               <input type="hidden" defaultValue={employee.inferiors} {...register("inferiors")}/>
-              <input type="text" className="input" placeholder="inferiors"/>
+              <div class="dropdown is-active">
+                <div class="dropdown-trigger">
+                  <input type="text" className="input" placeholder="inferiors" onInput={searchInferiors}/>
+                </div>
+                <div className="dropdown-menu" id="dropdown-menu" role="menu">
+                  <div className="dropdown-content">
+                    {searchedInferiors.map(inferior => (
+                      <a href="#" className="dropdown-item">
+                        {inferior.name}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              </div>
             </div>
             {inferiorNames.map((inferiorName, index) => (
               <span key={index} className="tag is-info is-light" style={{margin: "0.5rem 0.5rem 0 0"}}>
