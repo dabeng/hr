@@ -124,8 +124,8 @@ export const EditProfile = () => {
                   <div className="dropdown-menu" id="dropdown-menu" role="menu">
                     <div className="dropdown-content">
                       {searchedInferiors.map(inferior => (
-                        <a href="#" className="dropdown-item">
-                          {inferior.name}
+                        <a className="dropdown-item" style={{"whiteSpace": "nowrap"}}>
+                          <span>{inferior.name}</span> | <span>{inferior.email}</span>
                         </a>
                       ))}
                     </div>
