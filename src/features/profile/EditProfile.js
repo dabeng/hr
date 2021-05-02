@@ -28,6 +28,7 @@ export const EditProfile = () => {
     formState: { errors, dirtyFields },
   } = useForm();
 
+
   const searchInferiors = async (e) => {
     try {
       const response = await clientAPI.fetchEmployees({q: e.target.value.trim()});
@@ -119,15 +120,17 @@ export const EditProfile = () => {
                 <div class="dropdown-trigger">
                   <input type="text" className="input" placeholder="inferiors" onInput={searchInferiors}/>
                 </div>
-                <div className="dropdown-menu" id="dropdown-menu" role="menu">
-                  <div className="dropdown-content">
-                    {searchedInferiors.map(inferior => (
-                      <a href="#" className="dropdown-item">
-                        {inferior.name}
-                      </a>
-                    ))}
+                {searchedInferiors.length > 0 &&
+                  <div className="dropdown-menu" id="dropdown-menu" role="menu">
+                    <div className="dropdown-content">
+                      {searchedInferiors.map(inferior => (
+                        <a href="#" className="dropdown-item">
+                          {inferior.name}
+                        </a>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                }
               </div>
             </div>
             {inferiorNames.map((inferiorName, index) => (
