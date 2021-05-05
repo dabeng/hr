@@ -11,6 +11,7 @@ export const EditProfile = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const { value: employee, status} = useSelector(selectEmployee);
+  const [inferiorKeyword, setInferiorKeyword] = useState("");
   const [searchedInferiors, setSearchedInferiors] = useState([]);
   const [inferiorNames, setInferiorNames] = useState(employee.inferior_names);
 
@@ -28,10 +29,26 @@ export const EditProfile = () => {
     formState: { errors, dirtyFields },
   } = useForm();
 
+  const updateInferiorKeyword = e => {
+    setInferiorKeyword(e.target.value.trim());
+  };
 
-  const searchInferiors = async (e) => {
+  // const searchInferior = e => {
+  //   dispatch(fetchEmployees({page: 1, pageSize: PAGE_SIZE, keyword}));
+  // };
+
+  const triggerSearchInferior = e => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (inferiorKeyword.length) {
+        searchInferior();
+      }
+    }
+  };
+
+  const searchInferior = async () => {
     try {
-      const response = await clientAPI.fetchEmployees({q: e.target.value.trim()});
+      const response = await clientAPI.fetchEmployees({q: inferiorKeyword});
       
         setSearchedInferiors(response.data);
       
@@ -56,7 +73,8 @@ export const EditProfile = () => {
     setValue('inferiors', temp.join(','), { shouldDirty: true });
   };
 
-  const saveEdit = async (data) => {
+  const saveEdit = async (data, e) => {
+    // if (e.target.type !== 'submit') return;
     const updatedData = {};
     for (const key of Object.keys(dirtyFields)) {
       if (key === 'inferiors') {
@@ -80,19 +98,19 @@ export const EditProfile = () => {
           <div className="field">
             <label className="label">Name</label>
             <div className="control">
-              <input type="text" className="input" defaultValue={employee.name} placeholder="name" {...register("name", { required: true })}/>
+              <input type="text" name="field_name" className="input" defaultValue={employee.name} placeholder="name" {...register("name", { required: true })}/>
             </div>
           </div>
           <div className="field">
             <label className="label">Title</label>
             <div className="control">
-              <input type="text" className="input" defaultValue={employee.title} placeholder="title" {...register("title", { required: true })}/>
+              <input type="text" name="field_title" className="input" defaultValue={employee.title} placeholder="title" {...register("title", { required: true })}/>
             </div>
           </div>
           <div className="field">
             <label className="label">Email</label>
             <div className="control">
-              <input type="email" className="input" defaultValue={employee.email} placeholder="email" {...register("email", { required: true })}/>
+              <input type="email" name="field_email" className="input" defaultValue={employee.email} placeholder="email" {...register("email", { required: true })}/>
             </div>
           </div>
           <div className="field">
@@ -109,7 +127,7 @@ export const EditProfile = () => {
           <div className="field">
             <label className="label">Superior</label>
             <div className="control">
-              <input type="text" className="input" placeholder="superior" {...register}/>
+              <input type="text" name="field_superior" className="input" placeholder="superior" {...register}/>
             </div>
           </div>
           <div className="field">
@@ -118,7 +136,7 @@ export const EditProfile = () => {
               <input type="hidden" defaultValue={employee.inferiors} {...register("inferiors")}/>
               <div class="dropdown is-active">
                 <div class="dropdown-trigger">
-                  <input type="text" className="input" placeholder="inferiors" onInput={searchInferiors}/>
+                  <input type="text" className="input" placeholder="inferiors" value={inferiorKeyword} onChange={updateInferiorKeyword} onKeyPress={triggerSearchInferior}/>
                 </div>
                 {searchedInferiors.length > 0 &&
                   <div className="dropdown-menu" id="dropdown-menu" role="menu">
@@ -157,7 +175,7 @@ export const EditProfile = () => {
               <input type="reset" className="button" value="Reset"/>
             </div>
             <div className="control">
-              <input type="submit" className="button is-link" value="Submit"/>
+              <input type="submit" name="btn_submit" className="button is-link" value="Submit"/>
             </div>
             <div className="control">
               <button className="button is-link is-light" onClick={cancelEdit}>Cancel</button>
