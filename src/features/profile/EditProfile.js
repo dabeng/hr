@@ -62,6 +62,17 @@ export const EditProfile = () => {
     history.push(`/profile/${employee.id}`);
   };
 
+  const bindRelation = (index) => {
+    setInferiorNames(prev => {
+      const temp0 = [...prev];
+      temp0.push(searchedInferiors[index].name);
+      return temp0;
+    });
+    const temp = getValues("inferiors").split(',');
+    temp.push(searchedInferiors[index].id);
+    setValue('inferiors', temp.join(','), { shouldDirty: true });
+  };
+
   const unbindRelation = (index) => {
     setInferiorNames(prev => {
       const temp0 = [...prev];
@@ -141,9 +152,12 @@ export const EditProfile = () => {
                 {searchedInferiors.length > 0 &&
                   <div className="dropdown-menu" id="dropdown-menu" role="menu">
                     <div className="dropdown-content">
-                      {searchedInferiors.map(inferior => (
-                        <a className="dropdown-item" style={{"whiteSpace": "nowrap"}}>
-                          <span>{inferior.name}</span> | <span>{inferior.email}</span>
+                      {searchedInferiors.map((inferior, index) => (
+                        <a key={inferior.id} className="dropdown-item" style={{"whiteSpace": "nowrap"}} onClick={() => bindRelation(index)}>
+                          <label className="checkbox">
+                            <input type="checkbox"/>&nbsp;
+                            <span>{inferior.name}</span> | <span>{inferior.email}</span>
+                          </label>
                         </a>
                       ))}
                     </div>
