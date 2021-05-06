@@ -1,4 +1,4 @@
-import React, { useEffect, unwrapResult, useState } from "react";
+import React, { useEffect, unwrapResult, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -12,6 +12,8 @@ export const EditProfile = () => {
   const history = useHistory();
   const { value: employee, status} = useSelector(selectEmployee);
   const [inferiorKeyword, setInferiorKeyword] = useState("");
+  const inferiorDropdown = useRef(null);
+  const [isLoadingInferiors, setIsLoadingInferiors] = useState(false);
   const [searchedInferiors, setSearchedInferiors] = useState([]);
   const [inferiorNames, setInferiorNames] = useState(employee.inferior_names);
 
@@ -41,6 +43,7 @@ export const EditProfile = () => {
     if (e.key === 'Enter') {
       e.preventDefault();
       if (inferiorKeyword.length) {
+        setIsLoadingInferiors(true);
         searchInferior();
       }
     }
@@ -62,14 +65,29 @@ export const EditProfile = () => {
     history.push(`/profile/${employee.id}`);
   };
 
-  const bindRelation = (index) => {
+  const bindRelation = () => {
+    setIsLoadingInferiors(false);
+    // 在搜到的dropdown menu中，提取选中inferior item的索引值
+    const checkboxes = inferiorDropdown.current.querySelectorAll(`input[name="searchedInferiorList"]:checked`);
+    let values = [];
+    checkboxes.forEach((checkbox) => {
+        values.push(checkbox.value);
+    });
+
+    // 向inferior tag list追加新的值
     setInferiorNames(prev => {
       const temp0 = [...prev];
-      temp0.push(searchedInferiors[index].name);
+      values.forEach(index => {
+        temp0.push(searchedInferiors[index].name);
+      });
+      
       return temp0;
     });
+    // 向react-hook-form中注册的inferior字段中追加新的inferior的id
     const temp = getValues("inferiors").split(',');
-    temp.push(searchedInferiors[index].id);
+    values.forEach(index => {
+      temp.push(searchedInferiors[index].id);
+    });
     setValue('inferiors', temp.join(','), { shouldDirty: true });
   };
 
@@ -145,21 +163,23 @@ export const EditProfile = () => {
             <label className="label">Inferiors</label>
             <div className="control">
               <input type="hidden" defaultValue={employee.inferiors} {...register("inferiors")}/>
-              <div class="dropdown is-active">
-                <div class="dropdown-trigger">
+              <div ref={inferiorDropdown} className={"dropdown" + (isLoadingInferiors ? " is-active" : "")}>
+                <div className="dropdown-trigger">
                   <input type="text" className="input" placeholder="inferiors" value={inferiorKeyword} onChange={updateInferiorKeyword} onKeyPress={triggerSearchInferior}/>
                 </div>
                 {searchedInferiors.length > 0 &&
                   <div className="dropdown-menu" id="dropdown-menu" role="menu">
                     <div className="dropdown-content">
                       {searchedInferiors.map((inferior, index) => (
-                        <a key={inferior.id} className="dropdown-item" style={{"whiteSpace": "nowrap"}} onClick={() => bindRelation(index)}>
+                        <a key={inferior.id} className="dropdown-item" style={{"whiteSpace": "nowrap"}}>
                           <label className="checkbox">
-                            <input type="checkbox"/>&nbsp;
+                            <input type="checkbox" name="searchedInferiorList" value={index}/>&nbsp;
                             <span>{inferior.name}</span> | <span>{inferior.email}</span>
                           </label>
                         </a>
                       ))}
+                      <hr className="dropdown-divider"/>
+                      <button type="button" className="button is-primary is-small is-fullwidth" onClick={bindRelation}>Done</button>
                     </div>
                   </div>
                 }
