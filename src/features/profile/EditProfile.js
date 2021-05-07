@@ -166,7 +166,7 @@ export const EditProfile = () => {
             <label className="label">Inferiors</label>
             <div className={"control" + (isLoadingInferiors ? " is-loading" : "")}>
               <input type="hidden" defaultValue={employee.inferiors} {...register("inferiors")}/>
-              <div ref={inferiorDropdown} className={"dropdown" + (searchedInferiors !== undefined ? " is-active" : "")}>
+              <div ref={inferiorDropdown} className={"dropdown" + (searchedInferiors !== undefined ? " is-active" : "")} style={{"display": "block"}}>
                 <div className="dropdown-trigger">
                   <input type="text" className="input" placeholder="inferiors" value={inferiorKeyword} onChange={updateInferiorKeyword} onKeyPress={triggerSearchInferior}/>
                 </div>
