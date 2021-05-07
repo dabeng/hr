@@ -14,7 +14,7 @@ export const EditProfile = () => {
   const [inferiorKeyword, setInferiorKeyword] = useState("");
   const inferiorDropdown = useRef(null);
   const [isLoadingInferiors, setIsLoadingInferiors] = useState(false);
-  const [searchedInferiors, setSearchedInferiors] = useState([]);
+  const [searchedInferiors, setSearchedInferiors] = useState(undefined);
   const [inferiorNames, setInferiorNames] = useState(employee.inferior_names);
 
   // useEffect(() => { // TODO: 不知道为什么组件加载时，该值仍是succeeded
@@ -58,6 +58,8 @@ export const EditProfile = () => {
     } catch (err) {
       showError('Failed to fetch inferior info'); // for users
       console.log('Error: ' + err.response.data); // for developers
+    } finally {
+      setIsLoadingInferiors(false);
     }
   };
 
@@ -66,7 +68,6 @@ export const EditProfile = () => {
   };
 
   const bindRelation = () => {
-    setIsLoadingInferiors(false);
     // 在搜到的dropdown menu中，提取选中inferior item的索引值
     const checkboxes = inferiorDropdown.current.querySelectorAll(`input[name="searchedInferiorList"]:checked`);
     let values = [];
@@ -89,6 +90,8 @@ export const EditProfile = () => {
       temp.push(searchedInferiors[index].id);
     });
     setValue('inferiors', temp.join(','), { shouldDirty: true });
+    // 
+    setSearchedInferiors(undefined);
   };
 
   const unbindRelation = (index) => {
@@ -161,25 +164,34 @@ export const EditProfile = () => {
           </div>
           <div className="field">
             <label className="label">Inferiors</label>
-            <div className="control">
+            <div className={"control" + (isLoadingInferiors ? " is-loading" : "")}>
               <input type="hidden" defaultValue={employee.inferiors} {...register("inferiors")}/>
-              <div ref={inferiorDropdown} className={"dropdown" + (isLoadingInferiors ? " is-active" : "")}>
+              <div ref={inferiorDropdown} className={"dropdown" + (searchedInferiors !== undefined ? " is-active" : "")}>
                 <div className="dropdown-trigger">
                   <input type="text" className="input" placeholder="inferiors" value={inferiorKeyword} onChange={updateInferiorKeyword} onKeyPress={triggerSearchInferior}/>
                 </div>
-                {searchedInferiors.length > 0 &&
-                  <div className="dropdown-menu" id="dropdown-menu" role="menu">
+                {searchedInferiors !== undefined &&
+                  <div className="dropdown-menu" role="menu">
                     <div className="dropdown-content">
-                      {searchedInferiors.map((inferior, index) => (
-                        <a key={inferior.id} className="dropdown-item" style={{"whiteSpace": "nowrap"}}>
-                          <label className="checkbox">
-                            <input type="checkbox" name="searchedInferiorList" value={index}/>&nbsp;
-                            <span>{inferior.name}</span> | <span>{inferior.email}</span>
-                          </label>
-                        </a>
-                      ))}
-                      <hr className="dropdown-divider"/>
-                      <button type="button" className="button is-primary is-small is-fullwidth" onClick={bindRelation}>Done</button>
+                      {searchedInferiors.length === 0 &&
+                        <div class="dropdown-item">
+                          <p className="has-text-danger">No results found</p>
+                        </div>
+                      }
+                      {searchedInferiors.length > 0 &&
+                        <>
+                          {searchedInferiors.map((inferior, index) => (
+                            <a key={inferior.id} className="dropdown-item" style={{"whiteSpace": "nowrap"}}>
+                              <label className="checkbox">
+                                <input type="checkbox" name="searchedInferiorList" value={index}/>&nbsp;
+                                <span>{inferior.name}</span> | <span>{inferior.email}</span>
+                              </label>
+                            </a>
+                          ))}
+                          <hr className="dropdown-divider"/>
+                          <button type="button" className="button is-primary is-small is-fullwidth" onClick={bindRelation}>Done</button>
+                        </>
+                      }
                     </div>
                   </div>
                 }
