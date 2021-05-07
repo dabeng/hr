@@ -164,7 +164,9 @@ export const EditProfile = () => {
           </div>
           <div className="field">
             <label className="label">Inferiors</label>
-            <div className={"control" + (isLoadingInferiors ? " is-loading" : "")}>
+            <div className="control">
+              <div className="field has-addons">
+                <div className={"control is-expanded" + (isLoadingInferiors ? " is-loading" : "")}>
               <input type="hidden" defaultValue={employee.inferiors} {...register("inferiors")}/>
               <div ref={inferiorDropdown} className={"dropdown" + (searchedInferiors !== undefined ? " is-active" : "")} style={{"display": "block"}}>
                 <div className="dropdown-trigger">
@@ -197,12 +199,17 @@ export const EditProfile = () => {
                 }
               </div>
             </div>
-            {inferiorNames.map((inferiorName, index) => (
-              <span key={index} className="tag is-info is-light" style={{margin: "0.5rem 0.5rem 0 0"}}>
-                {inferiorName}
-                <button type="button" className="delete" onClick={() => unbindRelation(index)}></button>
-              </span>
-            ))}
+                <div className="control">
+                  <button type="button" className="button is-primary">Search</button>
+                </div>
+              </div>
+              {inferiorNames.map((inferiorName, index) => (
+                <span key={index} className="tag is-info is-light" style={{margin: "0.5rem 0.5rem 0 0"}}>
+                  {inferiorName}
+                  <button type="button" className="delete" onClick={() => unbindRelation(index)}></button>
+                </span>
+              ))}
+            </div>
           </div>
           <div className="field">
             <label className="label">Joined Date</label>
