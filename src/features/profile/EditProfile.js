@@ -43,7 +43,6 @@ export const EditProfile = () => {
     if (e.key === 'Enter') {
       e.preventDefault();
       if (inferiorKeyword.length) {
-        setIsLoadingInferiors(true);
         searchInferior();
       }
     }
@@ -51,10 +50,9 @@ export const EditProfile = () => {
 
   const searchInferior = async () => {
     try {
+      setIsLoadingInferiors(true);
       const response = await clientAPI.fetchEmployees({q: inferiorKeyword});
-      
-        setSearchedInferiors(response.data);
-      
+      setSearchedInferiors(response.data);
     } catch (err) {
       showError('Failed to fetch inferior info'); // for users
       console.log('Error: ' + err.response.data); // for developers
@@ -167,40 +165,40 @@ export const EditProfile = () => {
             <div className="control">
               <div className="field has-addons">
                 <div className={"control is-expanded" + (isLoadingInferiors ? " is-loading" : "")}>
-              <input type="hidden" defaultValue={employee.inferiors} {...register("inferiors")}/>
-              <div ref={inferiorDropdown} className={"dropdown" + (searchedInferiors !== undefined ? " is-active" : "")} style={{"display": "block"}}>
-                <div className="dropdown-trigger">
-                  <input type="text" className="input" placeholder="inferiors" value={inferiorKeyword} onChange={updateInferiorKeyword} onKeyPress={triggerSearchInferior}/>
-                </div>
-                {searchedInferiors !== undefined &&
-                  <div className="dropdown-menu" role="menu">
-                    <div className="dropdown-content">
-                      {searchedInferiors.length === 0 &&
-                        <div class="dropdown-item">
-                          <p className="has-text-danger">No results found</p>
-                        </div>
-                      }
-                      {searchedInferiors.length > 0 &&
-                        <>
-                          {searchedInferiors.map((inferior, index) => (
-                            <a key={inferior.id} className="dropdown-item" style={{"whiteSpace": "nowrap"}}>
-                              <label className="checkbox">
-                                <input type="checkbox" name="searchedInferiorList" value={index}/>&nbsp;
-                                <span>{inferior.name}</span> | <span>{inferior.email}</span>
-                              </label>
-                            </a>
-                          ))}
-                          <hr className="dropdown-divider"/>
-                          <button type="button" className="button is-primary is-small is-fullwidth" onClick={bindRelation}>Done</button>
-                        </>
-                      }
+                  <input type="hidden" defaultValue={employee.inferiors} {...register("inferiors")}/>
+                  <div ref={inferiorDropdown} className={"dropdown" + (searchedInferiors !== undefined ? " is-active" : "")} style={{"display": "block"}}>
+                    <div className="dropdown-trigger">
+                      <input type="text" className="input" placeholder="inferiors" value={inferiorKeyword} onChange={updateInferiorKeyword} onKeyPress={triggerSearchInferior}/>
                     </div>
+                    {searchedInferiors !== undefined &&
+                      <div className="dropdown-menu" role="menu">
+                        <div className="dropdown-content">
+                          {searchedInferiors.length === 0 &&
+                            <div class="dropdown-item">
+                              <p className="has-text-danger">No results found</p>
+                            </div>
+                          }
+                          {searchedInferiors.length > 0 &&
+                            <>
+                              {searchedInferiors.map((inferior, index) => (
+                                <a key={inferior.id} className="dropdown-item" style={{"whiteSpace": "nowrap"}}>
+                                  <label className="checkbox">
+                                    <input type="checkbox" name="searchedInferiorList" value={index}/>&nbsp;
+                                    <span>{inferior.name}</span> | <span>{inferior.email}</span>
+                                  </label>
+                                </a>
+                              ))}
+                              <hr className="dropdown-divider"/>
+                              <button type="button" className="button is-primary is-small is-fullwidth" onClick={bindRelation}>Done</button>
+                            </>
+                          }
+                        </div>
+                      </div>
+                    }
                   </div>
-                }
-              </div>
-            </div>
+                </div>
                 <div className="control">
-                  <button type="button" className="button is-primary">Search</button>
+                  <button type="button" className="button is-primary" onClick={searchInferior}>Search</button>
                 </div>
               </div>
               {inferiorNames.map((inferiorName, index) => (
