@@ -17,6 +17,9 @@ export const EditProfile = () => {
   const [searchedInferiors, setSearchedInferiors] = useState(undefined);
   const [inferiorNames, setInferiorNames] = useState(employee.inferior_names);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const PAGE_SIZE = 5;
+
   // useEffect(() => { // TODO: 不知道为什么组件加载时，该值仍是succeeded
   //   if (status === 'succeeded') {
   //     history.push(`/profile/${employee.id}`);
@@ -51,7 +54,11 @@ export const EditProfile = () => {
   const searchInferior = async () => {
     try {
       setIsLoadingInferiors(true);
-      const response = await clientAPI.fetchEmployees({q: inferiorKeyword});
+      const response = await clientAPI.fetchEmployees({
+        q: inferiorKeyword,
+        _page: currentPage,
+        _limit: PAGE_SIZE,
+      });
       setSearchedInferiors(response.data);
     } catch (err) {
       showError('Failed to fetch inferior info'); // for users
