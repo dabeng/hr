@@ -1,0 +1,15 @@
+.inferiors_mask {
+  background-color: rgba($color:white, $alpha: 0.5);
+  z-index: 1;
+  text-align: center;
+  padding-top: 5rem;
+}
+
+.inferiors_list {
+  max-height: 10rem;
+  overflow-y: auto;
+
+  &.is-fetching {
+    overflow-y: hidden;
+  }
+}

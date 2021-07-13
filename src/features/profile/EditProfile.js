@@ -6,6 +6,9 @@ import { useForm } from "react-hook-form";
 import { showError } from "../core/errorSlice";
 import clientAPI from "../core/clientAPI";
 import { selectEmployee, updateEmployee, setEmployee, clearEmployeeState } from "../employees/employeeSlice";
+import useInfiniteScroll from "../core/useInfiniteScroll";
+
+import styles from "./EditProfile.module.scss";
 
 export const EditProfile = () => {
   const dispatch = useDispatch();
@@ -19,6 +22,8 @@ export const EditProfile = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const PAGE_SIZE = 5;
+  const inferiorContainer = useRef(null);
+  
 
   // useEffect(() => { // TODO: 不知道为什么组件加载时，该值仍是succeeded
   //   if (status === 'succeeded') {
@@ -67,6 +72,19 @@ export const EditProfile = () => {
       setIsLoadingInferiors(false);
     }
   };
+
+  const loadMoreInfoeriors = async () => {
+    console.log('fetch more data');
+    const response = await clientAPI.fetchEmployees({
+      q: inferiorKeyword,
+      _page: currentPage + 1,
+      _limit: PAGE_SIZE,
+    });
+    setCurrentPage(prevPage => prevPage + 1);
+    setSearchedInferiors([...searchedInferiors, ...response.data]);
+    setIsFetching(false);
+  };
+  const [isFetching, setIsFetching] = useInfiniteScroll(inferiorContainer, loadMoreInfoeriors);
 
   const cancelEdit = e => {
     history.push(`/profile/${employee.id}`);
@@ -177,17 +195,20 @@ export const EditProfile = () => {
                     <div className="dropdown-trigger">
                       <input type="text" className="input" placeholder="inferiors" value={inferiorKeyword} onChange={updateInferiorKeyword} onKeyPress={triggerSearchInferior}/>
                     </div>
-                    {searchedInferiors !== undefined &&
                       <div className="dropdown-menu" role="menu">
                         <div className="dropdown-content">
-                          {searchedInferiors.length === 0 &&
-                            <div class="dropdown-item">
-                              <p className="has-text-danger">No results found</p>
+                          {searchedInferiors && searchedInferiors.length > 0 &&
+                            <div className={styles.inferiors_mask + " is-overlay " + (isFetching ? "" : "is-hidden")}>
+                              <i className="fas fa-circle-notch fa-spin fa-3x spinner"></i>
                             </div>
                           }
-                          {searchedInferiors.length > 0 &&
-                            <>
-                              {searchedInferiors.map((inferior, index) => (
+                            <div className={styles.inferiors_list + (isFetching ? "" : " is-fetching")} ref={inferiorContainer}>
+                              {searchedInferiors && searchedInferiors.length === 0 &&
+                                <div class="dropdown-item">
+                                  <p className="has-text-danger">No results found</p>
+                                </div>
+                              }
+                              {searchedInferiors && searchedInferiors.length > 0 && searchedInferiors.map((inferior, index) => (
                                 <a key={inferior.id} className="dropdown-item" style={{"whiteSpace": "nowrap"}}>
                                   <label className="checkbox">
                                     <input type="checkbox" name="searchedInferiorList" value={index}/>&nbsp;
@@ -195,13 +216,15 @@ export const EditProfile = () => {
                                   </label>
                                 </a>
                               ))}
+                            </div>
+                            {searchedInferiors && searchedInferiors.length > 0 &&
+                            <>
                               <hr className="dropdown-divider"/>
                               <button type="button" className="button is-primary is-small is-fullwidth" onClick={bindRelation}>Done</button>
                             </>
-                          }
+                            }
                         </div>
                       </div>
-                    }
                   </div>
                 </div>
                 <div className="control">
