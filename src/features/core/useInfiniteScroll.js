@@ -2,25 +2,26 @@ import { useState, useEffect } from 'react';
 
 import {debounce} from './utils';
 
-const useInfiniteScroll = (container, callback) => {
+const useInfiniteScroll = (containerRef) => {
   const [isFetching, setIsFetching] = useState(false);
 
   useEffect(() => {
+    const container = containerRef.current;
 
-      container.current.addEventListener('scroll', debounce(handleScroll, 1000));
+    function handleScroll() {
+      if (container.scrollHeight - container.scrollTop > container.clientHeight || isFetching) return;
+      setIsFetching(true);
+    }
 
-    return () => container.current.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  useEffect(() => {
-    if (!isFetching) return;
-    callback();
-  }, [isFetching]);
-
-  function handleScroll() {
-    if (container.current.scrollHeight - container.current.scrollTop > container.current.clientHeight || isFetching) return;
-    setIsFetching(true);
-  }
+    if (container) {
+      container.addEventListener('scroll', debounce(handleScroll, 1000));
+    }
+    return () => {
+      if (container) {
+        container.removeEventListener('scroll', handleScroll);
+      }
+    }
+  }, [containerRef, isFetching]);
 
   return [isFetching, setIsFetching];
 };

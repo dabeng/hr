@@ -1,30 +1,31 @@
-import React, { useEffect, unwrapResult, useState, useRef } from "react";
+import React, {useEffect, useState, useRef, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
 
 import { showError } from "../core/errorSlice";
 import clientAPI from "../core/clientAPI";
-import { selectEmployee, updateEmployee, setEmployee, clearEmployeeState } from "../employees/employeeSlice";
+import { selectEmployee, updateEmployee } from "../employees/employeeSlice";
 import useInfiniteScroll from "../core/useInfiniteScroll";
 
+import "./EditProfile.scss";
 import styles from "./EditProfile.module.scss";
 
 export const EditProfile = () => {
   const dispatch = useDispatch();
   const history = useHistory();
-  const { value: employee, status} = useSelector(selectEmployee);
+  const { value: employee} = useSelector(selectEmployee);
   const [inferiorKeyword, setInferiorKeyword] = useState("");
   const inferiorDropdown = useRef(null);
-  const [isLoadingInferiors, setIsLoadingInferiors] = useState(false);
   const [searchedInferiors, setSearchedInferiors] = useState(undefined);
   const [inferiorNames, setInferiorNames] = useState(employee.inferior_names);
 
-  const [currentPage, setCurrentPage] = useState(1);
+  const [isLoadFirst, setIsLoadFirst] = useState(false);
+  const [currentPage, setCurrentPage] = useState(0);
   const PAGE_SIZE = 5;
   const inferiorContainer = useRef(null);
+  const keywordInput = useRef(null);
   
-
   // useEffect(() => { // TODO: 不知道为什么组件加载时，该值仍是succeeded
   //   if (status === 'succeeded') {
   //     history.push(`/profile/${employee.id}`);
@@ -36,55 +37,57 @@ export const EditProfile = () => {
     handleSubmit,
     setValue,
     getValues,
-    formState: { errors, dirtyFields },
+    formState: { dirtyFields },
   } = useForm();
 
-  const updateInferiorKeyword = e => {
-    setInferiorKeyword(e.target.value.trim());
+  // 开始查询下级数据，也即第一页数据
+  const triggerSearchInferior = () => {
+    setIsLoadFirst(true);
+    setCurrentPage(1);
+    setInferiorKeyword(keywordInput.current.value.trim());
   };
 
-  // const searchInferior = e => {
-  //   dispatch(fetchEmployees({page: 1, pageSize: PAGE_SIZE, keyword}));
-  // };
-
-  const triggerSearchInferior = e => {
+  const handleKeywordInput = e => {
     if (e.key === 'Enter') {
       e.preventDefault();
-      if (inferiorKeyword.length) {
-        searchInferior();
+      if (keywordInput.current.value.trim().length) {
+        triggerSearchInferior();
       }
     }
   };
 
-  const searchInferior = async () => {
-    try {
-      setIsLoadingInferiors(true);
-      const response = await clientAPI.fetchEmployees({
-        q: inferiorKeyword,
-        _page: currentPage,
-        _limit: PAGE_SIZE,
-      });
-      setSearchedInferiors(response.data);
-    } catch (err) {
-      showError('Failed to fetch inferior info'); // for users
-      console.log('Error: ' + err.response.data); // for developers
-    } finally {
-      setIsLoadingInferiors(false);
+  const handleClickSearch = () => {
+    if (keywordInput.current.value.trim().length) {
+      triggerSearchInferior();
     }
   };
 
+  const [isFetching, setIsFetching] = useInfiniteScroll(inferiorContainer);
   const loadMoreInfoeriors = async () => {
-    console.log('fetch more data');
     const response = await clientAPI.fetchEmployees({
       q: inferiorKeyword,
-      _page: currentPage + 1,
+      _page: currentPage,
       _limit: PAGE_SIZE,
     });
-    setCurrentPage(prevPage => prevPage + 1);
-    setSearchedInferiors([...searchedInferiors, ...response.data]);
-    setIsFetching(false);
+    if (currentPage === 1) {
+      setSearchedInferiors(response.data);
+      setIsLoadFirst(false);
+    } else {
+      setSearchedInferiors([...searchedInferiors, ...response.data]);
+      setIsFetching(false);
+    }
   };
-  const [isFetching, setIsFetching] = useInfiniteScroll(inferiorContainer, loadMoreInfoeriors);
+
+  useEffect(() => {
+    if (currentPage && inferiorKeyword) {
+      loadMoreInfoeriors();
+    }
+  }, [currentPage, inferiorKeyword]);
+
+  useEffect(() => {
+    if (!isFetching) return;
+    setCurrentPage(prevPage => prevPage + 1);
+  }, [isFetching]);
 
   const cancelEdit = e => {
     history.push(`/profile/${employee.id}`);
@@ -114,6 +117,8 @@ export const EditProfile = () => {
     });
     setValue('inferiors', temp.join(','), { shouldDirty: true });
     // 
+    setCurrentPage(0);
+    setInferiorKeyword('');
     setSearchedInferiors(undefined);
   };
 
@@ -189,22 +194,24 @@ export const EditProfile = () => {
             <label className="label">Inferiors</label>
             <div className="control">
               <div className="field has-addons">
-                <div className={"control is-expanded" + (isLoadingInferiors ? " is-loading" : "")}>
+                <div className="control is-expanded">
                   <input type="hidden" defaultValue={employee.inferiors} {...register("inferiors")}/>
-                  <div ref={inferiorDropdown} className={"dropdown" + (searchedInferiors !== undefined ? " is-active" : "")} style={{"display": "block"}}>
+                  {/* currentPage或inferiorKeyword获得有效值后，意味着开始查询下级，弹出下拉菜单 */}
+                  <div ref={inferiorDropdown} className={"dropdown" + (currentPage > 0 ? " is-active" : "")} style={{"display": "block"}}>
                     <div className="dropdown-trigger">
-                      <input type="text" className="input" placeholder="inferiors" value={inferiorKeyword} onChange={updateInferiorKeyword} onKeyPress={triggerSearchInferior}/>
+                      <input type="text" className="input" placeholder="inferiors" ref={keywordInput} onKeyPress={handleKeywordInput}/>
                     </div>
+
                       <div className="dropdown-menu" role="menu">
                         <div className="dropdown-content">
-                          {searchedInferiors && searchedInferiors.length > 0 &&
-                            <div className={styles.inferiors_mask + " is-overlay " + (isFetching ? "" : "is-hidden")}>
+
+                            <div className={styles.inferiors_mask + " is-overlay " + ((isLoadFirst || isFetching) ? "" : "is-hidden")}>
                               <i className="fas fa-circle-notch fa-spin fa-3x spinner"></i>
                             </div>
-                          }
+                          
                             <div className={styles.inferiors_list + (isFetching ? "" : " is-fetching")} ref={inferiorContainer}>
                               {searchedInferiors && searchedInferiors.length === 0 &&
-                                <div class="dropdown-item">
+                                <div className="dropdown-item">
                                   <p className="has-text-danger">No results found</p>
                                 </div>
                               }
@@ -225,10 +232,11 @@ export const EditProfile = () => {
                             }
                         </div>
                       </div>
+                    
                   </div>
                 </div>
                 <div className="control">
-                  <button type="button" className="button is-primary" onClick={searchInferior}>Search</button>
+                  <button type="button" className="button is-primary" onClick={handleClickSearch}>Search</button>
                 </div>
               </div>
               {inferiorNames.map((inferiorName, index) => (
