@@ -15,6 +15,7 @@ export const EditProfile = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const { value: employee} = useSelector(selectEmployee);
+  const [inferiorKeywordInput, setInferiorKeywordInput] = useState("");
   const [inferiorKeyword, setInferiorKeyword] = useState("");
   const inferiorDropdown = useRef(null);
   const [searchedInferiors, setSearchedInferiors] = useState(undefined);
@@ -24,7 +25,6 @@ export const EditProfile = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const PAGE_SIZE = 5;
   const inferiorContainer = useRef(null);
-  const keywordInput = useRef(null);
   
   // useEffect(() => { // TODO: 不知道为什么组件加载时，该值仍是succeeded
   //   if (status === 'succeeded') {
@@ -40,24 +40,28 @@ export const EditProfile = () => {
     formState: { dirtyFields },
   } = useForm();
 
+  const handleIKInputChange = e => {
+    setInferiorKeywordInput(e.target.value.trim());
+  };
+
   // 开始查询下级数据，也即第一页数据
   const triggerSearchInferior = () => {
     setIsLoadFirst(true);
     setCurrentPage(1);
-    setInferiorKeyword(keywordInput.current.value.trim());
+    setInferiorKeyword(inferiorKeywordInput);
   };
 
   const handleKeywordInput = e => {
     if (e.key === 'Enter') {
       e.preventDefault();
-      if (keywordInput.current.value.trim().length) {
+      if (inferiorKeywordInput.length) {
         triggerSearchInferior();
       }
     }
   };
 
   const handleClickSearch = () => {
-    if (keywordInput.current.value.trim().length) {
+    if (inferiorKeywordInput.length) {
       triggerSearchInferior();
     }
   };
@@ -118,6 +122,7 @@ export const EditProfile = () => {
     setValue('inferiors', temp.join(','), { shouldDirty: true });
     // 
     setCurrentPage(0);
+    setInferiorKeywordInput('');
     setInferiorKeyword('');
     setSearchedInferiors(undefined);
   };
@@ -199,7 +204,7 @@ export const EditProfile = () => {
                   {/* currentPage或inferiorKeyword获得有效值后，意味着开始查询下级，弹出下拉菜单 */}
                   <div ref={inferiorDropdown} className={"dropdown" + (currentPage > 0 ? " is-active" : "")} style={{"display": "block"}}>
                     <div className="dropdown-trigger">
-                      <input type="text" className="input" placeholder="inferiors" ref={keywordInput} onKeyPress={handleKeywordInput}/>
+                      <input type="text" className="input" placeholder="inferiors" value={inferiorKeywordInput} onChange={handleIKInputChange} onKeyPress={handleKeywordInput}/>
                     </div>
 
                       <div className="dropdown-menu" role="menu">
