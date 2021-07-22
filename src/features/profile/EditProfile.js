@@ -209,7 +209,7 @@ export const EditProfile = () => {
                               <i className="fas fa-circle-notch fa-spin fa-3x spinner"></i>
                             </div>
                           
-                            <div className={styles.inferiors_list + (isFetching ? "" : " is-fetching")} ref={inferiorContainer}>
+                            <div className={styles.inferiors_list + (isFetching ? " " + styles.is_fetching : "")} ref={inferiorContainer}>
                               {searchedInferiors && searchedInferiors.length === 0 &&
                                 <div className="dropdown-item">
                                   <p className="has-text-danger">No results found</p>
