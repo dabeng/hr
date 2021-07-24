@@ -22,6 +22,7 @@ export const EditProfile = () => {
   const [inferiorNames, setInferiorNames] = useState(employee.inferior_names);
 
   const [isLoadFirst, setIsLoadFirst] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
   const PAGE_SIZE = 5;
   const inferiorContainer = useRef(null);
@@ -66,7 +67,11 @@ export const EditProfile = () => {
     }
   };
 
-  const [isFetching, setIsFetching] = useInfiniteScroll(inferiorContainer);
+  const loadMore = () => {
+    setIsFetching(true);
+  };
+
+  useInfiniteScroll(inferiorContainer, loadMore);
   const loadMoreInfoeriors = async () => {
     const response = await clientAPI.fetchEmployees({
       q: inferiorKeyword,
@@ -121,10 +126,11 @@ export const EditProfile = () => {
     });
     setValue('inferiors', temp.join(','), { shouldDirty: true });
     // 
-    setCurrentPage(0);
+
     setInferiorKeywordInput('');
     setInferiorKeyword('');
     setSearchedInferiors(undefined);
+    setCurrentPage(0);
   };
 
   const unbindRelation = (index) => {
