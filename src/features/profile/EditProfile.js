@@ -55,14 +55,14 @@ export const EditProfile = () => {
     inferiorContainer.current.scrollTop = 0;
     setIsLoadFirst(true);
     setCurrentPage(1);
-    // if (inferiorKeyword === inferiorKeywordInput) {
-    //   loadMoreInfoeriors();
-    // } else {
+    if (inferiorKeyword === inferiorKeywordInput) {
+      fetchInferiors();
+    } else {
       setInferiorKeyword(inferiorKeywordInput);
-    // }
+    }
   };
 
-  const handleKeywordInput = e => {
+  const handleIKInput = e => {
     if (e.key === 'Enter') {
       e.preventDefault();
       if (inferiorKeywordInput.length) {
@@ -77,12 +77,12 @@ export const EditProfile = () => {
     }
   };
 
-  const loadMore = () => {
+  const onILScrollDown = () => {
     setIsFetching(true);
   };
 
-  useInfiniteScroll(inferiorContainer, loadMore);
-  const loadMoreInfoeriors = async () => {
+  useInfiniteScroll(inferiorContainer, onILScrollDown);
+  const fetchInferiors = async () => {
     const response = await clientAPI.fetchEmployees({
       q: inferiorKeyword,
       _page: currentPage,
@@ -99,7 +99,7 @@ export const EditProfile = () => {
 
   useEffect(() => {
     if (currentPage && inferiorKeyword) {
-      loadMoreInfoeriors();
+      fetchInferiors();
     }
   }, [currentPage, inferiorKeyword]);
 
@@ -220,7 +220,7 @@ export const EditProfile = () => {
                   {/* currentPage或inferiorKeyword获得有效值后，意味着开始查询下级，弹出下拉菜单 */}
                   <div ref={inferiorDropdown} className={"dropdown" + (currentPage > 0 ? " is-active" : "")} style={{"display": "block"}}>
                     <div className="dropdown-trigger">
-                      <input type="text" className="input" placeholder="inferiors" value={inferiorKeywordInput} onChange={handleIKInputChange} onKeyPress={handleKeywordInput}/>
+                      <input type="text" className="input" placeholder="inferiors" value={inferiorKeywordInput} onChange={handleIKInputChange} onKeyPress={handleIKInput}/>
                     </div>
 
                       <div className="dropdown-menu" role="menu">
