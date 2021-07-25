@@ -47,9 +47,19 @@ export const EditProfile = () => {
 
   // 开始查询下级数据，也即第一页数据
   const triggerSearchInferior = () => {
+    /* 下面这句设置非常重要。因为inferior-list里的滚动条的当前位置会影响到重新查询第一页数据时的滚动条位置。一旦
+     * 当前的滚动条位置比较靠下，很可能导致重新渲染首页数据时，滚动条起始位置就进入了底部20px的区域内，进而导致了
+     * 自动的loadMore动作，这个动作冗余的，非预期的，所以这里我们通过提前设置scrollTop=0来控制滚动条的起始位置，
+     * 避免冗余的loadMore动作
+    */
+    inferiorContainer.current.scrollTop = 0;
     setIsLoadFirst(true);
     setCurrentPage(1);
-    setInferiorKeyword(inferiorKeywordInput);
+    // if (inferiorKeyword === inferiorKeywordInput) {
+    //   loadMoreInfoeriors();
+    // } else {
+      setInferiorKeyword(inferiorKeywordInput);
+    // }
   };
 
   const handleKeywordInput = e => {

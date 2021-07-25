@@ -6,7 +6,7 @@
 }
 
 .inferiors_list {
-  max-height: 10rem;
+  max-height: 8rem;
   overflow-y: auto;
 
   &.is_fetching { // 这个类很重要，当在请求远程数据时，禁掉scrollbar，也就禁掉了scroll事件
