@@ -21,8 +21,7 @@ export const EditProfile = () => {
   const [searchedInferiors, setSearchedInferiors] = useState(undefined);
   const [inferiorNames, setInferiorNames] = useState(employee.inferior_names);
 
-  const [isLoadFirst, setIsLoadFirst] = useState(false);
-  const [isFetching, setIsFetching] = useState(false);
+  const [isInferiorFetching, setIsInferiorFetching] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
   const PAGE_SIZE = 5;
   const inferiorContainer = useRef(null);
@@ -48,18 +47,14 @@ export const EditProfile = () => {
   // 开始查询下级数据，也即第一页数据
   const triggerSearchInferior = () => {
     /* 下面这句设置非常重要。因为inferior-list里的滚动条的当前位置会影响到重新查询第一页数据时的滚动条位置。一旦
-     * 当前的滚动条位置比较靠下，很可能导致重新渲染首页数据时，滚动条起始位置就进入了底部20px的区域内，进而导致了
-     * 自动的loadMore动作，这个动作冗余的，非预期的，所以这里我们通过提前设置scrollTop=0来控制滚动条的起始位置，
-     * 避免冗余的loadMore动作
+     * 当前的滚动条位置比较靠下，你又切换了一个关键字开始新搜索，那么很可能导致重新渲染首页数据时，滚动条起始位置就
+     * 进入了底部20px的区域内，进而导致了自动的loadMore动作，这个动作冗余的，非预期的，所以这里我们通过提前设置
+     * scrollTop=0来控制滚动条的起始位置，避免冗余的loadMore动作。
     */
     inferiorContainer.current.scrollTop = 0;
-    setIsLoadFirst(true);
-    setCurrentPage(1);
-    if (inferiorKeyword === inferiorKeywordInput) {
-      fetchInferiors();
-    } else {
-      setInferiorKeyword(inferiorKeywordInput);
-    }
+    setIsInferiorFetching(true);
+    setCurrentPage(0);
+    setInferiorKeyword(inferiorKeywordInput);
   };
 
   const handleIKInput = e => {
@@ -78,7 +73,7 @@ export const EditProfile = () => {
   };
 
   const onILScrollDown = () => {
-    setIsFetching(true);
+    setIsInferiorFetching(true);
   };
 
   useInfiniteScroll(inferiorContainer, onILScrollDown);
@@ -90,11 +85,10 @@ export const EditProfile = () => {
     });
     if (currentPage === 1) {
       setSearchedInferiors(response.data);
-      setIsLoadFirst(false);
     } else {
       setSearchedInferiors([...searchedInferiors, ...response.data]);
-      setIsFetching(false);
     }
+    setIsInferiorFetching(false);
   };
 
   useEffect(() => {
@@ -104,9 +98,9 @@ export const EditProfile = () => {
   }, [currentPage, inferiorKeyword]);
 
   useEffect(() => {
-    if (!isFetching) return;
+    if (!isInferiorFetching) return;
     setCurrentPage(prevPage => prevPage + 1);
-  }, [isFetching]);
+  }, [isInferiorFetching]);
 
   const cancelEdit = e => {
     history.push(`/profile/${employee.id}`);
@@ -217,8 +211,8 @@ export const EditProfile = () => {
               <div className="field has-addons">
                 <div className="control is-expanded">
                   <input type="hidden" defaultValue={employee.inferiors} {...register("inferiors")}/>
-                  {/* currentPage或inferiorKeyword获得有效值后，意味着开始查询下级，弹出下拉菜单 */}
-                  <div ref={inferiorDropdown} className={"dropdown" + (currentPage > 0 ? " is-active" : "")} style={{"display": "block"}}>
+                  {/* inferiorKeyword非空时，意味着开始查询下级，弹出下拉菜单 */}
+                  <div ref={inferiorDropdown} className={"dropdown" + (inferiorKeyword ? " is-active" : "")} style={{"display": "block"}}>
                     <div className="dropdown-trigger">
                       <input type="text" className="input" placeholder="inferiors" value={inferiorKeywordInput} onChange={handleIKInputChange} onKeyPress={handleIKInput}/>
                     </div>
@@ -226,11 +220,11 @@ export const EditProfile = () => {
                       <div className="dropdown-menu" role="menu">
                         <div className="dropdown-content">
 
-                            <div className={styles.inferiors_mask + " is-overlay " + ((isLoadFirst || isFetching) ? "" : "is-hidden")}>
+                            <div className={styles.inferiors_mask + " is-overlay " + (isInferiorFetching ? "" : "is-hidden")}>
                               <i className="fas fa-circle-notch fa-spin fa-3x spinner"></i>
                             </div>
                           
-                            <div className={styles.inferiors_list + (isFetching ? " " + styles.is_fetching : "")} ref={inferiorContainer}>
+                            <div className={styles.inferiors_list + (isInferiorFetching ? " " + styles.is_fetching : "")} ref={inferiorContainer}>
                               {searchedInferiors && searchedInferiors.length === 0 &&
                                 <div className="dropdown-item">
                                   <p className="has-text-danger">No results found</p>
