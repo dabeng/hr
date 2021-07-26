@@ -216,38 +216,34 @@ export const EditProfile = () => {
                     <div className="dropdown-trigger">
                       <input type="text" className="input" placeholder="inferiors" value={inferiorKeywordInput} onChange={handleIKInputChange} onKeyPress={handleIKInput}/>
                     </div>
-
-                      <div className="dropdown-menu" role="menu">
-                        <div className="dropdown-content">
-
-                            <div className={styles.inferiors_mask + " is-overlay " + (isInferiorFetching ? "" : "is-hidden")}>
-                              <i className="fas fa-circle-notch fa-spin fa-3x spinner"></i>
-                            </div>
-                          
-                            <div className={styles.inferiors_list + (isInferiorFetching ? " " + styles.is_fetching : "")} ref={inferiorContainer}>
-                              {searchedInferiors && searchedInferiors.length === 0 &&
-                                <div className="dropdown-item">
-                                  <p className="has-text-danger">No results found</p>
-                                </div>
-                              }
-                              {searchedInferiors && searchedInferiors.length > 0 && searchedInferiors.map((inferior, index) => (
-                                <a key={inferior.id} className="dropdown-item" style={{"whiteSpace": "nowrap"}}>
-                                  <label className="checkbox">
-                                    <input type="checkbox" name="searchedInferiorList" value={index}/>&nbsp;
-                                    <span>{inferior.name}</span> | <span>{inferior.email}</span>
-                                  </label>
-                                </a>
-                              ))}
-                            </div>
-                            {searchedInferiors && searchedInferiors.length > 0 &&
-                            <>
-                              <hr className="dropdown-divider"/>
-                              <button type="button" className="button is-primary is-small is-fullwidth" onClick={bindRelation}>Done</button>
-                            </>
-                            }
+                    <div className="dropdown-menu" role="menu">
+                      <div className="dropdown-content">
+                        <div className={styles.inferiors_mask + " is-overlay " + (isInferiorFetching ? "" : "is-hidden")}>
+                          <i className="fas fa-circle-notch fa-spin fa-3x spinner"></i>
                         </div>
+                        <div className={styles.inferiors_list + (isInferiorFetching ? " " + styles.is_fetching : "")} ref={inferiorContainer}>
+                          {searchedInferiors && searchedInferiors.length === 0 &&
+                            <div className="dropdown-item">
+                              <p className="has-text-danger">No results found</p>
+                            </div>
+                          }
+                          {searchedInferiors && searchedInferiors.length > 0 && searchedInferiors.map((inferior, index) => (
+                            <a key={inferior.id} className="dropdown-item" style={{"whiteSpace": "nowrap"}}>
+                              <label className="checkbox">
+                                <input type="checkbox" name="searchedInferiorList" value={index}/>&nbsp;
+                                <span>{inferior.name}</span> | <span>{inferior.email}</span>
+                              </label>
+                            </a>
+                          ))}
+                        </div>
+                        {searchedInferiors && searchedInferiors.length > 0 &&
+                          <>
+                            <hr className="dropdown-divider"/>
+                            <button type="button" className="button is-primary is-small is-fullwidth" onClick={bindRelation}>Done</button>
+                          </>
+                        }
                       </div>
-                    
+                    </div>
                   </div>
                 </div>
                 <div className="control">
