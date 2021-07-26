@@ -52,9 +52,9 @@ export const EditProfile = () => {
      * scrollTop=0来控制滚动条的起始位置，避免冗余的loadMore动作。
     */
     inferiorContainer.current.scrollTop = 0;
-    setIsInferiorFetching(true);
-    setCurrentPage(0);
+    setCurrentPage(1);
     setInferiorKeyword(inferiorKeywordInput);
+    setIsInferiorFetching(true);
   };
 
   const handleIKInput = e => {
@@ -73,34 +73,31 @@ export const EditProfile = () => {
   };
 
   const onILScrollDown = () => {
+    setCurrentPage(prevPage => prevPage + 1);
     setIsInferiorFetching(true);
   };
 
   useInfiniteScroll(inferiorContainer, onILScrollDown);
-  const fetchInferiors = async () => {
-    const response = await clientAPI.fetchEmployees({
-      q: inferiorKeyword,
-      _page: currentPage,
-      _limit: PAGE_SIZE,
-    });
-    if (currentPage === 1) {
-      setSearchedInferiors(response.data);
-    } else {
-      setSearchedInferiors([...searchedInferiors, ...response.data]);
-    }
-    setIsInferiorFetching(false);
-  };
 
   useEffect(() => {
-    if (currentPage && inferiorKeyword) {
+    const fetchInferiors = async () => {
+      const response = await clientAPI.fetchEmployees({
+        q: inferiorKeyword,
+        _page: currentPage,
+        _limit: PAGE_SIZE,
+      });
+      if (currentPage === 1) {
+        setSearchedInferiors(response.data);
+      } else {
+        setSearchedInferiors(prevInferiors => [...prevInferiors, ...response.data]);
+      }
+      setIsInferiorFetching(false);
+    };
+
+    if (isInferiorFetching && currentPage && inferiorKeyword) {
       fetchInferiors();
     }
-  }, [currentPage, inferiorKeyword]);
-
-  useEffect(() => {
-    if (!isInferiorFetching) return;
-    setCurrentPage(prevPage => prevPage + 1);
-  }, [isInferiorFetching]);
+  }, [isInferiorFetching, currentPage, inferiorKeyword]);
 
   const cancelEdit = e => {
     history.push(`/profile/${employee.id}`);
