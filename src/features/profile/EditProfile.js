@@ -81,17 +81,26 @@ export const EditProfile = () => {
 
   useEffect(() => {
     const fetchInferiors = async () => {
-      const response = await clientAPI.fetchEmployees({
-        q: inferiorKeyword,
-        _page: currentPage,
-        _limit: PAGE_SIZE,
-      });
-      if (currentPage === 1) {
-        setSearchedInferiors(response.data);
-      } else {
-        setSearchedInferiors(prevInferiors => [...prevInferiors, ...response.data]);
+      try {
+        const response = await clientAPI.fetchEmployees({
+          q: inferiorKeyword,
+          _page: currentPage,
+          _limit: PAGE_SIZE,
+        });
+        if (response.status === 200) {
+          if (currentPage === 1) {
+            setSearchedInferiors(response.data);
+          } else {
+            setSearchedInferiors(prevInferiors => [...prevInferiors, ...response.data]);
+          }
+        } else {
+          dispatch(showError("failed to search inferiors"));
+        }
+      } catch (err) {
+        dispatch(showError("failed to search inferiors"));
+      } finally {
+        setIsInferiorFetching(false);
       }
-      setIsInferiorFetching(false);
     };
 
     if (isInferiorFetching && currentPage && inferiorKeyword) {
@@ -216,7 +225,7 @@ export const EditProfile = () => {
                     <div className="dropdown-menu" role="menu">
                       <div className="dropdown-content">
                         <div className={styles.inferiors_mask + " is-overlay " + (isInferiorFetching ? "" : "is-hidden")}>
-                          <i className="fas fa-circle-notch fa-spin fa-3x spinner"></i>
+                          <i className="fas fa-circle-notch fa-spin fa-2x spinner"></i>
                         </div>
                         <div className={styles.inferiors_list + (isInferiorFetching ? " " + styles.is_fetching : "")} ref={inferiorContainer}>
                           {searchedInferiors && searchedInferiors.length === 0 &&

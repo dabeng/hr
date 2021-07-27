@@ -1,8 +1,9 @@
 .inferiors_mask {
-  background-color: rgba($color:white, $alpha: 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   z-index: 1;
-  text-align: center;
-  padding-top: 5rem;
+  background-color: rgba($color:white, $alpha: 0.75);
 }
 
 .inferiors_list {
