@@ -17,11 +17,13 @@ const useInfiniteScroll = (ref, handler) => {
 
     if (ref && ref.current) {
       ref.current.addEventListener('scroll', debounce(handleScroll, 1000));
-
-      return () => {
-        ref.current.removeEventListener('scroll', handleScroll);
-      };
     }
+    return () => {
+      if (ref && ref.current) {
+        ref.current.removeEventListener('scroll', handleScroll);
+      }
+    };
+    
   }, []);
 
 };
