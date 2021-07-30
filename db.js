@@ -33,7 +33,7 @@ module.exports = {
     { id: 31, name: 'Bing Qin', email: 'bingqin@tongyong.com', title: 'Director', department: 5, joined_date: '2009-01-01', superior: 6, inferiors: [32], description: '', 'password': '123', 'role': 'member' },
     { id: 32, name: 'Yue Yue', email: 'yueyue@tongyong.com', title: 'Vice Director', department: 5, joined_date: '2010-02-02', superior: 6, inferiors: [33,34,35], description: '', 'password': '123', 'role': 'member' },
     { id: 33, name: 'Er Yue', email: 'eryue@tongyong.com', title: 'Designer', department: 5, joined_date: '2011-03-03', superior: 32, description: 'Management Trainee', 'password': '123', 'role': 'member' },
-    { id: 34, name: 'San Yue', email: 'sanyue', title: 'Designer', department: 5, joined_date: '2011-04-04', superior: 32, description: '', 'password': '123', 'role': 'member' },
+    { id: 34, name: 'San Yue', email: 'sanyue@tongyong.com', title: 'Designer', department: 5, joined_date: '2011-04-04', superior: 32, description: '', 'password': '123', 'role': 'member' },
     { id: 35, name: 'Si Yue', email: 'siyue@tongyong.com', title: 'Designer', department: 5, joined_date: '2011-05-05', superior: 32, description: '', 'password': '123', 'role': 'member' },
     { id: 36, name: 'Jin Qin', email: 'jinqin@tongyong.com', title: 'Director', department: 6, joined_date: '2012-01-01', superior: 7, description: '', 'password': '123', 'role': 'member' },
     { id: 37, name: 'Jiao Jiao', email: 'jiaojiao@tongyong.com', title: 'Vice Director', department: 6, joined_date: '2013-02-02', superior: 7, description: '', 'password': '123', 'role': 'member' },

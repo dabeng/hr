@@ -103,8 +103,11 @@ server.get('/user', (req, res) => {
   }
 });
 
-// Add custom routes before JSON Server router
+/* Add custom routes before JSON Server router
+ * 这里就没有json-server默认提供的完备的response了，得自己攒
+*/
 server.get("/employees", (req, res, next) => {
+  // 根据一个employee的id，查找他/她的直接上级，直接下级，最后再加上他/她自身，最后返回结果集
   if (req.query.activeEmployee) {
     const data = [];
     const beginIndex = (parseInt(req.query._page) - 1) * parseInt(req.query._limit);
@@ -133,8 +136,41 @@ server.get("/employees", (req, res, next) => {
       }
     });
     res.json(singPageData);
+  } // 从一个employee出发，查询他的可选上级，或者可选下级数据，这个接口在修改某个employee的直接上级或直接下级时用到
+  else if (req.query.self) {
+    //依据关键字，进行全局搜索
+    let data = db.employees.filter(function(obj) {
+      return Object.keys(obj).some(function(key) {
+        return obj[key].constructor === String ? obj[key].includes(req.query.q) : false;
+      })
+    });
+    //在候选列表中去掉自身和汇报上级
+    const selfEmployeeId = parseInt(req.query.self);
+    const selfEmployee = db.employees.find(item => item.id === selfEmployeeId);
+    const ancestorIds = [];
+    let ancestor = selfEmployee;
+    while(ancestor) {
+      ancestorIds.push(ancestor.id);
+      ancestor = ancestor.id !== ancestor.superior ? db.employees.find(item => item.id === ancestor.superior) : undefined;
+    }
+    data = data.filter(item => !ancestorIds.includes(item.id));
+
+    const beginIndex = (parseInt(req.query._page) - 1) * parseInt(req.query._limit);
+    const endIndex = beginIndex + parseInt(req.query._limit);
+    res.header('X-Total-Count', data.length);
+    res.header('Access-Control-Expose-Headers', 'X-Total-Count');
+    const singPageData = data.slice(beginIndex, endIndex);
+    singPageData.forEach(e1 => {
+      e1.superior_name = db.employees.find(e2 => e2.id === e1.superior).name;
+      e1.department_name = db.departments.find(d => d.id === e1.department).name;
+      if (e1.inferiors && e1.inferiors.length) {
+        e1.inferior_names = e1.inferiors.map(inferiorId => db.employees.find(e2 => e2.id === inferiorId).name);
+      }
+    });
+    res.json(singPageData);
+  } else {
+    next();
   }
-  next();
 });
 
 server.get("/employees/orgchart", (req, res, next) => {
@@ -162,10 +198,13 @@ server.get("/employees/orgchart", (req, res, next) => {
 
 router.render = (req, res) => {
   if (req.method === "GET") {
-    if (req.path === "/employees" && !req.query.activeEmployee) {
+    if (req.path === "/employees") {
       res.locals.data.forEach(e1 => {
+        // 追加上级姓名
         e1.superior_name = db.employees.find(e2 => e2.id === e1.superior).name;
+        // 追加部门名称
         e1.department_name = db.departments.find(d => d.id === e1.department).name;
+        // 追加下级姓名
         if (e1.inferiors && e1.inferiors.length) {
           e1.inferior_names = e1.inferiors.map(inferiorId => db.employees.find(e2 => e2.id === inferiorId).name);
         }

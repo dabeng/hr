@@ -82,7 +82,10 @@ export const EditProfile = () => {
   useEffect(() => {
     const fetchInferiors = async () => {
       try {
+        // 搜索可作为下级的候选人（要排除自身，以及自身的汇报上级）
         const response = await clientAPI.fetchEmployees({
+          self: employee.id,
+          candidate: 'inferior',
           q: inferiorKeyword,
           _page: currentPage,
           _limit: PAGE_SIZE,
