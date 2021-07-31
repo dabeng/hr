@@ -15,12 +15,11 @@ export const EditProfile = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const { value: employee} = useSelector(selectEmployee);
+
   const [inferiorKeywordInput, setInferiorKeywordInput] = useState("");
   const [inferiorKeyword, setInferiorKeyword] = useState("");
-  const inferiorDropdown = useRef(null);
   const [searchedInferiors, setSearchedInferiors] = useState(undefined);
   const [inferiorNames, setInferiorNames] = useState(employee.inferior_names);
-
   const [isInferiorFetching, setIsInferiorFetching] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
   const PAGE_SIZE = 5;
@@ -115,9 +114,10 @@ export const EditProfile = () => {
     history.push(`/profile/${employee.id}`);
   };
 
+  // 指定当前employee的直接下级
   const bindRelation = () => {
     // 在搜到的dropdown menu中，提取选中inferior item的索引值
-    const checkboxes = inferiorDropdown.current.querySelectorAll(`input[name="searchedInferiorList"]:checked`);
+    const checkboxes = inferiorContainer.current.querySelectorAll(`input[name="searchedInferiorList"]:checked`);
     let values = [];
     checkboxes.forEach((checkbox) => {
         values.push(checkbox.value);
@@ -145,6 +145,7 @@ export const EditProfile = () => {
     setCurrentPage(0);
   };
 
+  // 从当前employee的直接下级中，去掉由索引指定的下级
   const unbindRelation = (index) => {
     setInferiorNames(prev => {
       const temp0 = [...prev];
@@ -228,7 +229,7 @@ export const EditProfile = () => {
                 <div className="control is-expanded">
                   <input type="hidden" defaultValue={employee.inferiors} {...register("inferiors")}/>
                   {/* inferiorKeyword非空时，意味着开始查询下级，弹出下拉菜单 */}
-                  <div ref={inferiorDropdown} className={"dropdown" + (inferiorKeyword ? " is-active" : "")} style={{"display": "block"}}>
+                  <div className={"dropdown" + (inferiorKeyword ? " is-active" : "")} style={{"display": "block"}}>
                     <div className="dropdown-trigger">
                       <input type="text" className="input" placeholder="inferiors" value={inferiorKeywordInput} onChange={handleIKInputChange} onKeyPress={handleIKInput}/>
                     </div>
