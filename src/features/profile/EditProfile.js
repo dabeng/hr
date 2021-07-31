@@ -16,13 +16,14 @@ export const EditProfile = () => {
   const history = useHistory();
   const { value: employee} = useSelector(selectEmployee);
 
+  const PAGE_SIZE = 5;
+
   const [inferiorKeywordInput, setInferiorKeywordInput] = useState("");
   const [inferiorKeyword, setInferiorKeyword] = useState("");
   const [searchedInferiors, setSearchedInferiors] = useState(undefined);
   const [inferiorNames, setInferiorNames] = useState(employee.inferior_names);
   const [isInferiorFetching, setIsInferiorFetching] = useState(false);
-  const [currentPage, setCurrentPage] = useState(0);
-  const PAGE_SIZE = 5;
+  const [ifCurrentPage, setIfCurrentPage] = useState(0);
   const inferiorContainer = useRef(null);
   
   // useEffect(() => { // TODO: 不知道为什么组件加载时，该值仍是succeeded
@@ -51,7 +52,7 @@ export const EditProfile = () => {
      * scrollTop=0来控制滚动条的起始位置，避免冗余的loadMore动作。
     */
     inferiorContainer.current.scrollTop = 0;
-    setCurrentPage(1);
+    setIfCurrentPage(1);
     setInferiorKeyword(inferiorKeywordInput);
     setIsInferiorFetching(true);
   };
@@ -72,7 +73,7 @@ export const EditProfile = () => {
   };
 
   const onILScrollDown = () => {
-    setCurrentPage(prevPage => prevPage + 1);
+    setIfCurrentPage(prevPage => prevPage + 1);
     setIsInferiorFetching(true);
   };
 
@@ -86,11 +87,11 @@ export const EditProfile = () => {
           self: employee.id,
           candidate: 'inferior',
           q: inferiorKeyword,
-          _page: currentPage,
+          _page: ifCurrentPage,
           _limit: PAGE_SIZE,
         });
         if (response.status === 200) {
-          if (currentPage === 1) {
+          if (ifCurrentPage === 1) {
             setSearchedInferiors(response.data);
           } else {
             setSearchedInferiors(prevInferiors => [...prevInferiors, ...response.data]);
@@ -105,10 +106,10 @@ export const EditProfile = () => {
       }
     };
 
-    if (isInferiorFetching && currentPage && inferiorKeyword) {
+    if (isInferiorFetching && ifCurrentPage && inferiorKeyword) {
       fetchInferiors();
     }
-  }, [isInferiorFetching, currentPage, inferiorKeyword]);
+  }, [isInferiorFetching, ifCurrentPage, inferiorKeyword]);
 
   const cancelEdit = e => {
     history.push(`/profile/${employee.id}`);
@@ -142,7 +143,7 @@ export const EditProfile = () => {
     setInferiorKeywordInput('');
     setInferiorKeyword('');
     setSearchedInferiors(undefined);
-    setCurrentPage(0);
+    setIfCurrentPage(0);
   };
 
   // 从当前employee的直接下级中，去掉由索引指定的下级
