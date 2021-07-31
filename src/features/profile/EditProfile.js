@@ -138,8 +138,7 @@ export const EditProfile = () => {
       temp.push(searchedInferiors[index].id);
     });
     setValue('inferiors', temp.join(','), { shouldDirty: true });
-    // 
-
+    // 清理一切和关键字搜索有关的state
     setInferiorKeywordInput('');
     setInferiorKeyword('');
     setSearchedInferiors(undefined);
@@ -155,6 +154,14 @@ export const EditProfile = () => {
     const temp = getValues("inferiors").split(',');
     temp.splice(index, 1);
     setValue('inferiors', temp.join(','), { shouldDirty: true });
+  };
+
+  // 表单里的大部分字段是依据浏览器的默认行为恢复到初始值的。下面函数负责恢复复杂字段的初值
+  const resetFields = () => {
+    // 处理inferiors
+    setInferiorNames(employee.inferior_names);
+    setInferiorKeywordInput('');
+    // 处理superior
   };
 
   const saveEdit = async (data, e) => {
@@ -281,7 +288,7 @@ export const EditProfile = () => {
           </div>
           <div className="field is-grouped">
             <div className="control">
-              <input type="reset" className="button" value="Reset"/>
+              <input type="reset" className="button" value="Reset" onClick={resetFields}/>
             </div>
             <div className="control">
               <input type="submit" name="btn_submit" className="button is-link" value="Submit"/>
