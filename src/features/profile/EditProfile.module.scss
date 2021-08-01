@@ -1,4 +1,4 @@
-.inferiors_mask {
+.dropdown_mask {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -6,7 +6,7 @@
   background-color: rgba($color:white, $alpha: 0.75);
 }
 
-.inferiors_list {
+.dropdown_list {
   max-height: 8rem;
   overflow-y: auto;
 

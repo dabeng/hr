@@ -136,29 +136,43 @@ server.get("/employees", (req, res, next) => {
       }
     });
     res.json(singPageData);
-  } // 从一个employee出发，查询他的可选上级，或者可选下级数据，这个接口在修改某个employee的直接上级或直接下级时用到
+  } // 从一个employee出发，查询他的可选上级/下级数据，这个接口在修改某个employee的直接上级/下级时用到
   else if (req.query.self) {
-    //依据关键字，进行全局搜索
+    // 依据关键字，进行全局搜索
     let data = db.employees.filter(function(obj) {
       return Object.keys(obj).some(function(key) {
         return obj[key].constructor === String ? obj[key].includes(req.query.q) : false;
       })
     });
-    //在候选列表中去掉自身和汇报上级
+    // 在候选列表中去掉自身和下级，或者自身和汇报上级
     const selfEmployeeId = parseInt(req.query.self);
     const selfEmployee = db.employees.find(item => item.id === selfEmployeeId);
-    const ancestorIds = [];
-    let ancestor = selfEmployee;
-    while(ancestor) {
-      ancestorIds.push(ancestor.id);
-      ancestor = ancestor.id !== ancestor.superior ? db.employees.find(item => item.id === ancestor.superior) : undefined;
+    if (req.query.candidate === 'superior') {
+      const inferiorIds = [selfEmployeeId];
+      const loopInferior = (inferior) => {
+        if (inferior && inferior.inferiors && inferior.inferiors.length > 0) {
+          inferior.inferiors.forEach(item => {
+            inferiorIds.push(item);
+            loopInferior(db.employees.find(item2 => item2.id === item));
+          });
+        }
+      };
+      loopInferior(selfEmployee);
+      data = data.filter(item => !inferiorIds.includes(item.id));
+    } else if (req.query.candidate === 'inferior') {
+      const superiorIds = [];
+      let superior = selfEmployee;
+      while (superior) {
+        superiorIds.push(superior.id);
+        superior = superior.id !== superior.superior ? db.employees.find(item => item.id === superior.superior) : undefined;
+      }
+      data = data.filter(item => !superiorIds.includes(item.id));
     }
-    data = data.filter(item => !ancestorIds.includes(item.id));
-
-    const beginIndex = (parseInt(req.query._page) - 1) * parseInt(req.query._limit);
-    const endIndex = beginIndex + parseInt(req.query._limit);
+    // 下面的代码给response附上查询结果总数，上级名称，下级名称
     res.header('X-Total-Count', data.length);
     res.header('Access-Control-Expose-Headers', 'X-Total-Count');
+    const beginIndex = (parseInt(req.query._page) - 1) * parseInt(req.query._limit);
+    const endIndex = beginIndex + parseInt(req.query._limit);
     const singPageData = data.slice(beginIndex, endIndex);
     singPageData.forEach(e1 => {
       e1.superior_name = db.employees.find(e2 => e2.id === e1.superior).name;

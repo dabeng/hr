@@ -17,7 +17,15 @@ export const EditProfile = () => {
   const { value: employee} = useSelector(selectEmployee);
 
   const PAGE_SIZE = 5;
-
+  // 可选上级搜索框的相关state
+  const [superiorKeywordInput, setSuperiorKeywordInput] = useState("");
+  const [superiorKeyword, setSuperiorKeyword] = useState("");
+  const [searchedSuperiors, setSearchedSuperiors] = useState(undefined);
+  const [superiorName, setSuperiorName] = useState(employee.superior_name);
+  const [isSuperiorFetching, setIsSuperiorFetching] = useState(false);
+  const [spCurrentPage, setSpCurrentPage] = useState(0);
+  const superiorContainer = useRef(null);
+  // 可选下级搜索框的相关state
   const [inferiorKeywordInput, setInferiorKeywordInput] = useState("");
   const [inferiorKeyword, setInferiorKeyword] = useState("");
   const [searchedInferiors, setSearchedInferiors] = useState(undefined);
@@ -40,11 +48,25 @@ export const EditProfile = () => {
     formState: { dirtyFields },
   } = useForm();
 
+  // 跟踪上级搜索框的输入值
+  const handleSKInputChange = e => {
+    setSuperiorKeywordInput(e.target.value.trim());
+  };
+
+  // 跟踪下级搜索框的输入值
   const handleIKInputChange = e => {
     setInferiorKeywordInput(e.target.value.trim());
   };
 
-  // 开始查询下级数据，也即第一页数据
+  // 开始查询可选的上级数据，即第一页数据
+  const triggerSearchSuperior = () => {
+    superiorContainer.current.scrollTop = 0;
+    setSpCurrentPage(1);
+    setSuperiorKeyword(superiorKeywordInput);
+    setIsSuperiorFetching(true);
+  };
+
+  // 开始查询下级数据，即第一页数据
   const triggerSearchInferior = () => {
     /* 下面这句设置非常重要。因为inferior-list里的滚动条的当前位置会影响到重新查询第一页数据时的滚动条位置。一旦
      * 当前的滚动条位置比较靠下，你又切换了一个关键字开始新搜索，那么很可能导致重新渲染首页数据时，滚动条起始位置就
@@ -57,6 +79,15 @@ export const EditProfile = () => {
     setIsInferiorFetching(true);
   };
 
+  const handleSKInput = e => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (superiorKeywordInput.length) {
+        triggerSearchSuperior();
+      }
+    }
+  };
+
   const handleIKInput = e => {
     if (e.key === 'Enter') {
       e.preventDefault();
@@ -66,10 +97,21 @@ export const EditProfile = () => {
     }
   };
 
-  const handleClickSearch = () => {
+  const handleClickSpSearch = () => {
+    if (superiorKeywordInput.length) {
+      triggerSearchSuperior();
+    }
+  };
+
+  const handleClickIfSearch = () => {
     if (inferiorKeywordInput.length) {
       triggerSearchInferior();
     }
+  };
+
+  const onSLScrollDown = () => {
+    setSpCurrentPage(prevPage => prevPage + 1);
+    setIsSuperiorFetching(true);
   };
 
   const onILScrollDown = () => {
@@ -77,7 +119,41 @@ export const EditProfile = () => {
     setIsInferiorFetching(true);
   };
 
+  useInfiniteScroll(superiorContainer, onSLScrollDown);
+
   useInfiniteScroll(inferiorContainer, onILScrollDown);
+
+  useEffect(() => {
+    const fetchSuperiors = async () => {
+      try {
+        // 搜索可成为上级的候选人（要排除自身，以及自身的所有下级）
+        const response = await clientAPI.fetchEmployees({
+          self: employee.id,
+          candidate: 'superior',
+          q: superiorKeyword,
+          _page: spCurrentPage,
+          _limit: PAGE_SIZE,
+        });
+        if (response.status === 200) {
+          if (spCurrentPage === 1) {
+            setSearchedSuperiors(response.data);
+          } else {
+            setSearchedSuperiors(prevSuperiors => [...prevSuperiors, ...response.data]);
+          }
+        } else {
+          dispatch(showError("failed to search superiors"));
+        }
+      } catch (err) {
+        dispatch(showError("failed to search superiors"));
+      } finally {
+        setIsSuperiorFetching(false);
+      }
+    };
+
+    if (isSuperiorFetching && spCurrentPage && superiorKeyword) {
+      fetchSuperiors();
+    }
+  }, [isSuperiorFetching, spCurrentPage, superiorKeyword]);
 
   useEffect(() => {
     const fetchInferiors = async () => {
@@ -111,12 +187,25 @@ export const EditProfile = () => {
     }
   }, [isInferiorFetching, ifCurrentPage, inferiorKeyword]);
 
-  const cancelEdit = e => {
-    history.push(`/profile/${employee.id}`);
+  // 指定当前employee的直接上级
+  const bindSuperiorRelation = () => {
+    // 在搜到的dropdown menu中，提取选中inferior item的索引值
+    const radio = superiorContainer.current.querySelector(`input[name="searchedSuperiorList"]:checked`);
+    if (radio) {
+      // 更新inferior tag list的值
+      setSuperiorName(searchedSuperiors[radio.value].name);
+      // 更新react-hook-form中注册的inferior字段
+      setValue('superior', searchedSuperiors[radio.value].id, { shouldDirty: true });
+    }
+    // 清理一切和关键字搜索有关的state
+    setSuperiorKeywordInput('');
+    setSuperiorKeyword('');
+    setSearchedSuperiors(undefined);
+    setSpCurrentPage(0);
   };
 
   // 指定当前employee的直接下级
-  const bindRelation = () => {
+  const bindInferiorRelation = () => {
     // 在搜到的dropdown menu中，提取选中inferior item的索引值
     const checkboxes = inferiorContainer.current.querySelectorAll(`input[name="searchedInferiorList"]:checked`);
     let values = [];
@@ -146,8 +235,22 @@ export const EditProfile = () => {
     setIfCurrentPage(0);
   };
 
+  /* 从当前employee的直接上级中，去掉由索引指定的上级
+   * TODO: 理想状态中，应该像上面描述但那样，允许指定多个上级，但目前orgchart组件只支持单个父节点的
+   * 所以以下代码暂停启用。
+  const unbindSuperiorRelation = (index) => {
+    setSuperiorNames(prev => {
+      const temp0 = [...prev];
+      temp0.splice(index, 1)
+      return temp0;
+    });
+    const temp = getValues("superiors").split(',');
+    temp.splice(index, 1);
+    setValue('superiors', temp.join(','), { shouldDirty: true });
+  };*/
+
   // 从当前employee的直接下级中，去掉由索引指定的下级
-  const unbindRelation = (index) => {
+  const unbindInferiorRelation = (index) => {
     setInferiorNames(prev => {
       const temp0 = [...prev];
       temp0.splice(index, 1)
@@ -159,7 +262,7 @@ export const EditProfile = () => {
   };
 
   // 表单里的大部分字段是依据浏览器的默认行为恢复到初始值的。下面函数负责恢复复杂字段的初值
-  const resetFields = () => {
+  const resetEdit = () => {
     // 处理inferiors
     setInferiorNames(employee.inferior_names);
     setInferiorKeywordInput('');
@@ -178,6 +281,10 @@ export const EditProfile = () => {
     }
     
     await dispatch(updateEmployee({employeeId: employee.id, fields: updatedData}));
+    history.push(`/profile/${employee.id}`);
+  };
+
+  const cancelEdit = e => {
     history.push(`/profile/${employee.id}`);
   };
 
@@ -220,7 +327,52 @@ export const EditProfile = () => {
           <div className="field">
             <label className="label">Superior</label>
             <div className="control">
-              <input type="text" name="field_superior" className="input" placeholder="superior" {...register}/>
+              <div className="field has-addons">
+                <div className="control is-expanded">
+                  <input type="hidden" defaultValue={employee.superior} {...register("superior")}/>
+                  <div className={"dropdown" + (superiorKeyword ? " is-active" : "")} style={{"display": "block"}}>
+                    <div className="dropdown-trigger">
+                      <input type="text" className="input" placeholder="superior" value={superiorKeywordInput} onChange={handleSKInputChange} onKeyPress={handleSKInput}/>
+                    </div>
+                    <div className="dropdown-menu" role="menu">
+                      <div className="dropdown-content">
+                        <div className={styles.dropdown_mask + " is-overlay " + (isSuperiorFetching ? "" : "is-hidden")}>
+                          <i className="fas fa-circle-notch fa-spin fa-2x spinner"></i>
+                        </div>
+                        <div className={styles.dropdown_list + (isSuperiorFetching ? " " + styles.is_fetching : "")} ref={superiorContainer}>
+                          {searchedSuperiors && searchedSuperiors.length === 0 &&
+                            <div className="dropdown-item">
+                              <p className="has-text-danger">No results found</p>
+                            </div>
+                          }
+                          {searchedSuperiors && searchedSuperiors.length > 0 && searchedSuperiors.map((superior, index) => (
+                            <a key={superior.id} className="dropdown-item" style={{"whiteSpace": "nowrap"}}>
+                              <label className="checkbox">
+                                <input type="radio" name="searchedSuperiorList" value={index}/>&nbsp;
+                                <span>{superior.name}</span> | <span>{superior.email}</span>
+                              </label>
+                            </a>
+                          ))}
+                        </div>
+                        {searchedSuperiors && searchedSuperiors.length > 0 &&
+                          <>
+                            <hr className="dropdown-divider"/>
+                            <button type="button" className="button is-primary is-small is-fullwidth" onClick={bindSuperiorRelation}>Done</button>
+                          </>
+                        }
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="control">
+                  <button type="button" className="button is-primary" onClick={handleClickSpSearch}>Search</button>
+                </div>
+              </div>
+              <span className="tag is-info is-light" style={{margin: "0.5rem 0.5rem 0 0"}}>
+                {superiorName}
+                {/* TODO: 目前orgchart组件还未开放选多个直接上级的功能，所以下面注释掉删除备选者的按钮 */}
+                {/* <button type="button" className="delete" onClick={() => unbindSuperiorRelation(index)}></button> */}
+              </span>
             </div>
           </div>
           <div className="field">
@@ -236,10 +388,10 @@ export const EditProfile = () => {
                     </div>
                     <div className="dropdown-menu" role="menu">
                       <div className="dropdown-content">
-                        <div className={styles.inferiors_mask + " is-overlay " + (isInferiorFetching ? "" : "is-hidden")}>
+                        <div className={styles.dropdown_mask + " is-overlay " + (isInferiorFetching ? "" : "is-hidden")}>
                           <i className="fas fa-circle-notch fa-spin fa-2x spinner"></i>
                         </div>
-                        <div className={styles.inferiors_list + (isInferiorFetching ? " " + styles.is_fetching : "")} ref={inferiorContainer}>
+                        <div className={styles.dropdown_list + (isInferiorFetching ? " " + styles.is_fetching : "")} ref={inferiorContainer}>
                           {searchedInferiors && searchedInferiors.length === 0 &&
                             <div className="dropdown-item">
                               <p className="has-text-danger">No results found</p>
@@ -257,7 +409,7 @@ export const EditProfile = () => {
                         {searchedInferiors && searchedInferiors.length > 0 &&
                           <>
                             <hr className="dropdown-divider"/>
-                            <button type="button" className="button is-primary is-small is-fullwidth" onClick={bindRelation}>Done</button>
+                            <button type="button" className="button is-primary is-small is-fullwidth" onClick={bindInferiorRelation}>Done</button>
                           </>
                         }
                       </div>
@@ -265,13 +417,13 @@ export const EditProfile = () => {
                   </div>
                 </div>
                 <div className="control">
-                  <button type="button" className="button is-primary" onClick={handleClickSearch}>Search</button>
+                  <button type="button" className="button is-primary" onClick={handleClickIfSearch}>Search</button>
                 </div>
               </div>
               {inferiorNames.map((inferiorName, index) => (
                 <span key={index} className="tag is-info is-light" style={{margin: "0.5rem 0.5rem 0 0"}}>
                   {inferiorName}
-                  <button type="button" className="delete" onClick={() => unbindRelation(index)}></button>
+                  <button type="button" className="delete" onClick={() => unbindInferiorRelation(index)}></button>
                 </span>
               ))}
             </div>
@@ -290,7 +442,7 @@ export const EditProfile = () => {
           </div>
           <div className="field is-grouped">
             <div className="control">
-              <input type="reset" className="button" value="Reset" onClick={resetFields}/>
+              <input type="reset" className="button" value="Reset" onClick={resetEdit}/>
             </div>
             <div className="control">
               <input type="submit" name="btn_submit" className="button is-link" value="Submit"/>
