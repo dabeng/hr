@@ -263,10 +263,12 @@ export const EditProfile = () => {
 
   // 表单里的大部分字段是依据浏览器的默认行为恢复到初始值的。下面函数负责恢复复杂字段的初值
   const resetEdit = () => {
+    // 处理superior
+    setSuperiorName(employee.superior_name);
+    setSuperiorKeywordInput('');
     // 处理inferiors
     setInferiorNames(employee.inferior_names);
     setInferiorKeywordInput('');
-    // 处理superior
   };
 
   const saveEdit = async (data, e) => {
