@@ -24,10 +24,14 @@ export const fetchDepartments = createAsyncThunk("departments/fetchDepartments",
   try {
     const params = new URLSearchParams({
       "_sort": "establish_date",
-      "_order": "desc",
-      "_page": page,
-      "_limit": pageSize
+      "_order": "desc"
     });
+    if (page) {
+      params.append("_page", page);
+    }
+    if (pageSize) {
+      params.append("_limit", pageSize);
+    }
     if (keyword) {
       params.append("q", keyword);
     }

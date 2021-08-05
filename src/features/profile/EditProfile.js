@@ -15,7 +15,8 @@ export const EditProfile = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const { value: employee} = useSelector(selectEmployee);
-
+  // 所有部门的state
+  const [departments, setDepartments] = useState([]);
   const PAGE_SIZE = 5;
   // 可选上级搜索框的相关state
   const [superiorKeywordInput, setSuperiorKeywordInput] = useState("");
@@ -47,6 +48,26 @@ export const EditProfile = () => {
     getValues,
     formState: { dirtyFields },
   } = useForm();
+
+  // 获取备选部门的信息
+  useEffect(() => {
+    const fetchDepartments = async () => {
+      try {
+        const response = await clientAPI.fetchDepartments({});
+        if (response.status === 200) {
+          setDepartments(response.data);
+          setValue('department', employee.department);
+        } else {
+          dispatch(showError("failed to fetch departments"));
+        }
+      } catch (err) {
+        dispatch(showError("failed to fetch departments"));
+      } finally {
+        // setIsSuperiorFetching(false);
+      }
+    };
+    fetchDepartments();
+  }, []);
 
   // 跟踪上级搜索框的输入值
   const handleSKInputChange = e => {
@@ -318,10 +339,11 @@ export const EditProfile = () => {
           <div className="field">
             <label className="label">Department</label>
             <div className="control">
-              <div className="select">
-                <select {...register}>
-                  <option value="aa">aa</option>
-                  <option value="bb">bb</option>
+              <div className={"select is-fullwidth" + (departments.length === 0 ? " is-loading" : "")}>
+                <select {...register("department")}>
+                  {departments.length > 0 && departments.map(depart =>
+                    <option value={depart.id}>{depart.name}</option>
+                  )}
                 </select>
               </div>
             </div>

@@ -224,9 +224,7 @@ router.render = (req, res) => {
         }
       });
       res.json(res.locals.data);
-    }
-
-    if (req.path === "/employees/" + res.locals.data.id) {
+    } else if (req.path === "/employees/" + res.locals.data.id) {
       const employee = res.locals.data;
       employee.superior_name = db.employees.find(e => e.id === employee.superior).name;
       employee.department_name = db.departments.find(d => d.id === employee.department).name;
@@ -234,9 +232,10 @@ router.render = (req, res) => {
         employee.inferior_names = employee.inferiors.map(inferiorId => db.employees.find(e => e.id === inferiorId).name);
       }
       res.json(res.locals.data);
+    } else if (req.path === "/departments") {
+      res.json(res.locals.data);
     }
-  }
-  if (req.method === "PATCH") {
+  } else if (req.method === "PATCH") {
     if (req.path === "/employees/" + res.locals.data.id) {
       const employee = res.locals.data;
       employee.superior_name = db.employees.find(e => e.id === employee.superior).name;
