@@ -46,8 +46,13 @@ export const EditProfile = () => {
     handleSubmit,
     setValue,
     getValues,
+    reset,
     formState: { dirtyFields },
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      // department: 2
+    }
+  });
 
   // 获取备选部门的信息
   useEffect(() => {
@@ -283,7 +288,12 @@ export const EditProfile = () => {
   };
 
   // 表单里的大部分字段是依据浏览器的默认行为恢复到初始值的。下面函数负责恢复复杂字段的初值
-  const resetEdit = () => {
+  const resetEdit = (e) => {
+    e.preventDefault();
+    // 处理部门select
+    reset({
+      'department': employee.department
+    });
     // 处理superior
     setSuperiorName(employee.superior_name);
     setSuperiorKeywordInput('');
