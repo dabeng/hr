@@ -50,7 +50,14 @@ export const EditProfile = () => {
     formState: { dirtyFields },
   } = useForm({
     defaultValues: {
-      // department: 2
+      name: employee.name,
+      title: employee.title,
+      email: employee.email,
+      department: employee.department,
+      superior: employee.superior,
+      inferiors: employee.inferiors,
+      joined_date: employee.joined_date,
+      description: employee.description
     }
   });
 
@@ -282,18 +289,26 @@ export const EditProfile = () => {
       temp0.splice(index, 1)
       return temp0;
     });
-    const temp = getValues("inferiors").split(',');
+    let temp = [...getValues("inferiors")];
     temp.splice(index, 1);
-    setValue('inferiors', temp.join(','), { shouldDirty: true });
+    setValue('inferiors', temp, { shouldDirty: true });
   };
 
   // 表单里的大部分字段是依据浏览器的默认行为恢复到初始值的。下面函数负责恢复复杂字段的初值
   const resetEdit = (e) => {
     e.preventDefault();
     // 处理部门select
-    reset({
-      'department': employee.department
-    });
+    reset();
+    // reset({
+    //   name: employee.name,
+    //   title: employee.title,
+    //   email: employee.email,
+    //   department: employee.department,
+    //   superior: employee.superior,
+    //   inferiors: employee.inferiors,
+    //   joined_date: employee.joined_date,
+    //   description: employee.description
+    // });
     // 处理superior
     setSuperiorName(employee.superior_name);
     setSuperiorKeywordInput('');
@@ -331,19 +346,19 @@ export const EditProfile = () => {
           <div className="field">
             <label className="label">Name</label>
             <div className="control">
-              <input type="text" name="field_name" className="input" defaultValue={employee.name} placeholder="name" {...register("name", { required: true })}/>
+              <input type="text" name="field_name" className="input" placeholder="name" {...register("name", { required: true })}/>
             </div>
           </div>
           <div className="field">
             <label className="label">Title</label>
             <div className="control">
-              <input type="text" name="field_title" className="input" defaultValue={employee.title} placeholder="title" {...register("title", { required: true })}/>
+              <input type="text" name="field_title" className="input" placeholder="title" {...register("title", { required: true })}/>
             </div>
           </div>
           <div className="field">
             <label className="label">Email</label>
             <div className="control">
-              <input type="email" name="field_email" className="input" defaultValue={employee.email} placeholder="email" {...register("email", { required: true })}/>
+              <input type="email" name="field_email" className="input" placeholder="email" {...register("email", { required: true })}/>
             </div>
           </div>
           <div className="field">
@@ -363,7 +378,7 @@ export const EditProfile = () => {
             <div className="control">
               <div className="field has-addons">
                 <div className="control is-expanded">
-                  <input type="hidden" defaultValue={employee.superior} {...register("superior")}/>
+                  <input type="hidden" {...register("superior")}/>
                   <div className={"dropdown" + (superiorKeyword ? " is-active" : "")} style={{"display": "block"}}>
                     <div className="dropdown-trigger">
                       <input type="text" className="input" placeholder="superior" value={superiorKeywordInput} onChange={handleSKInputChange} onKeyPress={handleSKInput}/>
@@ -414,7 +429,7 @@ export const EditProfile = () => {
             <div className="control">
               <div className="field has-addons">
                 <div className="control is-expanded">
-                  <input type="hidden" defaultValue={employee.inferiors} {...register("inferiors")}/>
+                  <input type="hidden" {...register("inferiors")}/>
                   {/* inferiorKeyword非空时，意味着开始查询下级，弹出下拉菜单 */}
                   <div className={"dropdown" + (inferiorKeyword ? " is-active" : "")} style={{"display": "block"}}>
                     <div className="dropdown-trigger">
@@ -465,13 +480,13 @@ export const EditProfile = () => {
           <div className="field">
             <label className="label">Joined Date</label>
             <div className="control">
-              <input type="date" className="input" defaultValue={employee.joined_date} {...register("joined_date", { required: true })}/>
+              <input type="date" className="input" {...register("joined_date", { required: true })}/>
             </div>
           </div>
           <div className="field">
             <label className="label">Description</label>
             <div className="control">
-              <textarea className="textarea" defaultValue={employee.description} {...register("description")}/>
+              <textarea className="textarea" {...register("description")}/>
             </div>
           </div>
           <div className="field is-grouped">
