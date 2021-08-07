@@ -297,18 +297,8 @@ export const EditProfile = () => {
   // 表单里的大部分字段是依据浏览器的默认行为恢复到初始值的。下面函数负责恢复复杂字段的初值
   const resetEdit = (e) => {
     e.preventDefault();
-    // 处理部门select
+    // 恢复表单里所有字段的初值
     reset();
-    // reset({
-    //   name: employee.name,
-    //   title: employee.title,
-    //   email: employee.email,
-    //   department: employee.department,
-    //   superior: employee.superior,
-    //   inferiors: employee.inferiors,
-    //   joined_date: employee.joined_date,
-    //   description: employee.description
-    // });
     // 处理superior
     setSuperiorName(employee.superior_name);
     setSuperiorKeywordInput('');
@@ -367,7 +357,7 @@ export const EditProfile = () => {
               <div className={"select is-fullwidth" + (departments.length === 0 ? " is-loading" : "")}>
                 <select {...register("department")}>
                   {departments.length > 0 && departments.map(depart =>
-                    <option value={depart.id}>{depart.name}</option>
+                    <option key={depart.id} value={depart.id}>{depart.name}</option>
                   )}
                 </select>
               </div>
