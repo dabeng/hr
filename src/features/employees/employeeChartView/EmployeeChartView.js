@@ -39,7 +39,7 @@ export const EmployeeChartView = () => {
     };
  
     fetchEmployeeOrgChart();
-  }, []);
+  }, [dispatch, activeEmployeeId]);
 
   return (
     <div>

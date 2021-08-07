@@ -79,7 +79,7 @@ export const EditProfile = () => {
       }
     };
     fetchDepartments();
-  }, []);
+  }, [dispatch, employee.department, setValue]);
 
   // 跟踪上级搜索框的输入值
   const handleSKInputChange = e => {
@@ -152,9 +152,9 @@ export const EditProfile = () => {
     setIsInferiorFetching(true);
   };
 
-  useInfiniteScroll(superiorContainer, onSLScrollDown);
+  useInfiniteScroll(superiorContainer.current, onSLScrollDown);
 
-  useInfiniteScroll(inferiorContainer, onILScrollDown);
+  useInfiniteScroll(inferiorContainer.current, onILScrollDown);
 
   useEffect(() => {
     const fetchSuperiors = async () => {
@@ -186,7 +186,7 @@ export const EditProfile = () => {
     if (isSuperiorFetching && spCurrentPage && superiorKeyword) {
       fetchSuperiors();
     }
-  }, [isSuperiorFetching, spCurrentPage, superiorKeyword]);
+  }, [isSuperiorFetching, spCurrentPage, superiorKeyword, dispatch, employee.id]);
 
   useEffect(() => {
     const fetchInferiors = async () => {
@@ -218,7 +218,7 @@ export const EditProfile = () => {
     if (isInferiorFetching && ifCurrentPage && inferiorKeyword) {
       fetchInferiors();
     }
-  }, [isInferiorFetching, ifCurrentPage, inferiorKeyword]);
+  }, [isInferiorFetching, ifCurrentPage, inferiorKeyword, dispatch, employee.id]);
 
   // 指定当前employee的直接上级
   const bindSuperiorRelation = () => {

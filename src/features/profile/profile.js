@@ -26,7 +26,7 @@ export const Profile = () => {
   const employeeId = new URLSearchParams(useLocation().search).get("employeeId");
   const existingEmployee = useSelector(state => selectEmployeeById(state, employeeId));
   const employees = useSelector(state => state.employees);
-  const { value: employee, status, error: fetchError} = useSelector(selectEmployee);
+  const { value: employee, status, error: fetchEmployeeError} = useSelector(selectEmployee);
 
   // 跳转到“员工简介”页面的方式有很多种
   useEffect(() => {
@@ -46,15 +46,15 @@ export const Profile = () => {
 
   useEffect(() => {
     if (status === 'failed') {
-      dispatch(showError(fetchError));
+      dispatch(showError(fetchEmployeeError));
     }
-  }, [dispatch, status]);
+  }, [dispatch, status, fetchEmployeeError]);
 
   useEffect(() => {
     return () => { // 当卸载组件时，将employee变量恢复为初始值
       dispatch(clearEmployeeState());
     };
-  }, []);
+  }, [dispatch]);
 
   return (
     <div className="columns">
