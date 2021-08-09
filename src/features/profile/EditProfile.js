@@ -142,19 +142,19 @@ export const EditProfile = () => {
     }
   };
 
-  const onSLScrollDown = () => {
+  const onSLScrollDown = useCallback(() => {
     setSpCurrentPage(prevPage => prevPage + 1);
     setIsSuperiorFetching(true);
-  };
+  }, []);
 
-  const onILScrollDown = () => {
+  const onILScrollDown = useCallback(() => {
     setIfCurrentPage(prevPage => prevPage + 1);
     setIsInferiorFetching(true);
-  };
+  }, []);
 
-  useInfiniteScroll(superiorContainer.current, onSLScrollDown);
+  useInfiniteScroll(superiorContainer, onSLScrollDown);
 
-  useInfiniteScroll(inferiorContainer.current, onILScrollDown);
+  useInfiniteScroll(inferiorContainer, onILScrollDown);
 
   useEffect(() => {
     const fetchSuperiors = async () => {
