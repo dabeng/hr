@@ -22,7 +22,8 @@
   "scripts": {
     "start": "react-scripts start & node server.js",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "react-scripts test --testPathIgnorePatterns=.*e2e.test.js",
+    "e2e": "react-scripts test --testPathPattern=.*e2e.test.js$",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

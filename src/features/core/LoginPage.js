@@ -74,7 +74,7 @@ export const LoginPage = () => {
       <div className="columns">
         <div className="column is-offset-4 is-4" style={{"height": "5rem"}}>
           {error &&
-            <div className="notification is-danger is-light">
+            <div className="notification is-danger is-light global-error">
               <button className="delete" onClick={closeErrorNoti}></button>
               {error.message}
             </div>
@@ -83,28 +83,28 @@ export const LoginPage = () => {
       </div>
       <div className="columns" style={{"position": "relative"}}>
         <div className="column is-offset-4 is-4">
-          <form onSubmit={validateFields}>
+          <form className="form_login" onSubmit={validateFields}>
             <div className="field">
               <label className="label">Email</label>
               <div className="control">
-                <input className="input" type="text" placeholder="email" onChange={updateEmail}/>
+                <input className="input form_field_email" type="text" placeholder="email" onChange={updateEmail}/>
               </div>
               {emailError &&
-                <p className="help is-danger">{emailError}</p>
+                <p className="help is-danger form_error_email">{emailError}</p>
               }
             </div>
             <div className="field">
               <label className="label">Password</label>
               <div className="control">
-                <input className="input" type="password" placeholder="password" onChange={updatePassword}/>
+                <input className="input form_field_password" type="password" placeholder="password" onChange={updatePassword}/>
               </div>
               {passwordError &&
-                <p className="help is-danger">{passwordError}</p>
+                <p className="help is-danger form_error_password">{passwordError}</p>
               }
             </div>
             <div className="field">
               <div className="control">
-                <button className="button is-fullwidth is-primary">Log In</button>
+                <button className="button is-fullwidth is-primary form_button_submit">Log In</button>
               </div>
             </div>
           </form>
