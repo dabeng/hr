@@ -70,31 +70,31 @@ export const Profile = () => {
           <div className="field">
             <label className="label">Name</label>
             <div className="control">
-              <p className="has-text-dark employee_name">{employee.name}</p>
+              <p data-testid="employee_name" className="has-text-dark">{employee.name}</p>
             </div>
           </div>
           <div className="field">
             <label className="label">Title</label>
             <div className="control">
-              <p className="has-text-dark employee_title">{employee.title}</p>
+              <p data-testid="employee_title" className="has-text-dark">{employee.title}</p>
             </div>
           </div>
           <div className="field">
             <label className="label">Email</label>
             <div className="control">
-              <p className="has-text-dark employee_email">{employee.email}</p>
+              <p data-testid="employee_email" className="has-text-dark">{employee.email}</p>
             </div>
           </div>
           <div className="field">
             <label className="label">Department</label>
             <div className="control">
-              <p className="has-text-dark employee_department_name">{employee.department_name}</p>
+              <p data-testid="employee_department_name" className="has-text-dark">{employee.department_name}</p>
             </div>
           </div>
           <div className="field">
             <label className="label">Reports to</label>
             <div className="control">
-              <p className="has-text-dark employee_superior_name">{employee.superior_name}</p>
+              <p data-testid="employee_superior_name" className="has-text-dark">{employee.superior_name}</p>
             </div>
           </div>
           <div className="field">

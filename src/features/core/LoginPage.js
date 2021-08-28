@@ -74,7 +74,7 @@ export const LoginPage = () => {
       <div className="columns">
         <div className="column is-offset-4 is-4" style={{"height": "5rem"}}>
           {error &&
-            <div className="notification is-danger is-light global-error">
+            <div data-testid="error_global" className="notification is-danger is-light">
               <button className="delete" onClick={closeErrorNoti}></button>
               {error.message}
             </div>
@@ -87,24 +87,24 @@ export const LoginPage = () => {
             <div className="field">
               <label className="label">Email</label>
               <div className="control">
-                <input className="input form_field_email" type="text" placeholder="email" onChange={updateEmail}/>
+                <input data-testid="field_email" className="input" type="text" placeholder="email" onChange={updateEmail}/>
               </div>
               {emailError &&
-                <p className="help is-danger form_error_email">{emailError}</p>
+                <p data-testid="error_email" className="help is-danger">{emailError}</p>
               }
             </div>
             <div className="field">
               <label className="label">Password</label>
               <div className="control">
-                <input className="input form_field_password" type="password" placeholder="password" onChange={updatePassword}/>
+                <input data-testid="field_password" className="input" type="password" placeholder="password" onChange={updatePassword}/>
               </div>
               {passwordError &&
-                <p className="help is-danger form_error_password">{passwordError}</p>
+                <p data-testid="error_password" className="help is-danger">{passwordError}</p>
               }
             </div>
             <div className="field">
               <div className="control">
-                <button className="button is-fullwidth is-primary form_button_submit">Log In</button>
+                <button data-testid="button_submit" className="button is-fullwidth is-primary">Log In</button>
               </div>
             </div>
           </form>
