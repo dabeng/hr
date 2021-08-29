@@ -4,6 +4,12 @@ describe("Login Page", () => {
   let browser;
   let page;
 
+  const password_field_selector = '[data-testid="field_password"]';
+  const password_error_selector = '[data-testid="error_password"]';
+  const email_field_selector = '[data-testid="field_email"]';
+  const email_error_selector = '[data-testid="error_email"]';
+  const submit_button_selector = '[data-testid="button_submit"]';
+
   beforeAll(async () => {
     browser = await puppeteer.launch();
     page = await browser.newPage();
@@ -12,14 +18,14 @@ describe("Login Page", () => {
   it("should show error message when email is empty", async () => {
     await page.goto("http://localhost:3000");
 
-    await page.waitForSelector('[data-testid="field_password"]');
-    await page.click('[data-testid="field_password"]');
-    await page.type('[data-testid="field_password"]', "admin");
+    await page.waitForSelector(password_field_selector);
+    await page.click(password_field_selector);
+    await page.type(password_field_selector, "admin");
 
-    await page.click('[data-testid="button_submit"]');
+    await page.click(submit_button_selector);
 
-    await page.waitForSelector('[data-testid="error_email"]');
-    const email_error_message = await page.$eval('[data-testid="error_email"]', (e) => e.textContent);
+    await page.waitForSelector(email_error_selector);
+    const email_error_message = await page.$eval(email_error_selector, (e) => e.textContent);
     expect(email_error_message).toContain(
       "Please provide only a TongYong corporate e-mail address"
     );
@@ -28,19 +34,19 @@ describe("Login Page", () => {
   it("should show error message when email is not correct", async () => {
     await page.goto("http://localhost:3000");
 
-    await page.waitForSelector('[data-testid="field_email"]');
-    await page.click('[data-testid="field_email"]');
-    await page.type('[data-testid="field_email"]', "feixuan@123.com");
+    await page.waitForSelector(email_field_selector);
+    await page.click(email_field_selector);
+    await page.type(email_field_selector, "feixuan@123.com");
 
-    await page.waitForSelector('[data-testid="field_password"]');
-    await page.click('[data-testid="field_password"]');
-    await page.type('[data-testid="field_password"]', "admin");
+    await page.waitForSelector(password_field_selector);
+    await page.click(password_field_selector);
+    await page.type(password_field_selector, "admin");
 
-    await page.click('[data-testid="button_submit"]');
+    await page.click(submit_button_selector);
 
-    await page.waitForSelector('[data-testid="error_email"]');
+    await page.waitForSelector(email_error_selector);
     const email_error_message = await page.$eval(
-      '[data-testid="error_email"]',
+      email_error_selector,
       (e) => e.textContent
     );
     expect(email_error_message).toContain(
@@ -54,7 +60,7 @@ describe("Login Page", () => {
      */
     let form_error_password_exists;
     try {
-      await page.waitForSelector('[data-testid="error_password"]', { timeout: 1000 });
+      await page.waitForSelector(password_error_selector, { timeout: 1000 });
       form_error_password_exists = true;
     } catch (error) {
       form_error_password_exists = false;
@@ -66,29 +72,29 @@ describe("Login Page", () => {
   it("should show error message when password is empty", async () => {
     await page.goto("http://localhost:3000");
 
-    await page.waitForSelector('[data-testid="field_email"]');
-    await page.click('[data-testid="field_email"]');
-    await page.type('[data-testid="field_email"]', "feixuan@tongyong.com");
+    await page.waitForSelector(email_field_selector);
+    await page.click(email_field_selector);
+    await page.type(email_field_selector, "feixuan@tongyong.com");
 
-    await page.click('[data-testid="button_submit"]');
+    await page.click(submit_button_selector);
 
-    await page.waitForSelector('[data-testid="error_password"]');
-    const password_error_message = await page.$eval('[data-testid="error_password"]', (e) => e.textContent);
+    await page.waitForSelector(password_error_selector);
+    const password_error_message = await page.$eval(password_error_selector, (e) => e.textContent);
     expect(password_error_message).toContain("password is required");
   });
 
   it("should show error message when password is not correct", async () => {
     await page.goto("http://localhost:3000");
 
-    await page.waitForSelector('[data-testid="field_email"]');
-    await page.click('[data-testid="field_email"]');
-    await page.type('[data-testid="field_email"]', "feixuan@tongyong.com");
+    await page.waitForSelector(email_field_selector);
+    await page.click(email_field_selector);
+    await page.type(email_field_selector, "feixuan@tongyong.com");
 
-    await page.waitForSelector('[data-testid="field_password"]');
-    await page.click('[data-testid="field_password"]');
-    await page.type('[data-testid="field_password"]', "123");
+    await page.waitForSelector(password_field_selector);
+    await page.click(password_field_selector);
+    await page.type(password_field_selector, "123");
 
-    await page.click('[data-testid="button_submit"]');
+    await page.click(submit_button_selector);
 
     await page.waitForSelector('[data-testid="error_global"]');
     const global_error_message = await page.$eval('[data-testid="error_global"]', (e) => e.textContent);
@@ -98,31 +104,31 @@ describe("Login Page", () => {
   it("should show error message when email and password are empty", async () => {
     await page.goto("http://localhost:3000");
 
-    await page.click('[data-testid="button_submit"]');
+    await page.click(submit_button_selector);
 
-    await page.waitForSelector('[data-testid="error_email"]');
-    const email_error_message = await page.$eval('[data-testid="error_email"]', (e) => e.textContent);
+    await page.waitForSelector(email_error_selector);
+    const email_error_message = await page.$eval(email_error_selector, (e) => e.textContent);
     expect(email_error_message).toContain(
       "Please provide only a TongYong corporate e-mail address"
     );
 
-    await page.waitForSelector('[data-testid="error_password"]');
-    const password_error_message = await page.$eval('[data-testid="error_password"]', (e) => e.textContent);
+    await page.waitForSelector(password_error_selector);
+    const password_error_message = await page.$eval(password_error_selector, (e) => e.textContent);
     expect(password_error_message).toContain("password is required");
   });
 
   it("should jump to profile page when email and password are right", async () => {
     await page.goto("http://localhost:3000");
 
-    await page.waitForSelector('[data-testid="field_email"]');
-    await page.click('[data-testid="field_email"]');
-    await page.type('[data-testid="field_email"]', "feixuan@tongyong.com");
+    await page.waitForSelector(email_field_selector);
+    await page.click(email_field_selector);
+    await page.type(email_field_selector, "feixuan@tongyong.com");
 
-    await page.waitForSelector('[data-testid="field_password"]');
-    await page.click('[data-testid="field_password"]');
-    await page.type('[data-testid="field_password"]', "admin");
+    await page.waitForSelector(password_field_selector);
+    await page.click(password_field_selector);
+    await page.type(password_field_selector, "admin");
 
-    await page.click('[data-testid="button_submit"]');
+    await page.click(submit_button_selector);
 
     await page.waitForSelector('[data-testid="employee_name"]');
     const employee_name = await page.$eval('[data-testid="employee_name"]', (e) => e.textContent);
