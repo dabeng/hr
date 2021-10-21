@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 
-import { showError } from "./../core/errorSlice";
+import { showError } from "../core/errorSlice";
 import {
   selectUser,
 } from "../core/userSlice";
