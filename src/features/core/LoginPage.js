@@ -13,7 +13,7 @@ import {
 import styles from "./LoginPage.module.scss";
 
 
-const LoginPage = () => {
+export const LoginPage = () => {
 
   const dispatch = useDispatch();
   const history = useHistory();
@@ -119,4 +119,3 @@ const LoginPage = () => {
     </>
   );
 };
-export default LoginPage;

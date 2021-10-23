@@ -1,31 +1,33 @@
-import React, { Suspense, lazy } from "react";
+import React from "react";
 import {
   BrowserRouter as Router,
   Switch,
   Route,
 } from "react-router-dom";
 
+import { MainPage } from "./features/core/MainPage";
+import { LoginPage } from "./features/core/LoginPage";
+import NotFoundPage from "./features/core/NotFoundPage";
+
 import "bulma";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "./App.scss";
-
-const LoginPage = lazy(() => import("./features/core/LoginPage"));
-const MainPage = lazy(() => import("./features/core/MainPage"));
 
 function App() {
 
   return (
     <Router>
-      <Suspense fallback={<div>Loading...</div>}>
       <Switch>
+        <Route exact path="/">
+          <MainPage />
+        </Route>
         <Route exact path="/login">
           <LoginPage />
         </Route>
-        <Route path="/">
-          <MainPage />
+        <Route path="*">
+          <NotFoundPage />
         </Route>
       </Switch>
-      </Suspense>
     </Router>
   );
 }
