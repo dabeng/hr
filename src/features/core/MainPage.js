@@ -19,7 +19,7 @@ import { Departments } from "../departments/Departments";
 
 import styles from "./MainPage.module.scss";
 
-export const MainPage = () => {
+const MainPage = () => {
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -217,3 +217,4 @@ export const MainPage = () => {
     </>
   );
 };
+export default MainPage;

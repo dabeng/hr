@@ -1,22 +1,22 @@
-import React from "react";
+import React, { Suspense, lazy } from "react";
 import {
   BrowserRouter as Router,
   Switch,
   Route,
 } from "react-router-dom";
 
-import { LoginPage } from "./features/core/LoginPage";
-import { MainPage } from "./features/core/MainPage";
-
-
 import "bulma";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "./App.scss";
+
+const LoginPage = lazy(() => import("./features/core/LoginPage"));
+const MainPage = lazy(() => import("./features/core/MainPage"));
 
 function App() {
 
   return (
     <Router>
+      <Suspense fallback={<div>Loading...</div>}>
       <Switch>
         <Route exact path="/login">
           <LoginPage />
@@ -25,6 +25,7 @@ function App() {
           <MainPage />
         </Route>
       </Switch>
+      </Suspense>
     </Router>
   );
 }
