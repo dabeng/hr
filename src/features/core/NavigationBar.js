@@ -1,88 +1,21 @@
 import React, { useState, useEffect } from "react";
 import {
-  BrowserRouter as Router,
-  useHistory,
-  Switch,
+  useNavigate,
   Route,
   NavLink,
-  Redirect
+  Routes,
+  Navigate,
 } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 
 import clientAPI from './clientAPI';
 import { showError, hideError, selectMessage } from "./errorSlice";
 import { fetchUserBytoken, selectUser, clearUserState } from "./userSlice";
-import { Profile } from "../profile/Profile";
-import { EditProfile } from "../profile/EditProfile";
-import { Employees } from "../employees/Employees";
-import { Departments } from "../departments/Departments";
 
-import styles from "./MainPage.module.scss";
-
-export const MainPage = () => {
-  const dispatch = useDispatch();
-  const history = useHistory();
-
-  const errorMessage = useSelector(selectMessage);
-  const { name: username, email, status } = useSelector(selectUser);
-  const [showMenu, setShowMenu] = useState(false);
-
-  const closeErrorNoti = e => {
-    dispatch(hideError());
-  };
-
-  const toggleAccountMenu = e => {
-    setShowMenu(prev => !prev);
-  };
-
-  const logout = async () => {
-    try {
-      const response = await clientAPI.logoutUser(localStorage.getItem('refreshToken'));
-
-      if (response.status === 200) {
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-        dispatch(clearUserState());
-        history.push('/login');
-      } else {
-        dispatch(showError("failed to logout"));
-      }
-    } catch (err) {
-      dispatch(showError("failed to logout"));
-    }
-  };
-
-  useEffect(() => {
-    // render account menu with user info
-    if (localStorage.getItem('accessToken') && !username) {
-      dispatch(fetchUserBytoken());
-    }
-  }, [dispatch, username]);
-
-  useEffect(() => {
-    if (status === "failed") {
-      dispatch(clearUserState());
-      history.push('/login');
-    }
-  }, [dispatch, history, status]);
-
+const NavigationBar = () => {
   return (
-    <>
-      {!localStorage.getItem("accessToken")
-        ? <Redirect to="/login" />
-        : <Router> {/* protected routes */}
-            {errorMessage && /* golal error message */
-              <div className="columns">
-                <div className="column is-offset-4 is-4" style={{"position": "absolute"}}>
-                    <div className={"notification is-danger is-light " + styles.global_error}>
-                      <button className="delete" onClick={closeErrorNoti}></button>
-                      {errorMessage}
-                    </div>
-                </div>
-              </div>
-            }
-            <div className="columns">
-            <div className="column is-offset-2 is-8">
+      <div className="columns">
+        <div className="column is-offset-2 is-8">
               <nav
                 className="navbar is-light"
                 role="navigation"
@@ -184,36 +117,9 @@ export const MainPage = () => {
                   </div>
                 </div>
               </nav>
-            </div>
-          </div>
-            <div className="columns">
-              <div className="column is-offset-2 is-8">
-              { username && // 这里没有用status===“succeeded”，是因为触发fetchUserByToken，成功获取登陆用户信息后，status会恢复初始值“idle”
-                <Switch>
-                  <Route exact path="/">
-                    <Redirect to="/profile" />
-                  </Route>
-                  <Route exact path="/profile">
-                    <Profile />
-                  </Route>
-                  <Route exact path="/profile/:employeeId">
-                    <Profile />
-                  </Route>
-                  <Route exact path="/profile/:employeeId/edit">
-                    <EditProfile />
-                  </Route>
-                  <Route path="/employees">
-                    <Employees />
-                  </Route>
-                  <Route path="/departments">
-                    <Departments />
-                  </Route>
-                </Switch>
-              }
-              </div>
-            </div>
-          </Router>
-      }
-    </>
+        </div>
+      </div>
+
   );
 };
+export default NavigationBar;

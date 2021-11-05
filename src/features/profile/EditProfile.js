@@ -1,6 +1,6 @@
 import React, {useEffect, useState, useRef, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 
 import { showError } from "../core/errorSlice";
@@ -11,9 +11,9 @@ import useInfiniteScroll from "../core/useInfiniteScroll";
 import "./EditProfile.scss";
 import styles from "./EditProfile.module.scss";
 
-export const EditProfile = () => {
+const EditProfile = () => {
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const { value: employee} = useSelector(selectEmployee);
   // 所有部门的state
   const [departments, setDepartments] = useState([]);
@@ -319,11 +319,11 @@ export const EditProfile = () => {
     }
     
     await dispatch(updateEmployee({employeeId: employee.id, fields: updatedData}));
-    history.push(`/profile/${employee.id}`);
+    navigate(`/profile/${employee.id}`);
   };
 
   const cancelEdit = e => {
-    history.push(`/profile/${employee.id}`);
+    navigate(`/profile/${employee.id}`);
   };
 
   return (
@@ -495,3 +495,5 @@ export const EditProfile = () => {
     </div>
   );
 };
+
+export default EditProfile;

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {
-  useHistory,
+  useNavigate,
 } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -16,7 +16,7 @@ import styles from "./LoginPage.module.scss";
 export const LoginPage = () => {
 
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const {status, error } = useSelector(selectUser);
 
@@ -65,9 +65,9 @@ export const LoginPage = () => {
   useEffect(() => {
     if (status === "succeeded") {
       dispatch(clearUserState());
-      history.push('/');
+      navigate('/');
     }
-  }, [dispatch, history, status]);
+  }, [dispatch, navigate, status]);
 
   return (
     <>

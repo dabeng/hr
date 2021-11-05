@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import {
-  Switch,
+  Routes,
   Route,
   Link,
-  useRouteMatch,
   useLocation
 } from "react-router-dom";
 import { EmployeeTableView } from "./employeeTableView/EmployeeTableView";
@@ -15,8 +14,7 @@ import {
   fetchEmployees,
 } from "./employeesSlice";
 
-export const Employees = () => {
-  let { path, url } = useRouteMatch();
+const Employees = () => {
   const dispatch = useDispatch();
   const location = useLocation();
   const [activeView, setActiveView] = useState(location.pathname === '/employees' ? 'table-view' : location.pathname.split('/').slice(-1)[0]);
@@ -66,28 +64,24 @@ export const Employees = () => {
       <div className="tabs is-right" style={{ "margin": "-3rem 0 1rem" }} onClick={openView}>
         <ul>
           <li className={`${activeView === 'table-view' ? 'is-active': ''}`}>
-            <Link to={`${url}`}>table view</Link>
+            <Link to="">table view</Link>
           </li>
           <li className={`${activeView === 'card-view' ? 'is-active': ''}`}>
-            <Link to={`${url}/card-view`}>card view</Link>
+            <Link to="card-view">card view</Link>
           </li>
           <li className={`${activeView === 'chart-view' ? 'is-active': ''}`}>
-            <Link to={`${url}/chart-view`}>chart view</Link>
+            <Link to="chart-view">chart view</Link>
           </li>
         </ul>
       </div>
 
-      <Switch>
-        <Route exact path={path} >
-          <EmployeeTableView keyword={keyword}/>
-        </Route>
-        <Route path={`${path}/card-view`}>
-          <EmployeeCardView keyword={keyword}/>
-        </Route>
-        <Route path={`${path}/chart-view`}>
-          <EmployeeChartView />
-        </Route>
-      </Switch>
+      <Routes>
+        <Route index element={<EmployeeTableView keyword={keyword} />} />
+        <Route path="card-view" element={<EmployeeCardView keyword={keyword} />} />
+        <Route path="chart-view" element={<EmployeeChartView />} />
+      </Routes>
     </div>
   );
 };
+
+export default Employees;

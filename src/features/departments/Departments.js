@@ -1,18 +1,14 @@
 import React, { useState } from "react";
 import {
-  Switch,
+  Routes,
   Route,
   Link,
-  useRouteMatch,
 } from "react-router-dom";
 import { DepartmentTableView } from "./DepartmentTableView/DepartmentTableView";
 import { DepartmentCardView } from "./DepartmentCardView/DepartmentCardView";
 import { DepartmentChartView } from "./DepartmentChartView/DepartmentChartView";
 
-
-
-export const Departments = () => {
-  let { path, url } = useRouteMatch();
+const Departments = () => {
   const [activeView, setActiveView] = useState('table-view');
 
   function openView(e) {
@@ -41,28 +37,24 @@ export const Departments = () => {
       <div className="tabs is-right" onClick={openView}>
         <ul>
           <li className={`${activeView === 'table-view' ? 'is-active': ''}`}>
-            <Link to={`${url}`}>table view</Link>
+            <Link to="">table view</Link>
           </li>
           <li className={`${activeView === 'card-view' ? 'is-active': ''}`}>
-            <Link to={`${url}/card-view`}>card view</Link>
+            <Link to="card-view">card view</Link>
           </li>
           <li className={`${activeView === 'chart-view' ? 'is-active': ''}`}>
-            <Link to={`${url}/chart-view`}>chart view</Link>
+            <Link to="chart-view">chart view</Link>
           </li>
         </ul>
       </div>
 
-      <Switch>
-        <Route exact path={path}>
-          <DepartmentTableView />
-        </Route>
-        <Route path={`${path}/card-view`}>
-          <DepartmentCardView />
-        </Route>
-        <Route path={`${path}/chart-view`}>
-          <DepartmentChartView />
-        </Route>
-      </Switch>
+      <Routes>
+        <Route idnex element={<DepartmentTableView />} />
+        <Route path="card-view" element={<DepartmentCardView />} />
+        <Route path="chart-view" element={<DepartmentChartView />} />
+      </Routes>
     </div>
   );
 };
+
+export default Departments;

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 
 import { showError } from "../core/errorSlice";
@@ -19,11 +19,11 @@ import {
 import styles from "./Profile.module.scss";
 
 
-export const Profile = () => {
+const Profile = () => {
   const dispatch = useDispatch();
 
   const { id: userId, role: userRole } = useSelector(selectUser);
-  const employeeId = new URLSearchParams(useLocation().search).get("employeeId");
+  const employeeId = useParams().employeeId;
   const existingEmployee = useSelector(state => selectEmployeeById(state, employeeId));
   const employees = useSelector(state => state.employees);
   const { value: employee, status, error: fetchEmployeeError} = useSelector(selectEmployee);
@@ -129,3 +129,5 @@ export const Profile = () => {
     </div>
   );
 };
+
+export default Profile;
