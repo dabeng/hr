@@ -38,6 +38,9 @@ server.post('/login', (req, res) => {
   }
 });
 
+// When the user requests to logout, we will remove the refresh token from our array.
+// It makes sure that when the user is logged out, no one will be able to
+// use the refresh token to generate a new authentication token.
 server.post('/logout', (req, res) => {
   const { refreshToken } = req.body;
   const index = refreshTokens.indexOf(refreshToken);
@@ -49,6 +52,7 @@ server.post('/logout', (req, res) => {
   }
 });
 
+// let's create a request handler that generated new tokens based on the refresh tokens
 server.post('/token', (req, res) => {
   const { refreshToken } = req.body;
 

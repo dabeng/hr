@@ -15,23 +15,34 @@ instance.interceptors.request.use(
 );
 
 instance.interceptors.response.use(null, (error) => {
+  const originalConfig = error.config;
+  const refreshToken = localStorage.getItem('refreshToken');
+
 	if (
-		error.response && error.response.status === 401 && 
-		error.config && !error.config.__isRetry && // TODO: what is __isRetry
-    localStorage.getItem('refreshToken')
+    originalConfig?.url !== '/login' &&
+    !originalConfig._retry &&
+		error.response?.status === 401 &&
+    refreshToken
 	) {
     return new Promise(async (resolve, reject) => {
       try {
+        // get the new access with refresh token
         const response = await clientAPI.getNewToken(localStorage.getItem('refreshToken'));
+        // store new access token locally
         localStorage.setItem('accessToken', response.data.accessToken);
-        error.config.headers.Authorization = 'Bearer ' + response.data.accessToken;
-        // Repeat the initial request
-        const response2 =	await axios.request(error.config);
+        // attach the new access token to the headers
+        originalConfig.headers.Authorization = 'Bearer ' + response.data.accessToken;
+        // use a flag call _retry on original Request (config) to handle Infinite loop.
+        // It is the case that request is failed again, and the server continue to return 401 status code.
+        originalConfig._retry = true;
+        // redo the request again with the new access token
+        const response2 =	await axios.request(originalConfig);
         resolve(response2);
-      } catch (err) {
-        reject(err);
+      } catch (error) {
+        reject(error);
       }
     });
 	}
+
 	return Promise.reject(error);
 });
