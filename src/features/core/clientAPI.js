@@ -3,9 +3,6 @@ import axios from "axios";
 // Set config defaults when creating the instance
 export const instance = axios.create({
   baseURL: 'http://localhost:3001',
-  headers: {
-    Authorization: localStorage.getItem('accessToken') ? `Bearer ${localStorage.getItem('accessToken')}` : ''
-  }
 });
 
 const clientAPI = {

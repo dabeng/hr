@@ -2,6 +2,18 @@ import axios from 'axios';
 
 import clientAPI, { instance } from './clientAPI';
 
+instance.interceptors.request.use(
+  (config) => {
+    if (localStorage.getItem('accessToken')) {
+      config.headers.Authorization = `Bearer ${localStorage.getItem('accessToken')}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 instance.interceptors.response.use(null, (error) => {
 	if (
 		error.response && error.response.status === 401 && 
