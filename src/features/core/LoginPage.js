@@ -13,7 +13,7 @@ import {
 import styles from "./LoginPage.module.scss";
 
 
-export const LoginPage = () => {
+const LoginPage = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -119,3 +119,5 @@ export const LoginPage = () => {
     </>
   );
 };
+
+export default LoginPage;
