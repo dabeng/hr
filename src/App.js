@@ -38,8 +38,7 @@ function App() {
                   <Profile />
                 </RequireAuth>
               }
-            >
-            </Route>
+            />
             <Route
               path="profile/:employeeId"
               element={
