@@ -11,12 +11,11 @@ import LoginPage from "./features/core/LoginPage";
 import NotFoundPage from "./features/core/NotFoundPage";
 import RequireAuth from "./features/core/RequireAuth";
 
-import Profile from "./features/profile/Profile";
-
 import "bulma";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "./App.scss";
 
+const Profile = lazy(() => import('./features/profile/Profile'));
 const EditProfile = lazy(() => import('./features/profile/EditProfile'));
 const Employees = lazy(() => import('./features/employees/Employees'));
 const Departments = lazy(() => import('./features/departments/Departments'));

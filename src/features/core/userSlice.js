@@ -16,6 +16,22 @@ export const loginUser = createAsyncThunk('users/login', async ({ email, passwor
   }
 });
 
+export const logoutUser = createAsyncThunk('users/logout', async (refreshToken, thunkAPI) => {
+  try {
+    const response = await clientAPI.logoutUser(refreshToken);
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      return thunkAPI.rejectWithValue(response.data);
+    }
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err.response.data);
+  } finally {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+  }
+});
+
 // fetch user info when user bypasses login process and directly accesses any procted pages
 export const fetchUserBytoken = createAsyncThunk('users/fetchUserByToken', async (thunkAPI) => {
   try {
@@ -42,7 +58,7 @@ export const userSlice = createSlice({
   },
   reducers: {
     clearUserState: (state) => {
-      // 注意这里只恢复Ajax请求相关的初始值
+      // 这里只把登陆时使用过的临时状态恢复初值
       state.status = "idle";
       state.error = null;
     },
@@ -75,6 +91,20 @@ export const userSlice = createSlice({
     [fetchUserBytoken.rejected]: (state, action) => {
       state.status = "failed";
       state.error = action.payload;
+    },
+    [logoutUser.fulfilled]: (state, {payload}) => {
+      console.log(payload);
+      state.id = '';
+      state.role = '';
+      state.name = '';
+      state.email = '';
+    },
+    [logoutUser.rejected]: (state, {payload}) => {
+      console.log(payload);
+      state.id = '';
+      state.role = '';
+      state.name = '';
+      state.email = '';
     }
   },
 });

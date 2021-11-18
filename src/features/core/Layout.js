@@ -6,9 +6,8 @@ import {
 } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 
-import clientAPI from './clientAPI';
-import { showError, hideError, selectMessage } from "./errorSlice";
-import { fetchUserBytoken, selectUser, clearUserState } from "./userSlice";
+import { hideError, selectMessage } from "./errorSlice";
+import { fetchUserBytoken, selectUser, clearUserState, logoutUser } from "./userSlice";
 
 import styles from "./Layout.module.scss";
 
@@ -28,27 +27,18 @@ const Layout = () => {
     setShowMenu(prev => !prev);
   };
 
-  const logout = async () => {
-    try {
-      const response = await clientAPI.logoutUser(localStorage.getItem('refreshToken'));
-
-      if (response.status === 200) {
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-        dispatch(clearUserState());
-        navigate('/login');
-      } else {
-        dispatch(showError("failed to logout"));
-      }
-    } catch (err) {
-      dispatch(showError("failed to logout"));
-    }
+  const logout = () => {
+    dispatch(logoutUser(localStorage.getItem('refreshToken')));
   };
 
   useEffect(() => {
     // 渲染当前页面，却没有获得登陆账户信息的时候（比方说刷新页面或在浏览器地址栏中粘贴URL直接跳转），通过token来获得账户信息
     if (localStorage.getItem('accessToken') && !username) {
       dispatch(fetchUserBytoken());
+    }
+    // 当用户登出时，用户相关信息被清理，这时将其导航至登陆页面
+    if (!localStorage.getItem('accessToken') && !username) {
+      navigate('/login');
     }
   }, [dispatch, username]);
 
