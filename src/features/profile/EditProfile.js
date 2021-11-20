@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 
+import { selectUser } from "../core/userSlice";
 import { showError } from "../core/errorSlice";
 import clientAPI from "../core/clientAPI";
 import { selectEmployee, updateEmployee } from "../employees/employeeSlice";
@@ -14,6 +15,7 @@ import styles from "./EditProfile.module.scss";
 const EditProfile = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { role: userRole } = useSelector(selectUser);
   const { value: employee} = useSelector(selectEmployee);
   // 所有部门的state
   const [departments, setDepartments] = useState([]);
@@ -366,47 +368,50 @@ const EditProfile = () => {
           <div className="field">
             <label className="label">Superior</label>
             <div className="control">
-              <div className="field has-addons">
-                <div className="control is-expanded">
-                  <input type="hidden" {...register("superior")}/>
-                  <div className={"dropdown" + (superiorKeyword ? " is-active" : "")} style={{"display": "block"}}>
-                    <div className="dropdown-trigger">
-                      <input type="text" className="input" placeholder="superior" value={superiorKeywordInput} onChange={handleSKInputChange} onKeyPress={handleSKInput}/>
-                    </div>
-                    <div className="dropdown-menu" role="menu">
-                      <div className="dropdown-content">
-                        <div className={styles.dropdown_mask + " is-overlay " + (isSuperiorFetching ? "" : "is-hidden")}>
-                          <i className="fas fa-circle-notch fa-spin fa-2x spinner"></i>
-                        </div>
-                        <div className={styles.dropdown_list + (isSuperiorFetching ? " " + styles.is_fetching : "")} ref={superiorContainer}>
-                          {searchedSuperiors && searchedSuperiors.length === 0 &&
-                            <div className="dropdown-item">
-                              <p className="has-text-danger">No results found</p>
-                            </div>
+              {/* 只有管理员能指定当前用户的上下级关联 */}
+              {userRole === "admin" &&
+                <div className="field has-addons">
+                  <div className="control is-expanded">
+                    <input type="hidden" {...register("superior")}/>
+                    <div className={"dropdown" + (superiorKeyword ? " is-active" : "")} style={{"display": "block"}}>
+                      <div className="dropdown-trigger">
+                        <input type="text" className="input" placeholder="superior" value={superiorKeywordInput} onChange={handleSKInputChange} onKeyPress={handleSKInput}/>
+                      </div>
+                      <div className="dropdown-menu" role="menu">
+                        <div className="dropdown-content">
+                          <div className={styles.dropdown_mask + " is-overlay " + (isSuperiorFetching ? "" : "is-hidden")}>
+                            <i className="fas fa-circle-notch fa-spin fa-2x spinner"></i>
+                          </div>
+                          <div className={styles.dropdown_list + (isSuperiorFetching ? " " + styles.is_fetching : "")} ref={superiorContainer}>
+                            {searchedSuperiors && searchedSuperiors.length === 0 &&
+                              <div className="dropdown-item">
+                                <p className="has-text-danger">No results found</p>
+                              </div>
+                            }
+                            {searchedSuperiors && searchedSuperiors.length > 0 && searchedSuperiors.map((superior, index) => (
+                              <a key={superior.id} className="dropdown-item" style={{"whiteSpace": "nowrap"}}>
+                                <label className="checkbox">
+                                  <input type="radio" name="searchedSuperiorList" value={index}/>&nbsp;
+                                  <span>{superior.name}</span> | <span>{superior.email}</span>
+                                </label>
+                              </a>
+                            ))}
+                          </div>
+                          {searchedSuperiors && searchedSuperiors.length > 0 &&
+                            <>
+                              <hr className="dropdown-divider"/>
+                              <button type="button" className="button is-primary is-small is-fullwidth" onClick={bindSuperiorRelation}>Done</button>
+                            </>
                           }
-                          {searchedSuperiors && searchedSuperiors.length > 0 && searchedSuperiors.map((superior, index) => (
-                            <a key={superior.id} className="dropdown-item" style={{"whiteSpace": "nowrap"}}>
-                              <label className="checkbox">
-                                <input type="radio" name="searchedSuperiorList" value={index}/>&nbsp;
-                                <span>{superior.name}</span> | <span>{superior.email}</span>
-                              </label>
-                            </a>
-                          ))}
                         </div>
-                        {searchedSuperiors && searchedSuperiors.length > 0 &&
-                          <>
-                            <hr className="dropdown-divider"/>
-                            <button type="button" className="button is-primary is-small is-fullwidth" onClick={bindSuperiorRelation}>Done</button>
-                          </>
-                        }
                       </div>
                     </div>
                   </div>
+                  <div className="control">
+                    <button type="button" className="button is-primary" onClick={handleClickSpSearch}>Search</button>
+                  </div>
                 </div>
-                <div className="control">
-                  <button type="button" className="button is-primary" onClick={handleClickSpSearch}>Search</button>
-                </div>
-              </div>
+              }
               <span className="tag is-info is-light" style={{margin: "0.5rem 0.5rem 0 0"}}>
                 {superiorName}
                 {/* TODO: 目前orgchart组件还未开放选多个直接上级的功能，所以下面注释掉删除备选者的按钮 */}
@@ -417,52 +422,56 @@ const EditProfile = () => {
           <div className="field">
             <label className="label">Inferiors</label>
             <div className="control">
-              <div className="field has-addons">
-                <div className="control is-expanded">
-                  <input type="hidden" {...register("inferiors")}/>
-                  {/* inferiorKeyword非空时，意味着开始查询下级，弹出下拉菜单 */}
-                  <div className={"dropdown" + (inferiorKeyword ? " is-active" : "")} style={{"display": "block"}}>
-                    <div className="dropdown-trigger">
-                      <input type="text" className="input" placeholder="inferiors" value={inferiorKeywordInput} onChange={handleIKInputChange} onKeyPress={handleIKInput}/>
-                    </div>
-                    <div className="dropdown-menu" role="menu">
-                      <div className="dropdown-content">
-                        <div className={styles.dropdown_mask + " is-overlay " + (isInferiorFetching ? "" : "is-hidden")}>
-                          <i className="fas fa-circle-notch fa-spin fa-2x spinner"></i>
-                        </div>
-                        <div className={styles.dropdown_list + (isInferiorFetching ? " " + styles.is_fetching : "")} ref={inferiorContainer}>
-                          {searchedInferiors && searchedInferiors.length === 0 &&
-                            <div className="dropdown-item">
-                              <p className="has-text-danger">No results found</p>
-                            </div>
+              {userRole === "admin" &&
+                <div className="field has-addons">
+                  <div className="control is-expanded">
+                    <input type="hidden" {...register("inferiors")}/>
+                    {/* inferiorKeyword非空时，意味着开始查询下级，弹出下拉菜单 */}
+                    <div className={"dropdown" + (inferiorKeyword ? " is-active" : "")} style={{"display": "block"}}>
+                      <div className="dropdown-trigger">
+                        <input type="text" className="input" placeholder="inferiors" value={inferiorKeywordInput} onChange={handleIKInputChange} onKeyPress={handleIKInput}/>
+                      </div>
+                      <div className="dropdown-menu" role="menu">
+                        <div className="dropdown-content">
+                          <div className={styles.dropdown_mask + " is-overlay " + (isInferiorFetching ? "" : "is-hidden")}>
+                            <i className="fas fa-circle-notch fa-spin fa-2x spinner"></i>
+                          </div>
+                          <div className={styles.dropdown_list + (isInferiorFetching ? " " + styles.is_fetching : "")} ref={inferiorContainer}>
+                            {searchedInferiors && searchedInferiors.length === 0 &&
+                              <div className="dropdown-item">
+                                <p className="has-text-danger">No results found</p>
+                              </div>
+                            }
+                            {searchedInferiors && searchedInferiors.length > 0 && searchedInferiors.map((inferior, index) => (
+                              <a key={inferior.id} className="dropdown-item" style={{"whiteSpace": "nowrap"}}>
+                                <label className="checkbox">
+                                  <input type="checkbox" name="searchedInferiorList" value={index}/>&nbsp;
+                                  <span>{inferior.name}</span> | <span>{inferior.email}</span>
+                                </label>
+                              </a>
+                            ))}
+                          </div>
+                          {searchedInferiors && searchedInferiors.length > 0 &&
+                            <>
+                              <hr className="dropdown-divider"/>
+                              <button type="button" className="button is-primary is-small is-fullwidth" onClick={bindInferiorRelation}>Done</button>
+                            </>
                           }
-                          {searchedInferiors && searchedInferiors.length > 0 && searchedInferiors.map((inferior, index) => (
-                            <a key={inferior.id} className="dropdown-item" style={{"whiteSpace": "nowrap"}}>
-                              <label className="checkbox">
-                                <input type="checkbox" name="searchedInferiorList" value={index}/>&nbsp;
-                                <span>{inferior.name}</span> | <span>{inferior.email}</span>
-                              </label>
-                            </a>
-                          ))}
                         </div>
-                        {searchedInferiors && searchedInferiors.length > 0 &&
-                          <>
-                            <hr className="dropdown-divider"/>
-                            <button type="button" className="button is-primary is-small is-fullwidth" onClick={bindInferiorRelation}>Done</button>
-                          </>
-                        }
                       </div>
                     </div>
                   </div>
+                  <div className="control">
+                    <button type="button" className="button is-primary" onClick={handleClickIfSearch}>Search</button>
+                  </div>
                 </div>
-                <div className="control">
-                  <button type="button" className="button is-primary" onClick={handleClickIfSearch}>Search</button>
-                </div>
-              </div>
+              }
               {inferiorNames.map((inferiorName, index) => (
                 <span key={index} className="tag is-info is-light" style={{margin: "0.5rem 0.5rem 0 0"}}>
                   {inferiorName}
-                  <button type="button" className="delete" onClick={() => unbindInferiorRelation(index)}></button>
+                  {userRole === "admin" &&
+                    <button type="button" className="delete" onClick={() => unbindInferiorRelation(index)}></button>
+                  }
                 </span>
               ))}
             </div>

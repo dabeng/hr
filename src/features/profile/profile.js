@@ -120,6 +120,7 @@ const Profile = () => {
               <p className="has-text-dark">{employee.description}</p>
             </div>
           </div>
+          {/* 只有本人和管理员能编辑用户信息 */}
           {(userRole === "admin" || employee.id === userId) &&
             <Link to={`/profile/${employee.id}/edit`} className="button is-primary">Edit</Link>
           }
