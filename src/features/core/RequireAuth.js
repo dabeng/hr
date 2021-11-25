@@ -12,7 +12,7 @@ import { selectUser } from "./userSlice";
  function RequireAuth({ children }) {
   const { name: username } = useSelector(selectUser);
   let location = useLocation();
-
+  // 下面的跳转，在用户登出的时候也能派上用场
   if (!username) {
     // Redirect them to the /login page, but save the current location they were
     // trying to go to when they were redirected. This allows us to send them

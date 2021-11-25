@@ -36,10 +36,6 @@ const Layout = () => {
     if (localStorage.getItem('accessToken') && !username) {
       dispatch(fetchUserBytoken());
     }
-    // 当用户登出时，用户相关信息被清理，这时将其导航至登陆页面
-    if (!localStorage.getItem('accessToken') && !username) {
-      navigate('/login');
-    }
   }, [dispatch, username]);
 
   useEffect(() => {
@@ -120,6 +116,7 @@ const Layout = () => {
                 <div className="navbar-end">
                   <div className="navbar-item">
                     <div className="buttons">
+                      {username &&
                       <div
                         className={
                           "dropdown is-right" + (showMenu ? " is-active" : "")
@@ -158,6 +155,7 @@ const Layout = () => {
                           </div>
                         </div>
                       </div>
+                      }
                     </div>
                   </div>
                 </div>
@@ -166,14 +164,6 @@ const Layout = () => {
       </div>
       <div className="columns">
         <div className="column is-offset-2 is-8">
-          {/* <Routes>
-            <Route path="/" element={<Profile />} />
-            <Route path="profile" element={<Profile />} />
-            <Route path="profile/:employeeId" element={<Profile />} />
-            <Route path="profile/:employeeId/edit" element={<EditProfile />} />
-            <Route path="employees" element={<Employees />} />
-            <Route path="departments" element={<Departments />} />
-          </Routes> */}
           <Outlet />
         </div>
       </div>

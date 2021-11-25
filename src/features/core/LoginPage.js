@@ -18,7 +18,7 @@ const LoginPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const {status, error } = useSelector(selectUser);
+  const {id, role, name, email: userEmail, status, error } = useSelector(selectUser);
 
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
@@ -65,9 +65,11 @@ const LoginPage = () => {
   useEffect(() => {
     if (status === "succeeded") {
       dispatch(clearUserState());
+      // 持久化登陆用户的信息
+      localStorage.setItem('user', JSON.stringify({id, role, name, email: userEmail}));
       navigate('/');
     }
-  }, [dispatch, navigate, status]);
+  }, [dispatch, navigate, status, id, name, role, userEmail]);
 
   return (
     <>

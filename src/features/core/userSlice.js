@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+
 import clientAPI from './clientAPI';
 
 export const loginUser = createAsyncThunk('users/login', async ({ email, password }, thunkAPI) => {
@@ -26,9 +27,11 @@ export const logoutUser = createAsyncThunk('users/logout', async (refreshToken, 
     }
   } catch (err) {
     return thunkAPI.rejectWithValue(err.response.data);
-  } finally {
+  } finally { // 只要用户触发登陆操作，就强制退出，不论server端是否处理顺利
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
+    // 清除当前登录用户的持久化信息
+    localStorage.removeItem('user');
   }
 });
 
@@ -45,14 +48,16 @@ export const fetchUserBytoken = createAsyncThunk('users/fetchUserByToken', async
     return thunkAPI.rejectWithValue(err.response.data);
   }
 });
-// 权限验证相关的state可以放在一个slice中，包括注册，登陆，用token取用户信息等等
+/* 权限验证相关的state可以放在一个slice中，包括注册，登陆，用token取用户信息等等 */
+// 从localStorage中读出登陆用户信息，reload page时就派上用场了
+const initialUser = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null;
 export const userSlice = createSlice({
   name: 'user',
   initialState: {
-    id: '',
-    role: '',
-    name: '',
-    email: '',
+    id: initialUser?.id,
+    role: initialUser?.role,
+    name: initialUser?.name,
+    email: initialUser?.email,
     status: 'idle',
     error: null,
   },
@@ -94,15 +99,11 @@ export const userSlice = createSlice({
     },
     [logoutUser.fulfilled]: (state, {payload}) => {
       console.log(payload);
-      state.id = '';
-      state.role = '';
       state.name = '';
       state.email = '';
     },
     [logoutUser.rejected]: (state, {payload}) => {
       console.log(payload);
-      state.id = '';
-      state.role = '';
       state.name = '';
       state.email = '';
     }
