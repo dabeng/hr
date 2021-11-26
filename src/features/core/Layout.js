@@ -1,22 +1,20 @@
-import React, { useState, useEffect  } from "react";
+import React, { useState  } from "react";
 import {
-  useNavigate,
   NavLink,
   Outlet,
 } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 
 import { hideError, selectMessage } from "./errorSlice";
-import { fetchUserBytoken, selectUser, clearUserState, logoutUser } from "./userSlice";
+import { selectUser, logoutUser } from "./userSlice";
 
 import styles from "./Layout.module.scss";
 
 const Layout = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const errorMessage = useSelector(selectMessage);
-  const { name: username, email, status } = useSelector(selectUser);
+  const { name: username, email } = useSelector(selectUser);
   const [showMenu, setShowMenu] = useState(false);
 
   const closeErrorNoti = e => {
@@ -30,21 +28,6 @@ const Layout = () => {
   const logout = () => {
     dispatch(logoutUser(localStorage.getItem('refreshToken')));
   };
-
-  useEffect(() => {
-    // 渲染当前页面，却没有获得登陆账户信息的时候（比方说刷新页面或在浏览器地址栏中粘贴URL直接跳转），通过token来获得账户信息
-    if (localStorage.getItem('accessToken') && !username) {
-      dispatch(fetchUserBytoken());
-    }
-  }, [dispatch, username]);
-
-  useEffect(() => {
-    // 如果用token获取登录账户信息失败了（比如token过期了），那就跳转到登录页面
-    if (status === "failed") {
-      dispatch(clearUserState());
-      navigate('/login');
-    }
-  }, [dispatch, navigate, status]);
 
   return (
     <>
