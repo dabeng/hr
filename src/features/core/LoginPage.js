@@ -9,6 +9,7 @@ import {
   selectUser,
   clearUserState
 } from "./userSlice";
+import TokenService from "./token.service";
 
 import styles from "./LoginPage.module.scss";
 
@@ -18,7 +19,7 @@ const LoginPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const {id, role, name, email: userEmail, status, error } = useSelector(selectUser);
+  const { status, error } = useSelector(selectUser);
 
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
@@ -53,8 +54,14 @@ const LoginPage = () => {
     }
   };
 
-  const login = () => {
-    dispatch(loginUser({email, password}));
+  const login = async () => {
+    try {
+      const response = await dispatch(loginUser({email, password})).unwrap();
+      // 持久化登陆用户的信息
+      TokenService.setUser(response);
+    } catch (err) {
+      console.log(`[system error] ${err}`);
+    }
   };
 
   const closeErrorNoti = e => {
@@ -63,13 +70,14 @@ const LoginPage = () => {
 
   // const error = useSelector(state => state.employee.error);
   useEffect(() => {
+    // 成功登录后
     if (status === "succeeded") {
+      // 重置用户登陆时使用的临时状态
       dispatch(clearUserState());
-      // 持久化登陆用户的信息
-      localStorage.setItem('user', JSON.stringify({id, role, name, email: userEmail}));
+      // 导航到主页
       navigate('/');
     }
-  }, [dispatch, navigate, status, id, name, role, userEmail]);
+  }, [dispatch, navigate, status]);
 
   return (
     <>

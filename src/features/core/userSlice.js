@@ -2,13 +2,14 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 import clientAPI from './clientAPI';
 
+/* NOTE: Do not introduce side effects into createAsyncThunk() and createSlice()
+ * That means there shouldn't be localStorage or console.log in this file
+ */
 export const loginUser = createAsyncThunk('users/login', async ({ email, password }, thunkAPI) => {
   try {
     const response = await clientAPI.loginUser({email, password});
     if (response.status === 200) {
-      localStorage.setItem('accessToken', response.data.accessToken);
-      localStorage.setItem('refreshToken', response.data.refreshToken);
-      return response.data.user;
+      return response.data;
     } else {
       return thunkAPI.rejectWithValue(response.data);
     }
@@ -27,11 +28,6 @@ export const logoutUser = createAsyncThunk('users/logout', async (refreshToken, 
     }
   } catch (err) {
     return thunkAPI.rejectWithValue(err.response.data);
-  } finally { // 只要用户触发登陆操作，就强制退出，不论server端是否处理顺利
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
-    // 清除当前登录用户的持久化信息
-    localStorage.removeItem('user');
   }
 });
 
@@ -54,10 +50,10 @@ const initialUser = localStorage.getItem('user') ? JSON.parse(localStorage.getIt
 export const userSlice = createSlice({
   name: 'user',
   initialState: {
-    id: initialUser?.id,
-    role: initialUser?.role,
-    name: initialUser?.name,
-    email: initialUser?.email,
+    id: initialUser?.user?.id,
+    role: initialUser?.user?.role,
+    name: initialUser?.user?.name,
+    email: initialUser?.user?.email,
     status: 'idle',
     error: null,
   },
@@ -73,10 +69,10 @@ export const userSlice = createSlice({
       state.status = "loading";
     },
     [loginUser.fulfilled]: (state, action) => {
-      state.id = action.payload.id;
-      state.role = action.payload.role;
-      state.name = action.payload.name;
-      state.email = action.payload.email;
+      state.id = action.payload.user.id;
+      state.role = action.payload.user.role;
+      state.name = action.payload.user.name;
+      state.email = action.payload.user.email;
       state.status = "succeeded";
     },
     [loginUser.rejected]: (state, action) => {
@@ -98,12 +94,10 @@ export const userSlice = createSlice({
       state.error = action.payload;
     },
     [logoutUser.fulfilled]: (state, {payload}) => {
-      console.log(payload);
       state.name = '';
       state.email = '';
     },
     [logoutUser.rejected]: (state, {payload}) => {
-      console.log(payload);
       state.name = '';
       state.email = '';
     }

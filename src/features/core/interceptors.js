@@ -1,11 +1,13 @@
 import axios from 'axios';
 
 import clientAPI, { instance } from './clientAPI';
+import TokenService from "./token.service";
 
 instance.interceptors.request.use(
   (config) => {
-    if (localStorage.getItem('accessToken')) {
-      config.headers.Authorization = `Bearer ${localStorage.getItem('accessToken')}`;
+    const accessTokenen = TokenService.getLocalAccessToken();
+    if (accessTokenen) {
+      config.headers.Authorization = `Bearer ${accessTokenen}`;
     }
     return config;
   },
@@ -16,7 +18,7 @@ instance.interceptors.request.use(
 
 instance.interceptors.response.use(null, (error) => {
   const originalConfig = error.config;
-  const refreshToken = localStorage.getItem('refreshToken');
+  const refreshToken = TokenService.getLocalRefreshToken();
 
 	if (
     originalConfig?.url !== '/login' &&
@@ -27,9 +29,9 @@ instance.interceptors.response.use(null, (error) => {
     return new Promise(async (resolve, reject) => {
       try {
         // get the new access with refresh token
-        const response = await clientAPI.getNewToken(localStorage.getItem('refreshToken'));
-        // store new access token locally
-        localStorage.setItem('accessToken', response.data.accessToken);
+        const response = await clientAPI.getNewToken(refreshToken);
+        // update access token locally
+        TokenService.updateLocalAccessToken(response.data.accessToken);
         // attach the new access token to the headers
         originalConfig.headers.Authorization = 'Bearer ' + response.data.accessToken;
         // use a flag call _retry on original Request (config) to handle Infinite loop.

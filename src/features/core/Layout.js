@@ -7,6 +7,7 @@ import { useSelector, useDispatch } from "react-redux";
 
 import { hideError, selectMessage } from "./errorSlice";
 import { selectUser, logoutUser } from "./userSlice";
+import TokenService from "./token.service";
 
 import styles from "./Layout.module.scss";
 
@@ -25,8 +26,14 @@ const Layout = () => {
     setShowMenu(prev => !prev);
   };
 
-  const logout = () => {
-    dispatch(logoutUser(localStorage.getItem('refreshToken')));
+  const logout = async () => {
+    try {
+      await dispatch(logoutUser(TokenService.getLocalRefreshToken()));
+    } catch (err) {
+      console.log(`[system error] ${err}`);
+    } finally { // 只要用户触发登陆操作，就强制退出， 清除当前登录用户的持久化信息, 不论server端是否处理顺利
+      TokenService.removeUser();
+    }
   };
 
   return (
