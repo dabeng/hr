@@ -57,7 +57,7 @@ const LoginPage = () => {
   const login = async () => {
     try {
       const response = await dispatch(loginUser({email, password})).unwrap();
-      // 持久化登陆用户的信息
+      // 持久化token和登录用户的基本信息。等到刷新token，reload页面时用的上
       TokenService.setUser(response);
     } catch (err) {
       console.log(`[system error] ${err}`);
@@ -68,7 +68,6 @@ const LoginPage = () => {
     dispatch(clearUserState());
   };
 
-  // const error = useSelector(state => state.employee.error);
   useEffect(() => {
     // 成功登录后
     if (status === "succeeded") {
