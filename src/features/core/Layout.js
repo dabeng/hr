@@ -34,7 +34,9 @@ const Layout = () => {
   const logout = async () => {
     try {
       await dispatch(logoutUser(TokenService.getLocalRefreshToken()));
-      setShowAccountMenu(false); // 让用户菜单默认隐藏，否则再次登录时，用户菜单就自动显示出来了
+      // 得把布局用的临时状态恢复初始值
+      setShowAccountMenu(false);
+      setShowNavMenu(false);
     } catch (err) {
       console.log(`[system error] ${err}`);
     } finally { // 只要用户触发登陆操作，就强制退出， 清除当前登录用户的持久化信息, 不论server端是否处理顺利
@@ -113,7 +115,7 @@ const Layout = () => {
                     {username &&
                       <div
                         className={
-                          `dropdown is-right${showAccountMenu ? " is-active" : ""}`
+                          `dropdown${showAccountMenu ? " is-active" : ""}${showNavMenu ? " is-left" : " is-right"}`
                         }
                       >
                         <div className="dropdown-trigger">
