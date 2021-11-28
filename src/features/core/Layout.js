@@ -29,6 +29,7 @@ const Layout = () => {
   const logout = async () => {
     try {
       await dispatch(logoutUser(TokenService.getLocalRefreshToken()));
+      setShowMenu(false); // 让用户菜单默认隐藏，否则再次登录时，用户菜单就自动显示出来了
     } catch (err) {
       console.log(`[system error] ${err}`);
     } finally { // 只要用户触发登陆操作，就强制退出， 清除当前登录用户的持久化信息, 不论server端是否处理顺利
@@ -107,44 +108,44 @@ const Layout = () => {
                   <div className="navbar-item">
                     <div className="buttons">
                       {username &&
-                      <div
-                        className={
-                          "dropdown is-right" + (showMenu ? " is-active" : "")
-                        }
-                      >
-                        <div className="dropdown-trigger">
-                          <button
-                            className="button"
-                            aria-haspopup="true"
-                            aria-controls="account_menu"
-                            onClick={toggleAccountMenu}
-                          >
-                            <span className="icon">
-                              <i
-                                className="fas fa-user-circle"
-                                aria-hidden="true"
-                              ></i>
-                            </span>
-                          </button>
-                        </div>
                         <div
-                          className="dropdown-menu"
-                          id="account_menu"
-                          role="menu"
+                          className={
+                            `dropdown is-right${showMenu ? " is-active" : ""}`
+                          }
                         >
-                          <div className="dropdown-content">
-                            <div className="dropdown-item" style={{"textAlign": "center"}}>
-                              <i className="fas fa-user-circle fa-4x"></i>
-                              <h6 className="title is-6">{username}</h6>
-                              <h6 className="subtitle is-6">{email}</h6>
-                            </div>
-                            <hr className="dropdown-divider"/>
-                            <div className="dropdown-item">
-                              <button className="button is-fullwidth is-primary" onClick={logout}>Log Out</button>
+                          <div className="dropdown-trigger">
+                            <button
+                              className="button"
+                              aria-haspopup="true"
+                              aria-controls="account_menu"
+                              onClick={toggleAccountMenu}
+                            >
+                              <span className="icon">
+                                <i
+                                  className="fas fa-user-circle"
+                                  aria-hidden="true"
+                                ></i>
+                              </span>
+                            </button>
+                          </div>
+                          <div
+                            className="dropdown-menu"
+                            id="account_menu"
+                            role="menu"
+                          >
+                            <div className="dropdown-content">
+                              <div className="dropdown-item" style={{"textAlign": "center"}}>
+                                <i className="fas fa-user-circle fa-4x"></i>
+                                <h6 className="title is-6">{username}</h6>
+                                <h6 className="subtitle is-6">{email}</h6>
+                              </div>
+                              <hr className="dropdown-divider"/>
+                              <div className="dropdown-item">
+                                <button className="button is-fullwidth is-primary" onClick={logout}>Log Out</button>
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
                       }
                     </div>
                   </div>
