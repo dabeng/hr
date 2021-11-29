@@ -13,7 +13,7 @@ const Departments = () => {
 
   function openView(e) {
     if (e.target.nodeName === 'A') {
-      setActiveView(e.target.href.split('/').slice(-1)[0] === 'employees' ?
+      setActiveView(e.target.href.split('/').slice(-1)[0] === 'departments' ?
         'table-view' : e.target.href.split('/').slice(-1)[0]);
     }
   };
@@ -49,7 +49,7 @@ const Departments = () => {
       </div>
 
       <Routes>
-        <Route idnex element={<DepartmentTableView />} />
+        <Route index element={<DepartmentTableView />} />
         <Route path="card-view" element={<DepartmentCardView />} />
         <Route path="chart-view" element={<DepartmentChartView />} />
       </Routes>

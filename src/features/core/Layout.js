@@ -108,6 +108,12 @@ const Layout = () => {
                 >
                   Departments
                 </NavLink>
+                <NavLink
+                  to="calendar"
+                  className={({ isActive }) => `navbar-item ${isActive ? 'is-active' : ''}`}
+                >
+                  Calendar
+                </NavLink>
               </div>
               <div className="navbar-end">
                 <div className="navbar-item">
