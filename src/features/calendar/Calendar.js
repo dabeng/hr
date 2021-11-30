@@ -3,12 +3,14 @@ import {
   Routes,
   Route,
   Link,
+  useLocation
 } from "react-router-dom";
 import YearView from "./YearView";
 import MonthView from "./MonthView";
 
 const Calendar = () => {
-  const [activeView, setActiveView] = useState('month-view');
+  const location = useLocation();
+  const [activeView, setActiveView] = useState(location.pathname === '/calendar' ? 'month-view' : location.pathname.split('/').slice(-1)[0]);
 
   function openView(e) {
     if (e.target.nodeName === 'A') {
@@ -32,7 +34,6 @@ const Calendar = () => {
 
       <Routes>
         <Route index element={<MonthView />} />
-        <Route path="month-view" element={<MonthView />} />
         <Route path="year-view" element={<YearView />} />
       </Routes>
     </div>
