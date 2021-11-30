@@ -45,6 +45,24 @@ const MonthView = () => {
 
   return (
     <div>
+      <div className="columns is-mobile">
+        <div className="column is-4">
+          <div className="buttons has-addons">
+            <button className="button is-primary">
+              <i className="fas fa-chevron-left"></i>
+            </button>
+            <button className="button is-light">
+              Today
+            </button>
+            <button className="button is-primary">
+              <i className="fas fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+        <div className="column is-8">
+          <h1 className="title is-2">{dayjs().format('	MMMM YYYY')}</h1>
+        </div>
+      </div>
       {createCards()}
     </div>
   );
