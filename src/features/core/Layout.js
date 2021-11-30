@@ -57,7 +57,7 @@ const Layout = () => {
         </div>
       }
       <div className="columns">
-        <div className="column is-offset-2 is-8">
+        <div className="column is-offset-1 is-10">
           <nav
             className="navbar is-light"
             role="navigation"
@@ -166,7 +166,7 @@ const Layout = () => {
         </div>
       </div>
       <div className="columns">
-        <div className="column is-offset-2 is-8">
+        <div className="column is-offset-1 is-10">
           <Outlet />
         </div>
       </div>

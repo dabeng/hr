@@ -11,7 +11,7 @@ const MonthView = () => {
     for (var i = 0; i < 7; i++) {
       let columns = [];
       for (var j = 0; j < 7; j++) {
-        columns.push(<div className={`column ${styles.card}`} key={7 * i + j}>
+        columns.push(<div className={`column ${styles.card}`} key={j}>
           <div className="card">
             <div className="card-content">
               <div className="content">
