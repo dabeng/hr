@@ -1,10 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 
 import dayjs from 'dayjs';
 
 import styles from "./MonthView.module.scss";
 
 const MonthView = () => {
+  const [increment, setIncrement] = useState(0);
+
+  const previousMonth = e => {
+    setIncrement(prev => prev - 1);
+  };
+
+  const nextMonth = e => {
+    setIncrement(prev => prev + 1);
+  };
 
   const createCards = () => {
     let rows = [];
@@ -48,13 +57,13 @@ const MonthView = () => {
       <div className="columns is-mobile">
         <div className="column is-4">
           <div className="buttons has-addons">
-            <button className="button is-primary">
+            <button className="button is-primary" onClick={previousMonth}>
               <i className="fas fa-chevron-left"></i>
             </button>
             <button className="button is-light">
               Today
             </button>
-            <button className="button is-primary">
+            <button className="button is-primary" onClick={nextMonth}>
               <i className="fas fa-chevron-right"></i>
             </button>
           </div>

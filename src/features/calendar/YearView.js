@@ -1,11 +1,16 @@
 import React, { useState } from "react";
 
 import dayjs from 'dayjs';
+import DayOfYear from 'dayjs/plugin/dayOfYear';
 
 import styles from "./YearView.module.scss";
 
 const YearView = () => {
+  dayjs.extend(DayOfYear);
+
   const [increment, setIncrement] = useState(0);
+
+
 
   const previousYear = e => {
     setIncrement(prev => prev - 1);
@@ -22,7 +27,11 @@ const YearView = () => {
       let daysInMonth = dayjs().add(increment, 'year').month(i).daysInMonth();
       for (let j = 0; j < 32; j++) {
         columns.push(<div className={`column ${styles.column}`} key={j}>
-          <div className={"card" + (j === 0 ? ` ${styles.month_card}` : "") + (j > daysInMonth ? ` ${styles.placeholder_card}` : "")}>
+          <div className={"card"
+            + (j === 0 ? ` ${styles.month_card}` : "")
+            + (j > daysInMonth ? ` ${styles.placeholder_card}` : "")
+            + (dayjs().month() === i && dayjs().date() === j ? ` ${styles.today_card}` : "")
+          }>
             <div className={`card-content ${styles.card_content}`}>
               <div className="content">
                 {j === 0 ? i + 1 :
