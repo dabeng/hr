@@ -10,7 +10,9 @@ const YearView = () => {
 
   const [increment, setIncrement] = useState(0);
 
-
+  const resetToToday = e => {
+    setIncrement(0);
+  };
 
   const previousYear = e => {
     setIncrement(prev => prev - 1);
@@ -30,7 +32,7 @@ const YearView = () => {
           <div className={"card"
             + (j === 0 ? ` ${styles.month_card}` : "")
             + (j > daysInMonth ? ` ${styles.placeholder_card}` : "")
-            + (dayjs().month() === i && dayjs().date() === j ? ` ${styles.today_card}` : "")
+            + (increment === 0 && dayjs().month() === i && dayjs().date() === j ? ` ${styles.today_card}` : "")
           }>
             <div className={`card-content ${styles.card_content}`}>
               <div className="content">
@@ -55,7 +57,7 @@ const YearView = () => {
             <button className="button is-primary" onClick={previousYear}>
               <i className="fas fa-chevron-left"></i>
             </button>
-            <button className="button is-light">
+            <button className="button is-light" onClick={resetToToday}>
               Today
             </button>
             <button className="button is-primary" onClick={nextYear}>
