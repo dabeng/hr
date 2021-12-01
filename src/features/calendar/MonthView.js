@@ -9,7 +9,7 @@ const MonthView = () => {
   const createCards = () => {
     let rows = [];
     rows.push(
-      <div className="columns is-mobile">
+      <div className="columns is-mobile" key={0}>
         {['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map((caption, i) =>
           <div className={`column ${styles.column}`} key={i}>
             <div className={`card ${styles.week_card}`}>
@@ -38,7 +38,7 @@ const MonthView = () => {
           </div>
         );
       }
-      rows.push(<div className="columns is-mobile" key={i}>{columns}</div>);
+      rows.push(<div className="columns is-mobile" key={i + 1}>{columns}</div>);
     }
     return rows;
   }
@@ -60,7 +60,7 @@ const MonthView = () => {
           </div>
         </div>
         <div className="column is-8">
-          <h1 className="title is-2">{dayjs().format('	MMMM YYYY')}</h1>
+          <h1 className="title is-2">{dayjs().format('MMMM YYYY')}</h1>
         </div>
       </div>
       {createCards()}
