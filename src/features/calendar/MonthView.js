@@ -11,6 +11,10 @@ const MonthView = () => {
     setIncrement(prev => prev - 1);
   };
 
+  const resetToToday = e => {
+    setIncrement(0);
+  };
+
   const nextMonth = e => {
     setIncrement(prev => prev + 1);
   };
@@ -32,15 +36,28 @@ const MonthView = () => {
         )}
       </div>
     );
-    for (let i = 0; i < 7; i++) {
+    for (let i = 0; i < 6; i++) {
       let columns = [];
+      let startDay = dayjs(dayjs().format(`YYYY-MM`)).day(); // 当前月份第一天是星期几
+      let days = dayjs().add(increment, 'month').daysInMonth(); // 当前月份一共有多少天
+      let previousDays = dayjs().add(increment-1, 'month').daysInMonth(); // 前一个月份一共有多少天
       for (let j = 0; j < 7; j++) {
         columns.push(
           <div className={`column ${styles.column}`} key={j}>
-            <div className="card">
+            <div className={
+              "card"
+              + (i * 7 + j < startDay ? " " + styles.previous_month_day : "")
+              + ((i * 7 + j >= startDay && i * 7 + j <= startDay + days -1) ? " " + styles.current_month_day : "")
+              + (i * 7 + j > startDay + days - 1 ? " " + styles.next_month_day : "")
+              + (i * 7 + j === dayjs().date() + startDay - 1 && increment === 0 ? " " + styles.current_month_today: "")
+            }>
               <div className="card-content">
                 <div className="content">
-                  {7 * i + j + 1}
+                  {
+                    i * 7 + j < startDay ? previousDays - startDay + j + 1 : (
+                      i * 7 + j > startDay + days - 1 ? ((i * 7 + j) - (startDay + days - 1)) : i * 7 + j + 1 - startDay
+                    )
+                  }
                 </div>
               </div>
             </div>
@@ -60,7 +77,7 @@ const MonthView = () => {
             <button className="button is-primary" onClick={previousMonth}>
               <i className="fas fa-chevron-left"></i>
             </button>
-            <button className="button is-light">
+            <button className="button is-light" onClick={resetToToday}>
               Today
             </button>
             <button className="button is-primary" onClick={nextMonth}>
@@ -69,7 +86,7 @@ const MonthView = () => {
           </div>
         </div>
         <div className="column is-8">
-          <h1 className="title is-2">{dayjs().format('MMMM YYYY')}</h1>
+          <h1 className="title is-2">{dayjs().add(increment, 'month').format('MMMM YYYY')}</h1>
         </div>
       </div>
       {createCards()}

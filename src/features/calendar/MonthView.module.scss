@@ -6,3 +6,15 @@
   font-weight: bolder;
   border-top: 1px solid #000;
 }
+
+.current_month_day {
+  color: #000;
+}
+
+.current_month_today {
+  border:1px solid #000;
+}
+
+.previous_month_day, .next_month_day {
+  color: #aaa;
+}
