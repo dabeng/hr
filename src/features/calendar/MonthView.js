@@ -6,6 +6,8 @@ import styles from "./MonthView.module.scss";
 
 const MonthView = () => {
   const [increment, setIncrement] = useState(0);
+  // 0代表为未选中，1代表被选中，2代表被占用请假，3代表被占用请假的日期的被选中状态
+  const [monthMatrix, setMonthMatrix] = useState(Array.from({length: 7},() => Array.from({length: 6}, () => 0)));
 
   const previousMonth = e => {
     setIncrement(prev => prev - 1);
@@ -29,6 +31,20 @@ const MonthView = () => {
 
   const editLeave = e => {
     
+  };
+
+  const toggleDay = (row, column) => {
+    const copy = [...monthMatrix];
+    if (copy[row][column] === 0) {
+      copy[row][column] = 1;
+    } else if (copy[row][column] === 1) {
+      copy[row][column] = 0;
+    } else if (copy[row][column] === 2) {
+      copy[row][column] = 3;
+    } else {
+      copy[row][column] = 2;
+    }
+    setMonthMatrix(copy);
   };
 
   const createCards = () => {
@@ -56,13 +72,21 @@ const MonthView = () => {
       for (let j = 0; j < 7; j++) {
         columns.push(
           <div className={`column ${styles.column}`} key={j}>
-            <div className={
-              "card"
-              + (i * 7 + j < startDay ? " " + styles.previous_month_day : "")
-              + ((i * 7 + j >= startDay && i * 7 + j <= startDay + days -1) ? " " + styles.current_month_day : "")
-              + (i * 7 + j > startDay + days - 1 ? " " + styles.next_month_day : "")
-              + (i * 7 + j === dayjs().date() + startDay - 1 && increment === 0 ? " " + styles.current_month_today: "")
-            }>
+            <div
+              className={
+                "card"
+                + (i * 7 + j < startDay ? " has-text-grey" : "")
+                + ((i * 7 + j >= startDay && i * 7 + j <= startDay + days -1) ? " " + styles.current_month_day : "")
+                + (i * 7 + j > startDay + days - 1 ? " has-text-grey" : "")
+                + (i * 7 + j === dayjs().date() + startDay - 1 && increment === 0 ? " has-text-white has-background-danger-dark": "")
+                + (monthMatrix[i][j] === 1 ? " has-text-white has-background-grey-light" : (
+                    monthMatrix[i][j] === 2 ? " has-text-white has-background-info-dark" : (
+                      monthMatrix[i][j] === 3 ? " has-text-white has-background-link-dark" : ""
+                    )
+                  ))
+              }
+              onClick={e => toggleDay(i, j)}
+            >
               <div className="card-content">
                 <div className="content">
                   {

@@ -44,8 +44,8 @@ const YearView = () => {
           <div className={"card"
             + (j === 0 ? " " + styles.month : "")
             + (j > daysInMonth ? " " + styles.placeholder : "")
-            + (increment === 0 && dayjs().month() === i && dayjs().date() === j ? " " + styles.today : "")
-            + ((i === 4 || i === 9) && (j>0 && j <8) ? " has-text-primary has-background-primary-light " + styles.legal_holiday: "")
+            + (increment === 0 && dayjs().month() === i && dayjs().date() === j ? " has-text-white has-background-danger-dark" : "")
+            + ((i === 4 || i === 9) && (j>0 && j <8) ? " has-text-primary has-background-primary-light": "")
           }>
             <div className={`card-content ${styles.card_content}`}>
               <div className="content">
