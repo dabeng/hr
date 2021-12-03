@@ -7,7 +7,8 @@ import styles from "./MonthView.module.scss";
 const MonthView = () => {
   const [increment, setIncrement] = useState(0);
   // 0代表为未选中，1代表被选中，2代表被占用请假，3代表被占用请假的日期的被选中状态
-  const [monthMatrix, setMonthMatrix] = useState(Array.from({length: 7},() => Array.from({length: 6}, () => 0)));
+  const [monthMatrix, setMonthMatrix] = useState(Array.from({length: 6},() => Array.from({length: 7}, () => 0)));
+  const [isNewLeaveModalOpen, setIsNewLeaveModalOpen] = useState(false);
 
   const previousMonth = e => {
     setIncrement(prev => prev - 1);
@@ -21,8 +22,12 @@ const MonthView = () => {
     setIncrement(prev => prev + 1);
   };
 
-  const newLeave = e => {
-    
+  const openNewLeaveModal = e => {
+    setIsNewLeaveModalOpen(true);
+  };
+
+  const closeNewLeaveModal = e => {
+    setIsNewLeaveModalOpen(false);
   };
 
   const deleteLeave = e => {
@@ -76,7 +81,7 @@ const MonthView = () => {
               className={
                 "card"
                 + (i * 7 + j < startDay ? " has-text-grey" : "")
-                + ((i * 7 + j >= startDay && i * 7 + j <= startDay + days -1) ? " " + styles.current_month_day : "")
+                + ((i * 7 + j >= startDay && i * 7 + j <= startDay + days -1) ? " has-text-black" : "")
                 + (i * 7 + j > startDay + days - 1 ? " has-text-grey" : "")
                 + (i * 7 + j === dayjs().date() + startDay - 1 && increment === 0 ? " has-text-white has-background-danger-dark": "")
                 + (monthMatrix[i][j] === 1 ? " has-text-white has-background-grey-light" : (
@@ -126,7 +131,7 @@ const MonthView = () => {
         </div>
         <div className="column is-4">
           <div className="buttons is-right">
-            <button className="button" onClick={newLeave}>
+            <button className="button" onClick={openNewLeaveModal}>
               <i className="fas fa-plus fa-lg"></i>
             </button>
             <button className="button" onClick={deleteLeave}>
@@ -139,6 +144,22 @@ const MonthView = () => {
         </div>
       </div>
       {createCards()}
+      <div className={"modal" + (isNewLeaveModalOpen ? " is-active" : "")}>
+        <div className="modal-background"></div>
+        <div className="modal-card">
+          <header className="modal-card-head">
+            <p className="modal-card-title">Request Time Off</p>
+            <button className="delete" aria-label="close" onClick={closeNewLeaveModal}></button>
+          </header>
+          <section className="modal-card-body">
+            123
+          </section>
+          <footer className="modal-card-foot">
+            <button className="button is-success">Submit</button>
+            <button className="button" onClick={closeNewLeaveModal}>Cancel</button>
+          </footer>
+       </div>
+      </div>
     </div>
   );
 };
