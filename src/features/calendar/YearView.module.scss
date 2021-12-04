@@ -7,6 +7,26 @@
   padding: 0.25rem;
 }
 
+.today_card {
+  .date {
+    color: #fff;
+    background-color: #000;
+  }
+}
+
+.content {
+
+  .date {
+    display: block;
+    width: 1.5rem;
+    border-radius: 0.75rem;
+    text-align: center;
+  }
+  .status {
+    position: absolute;
+  }
+}
+
 .month {
   color: #fff;
   font-weight: bolder;

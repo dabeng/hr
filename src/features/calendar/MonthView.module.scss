@@ -7,10 +7,22 @@
   border-top: 1px solid #000;
 }
 
+.today_card {
+  .date {
+    color: #fff;
+    background-color: #000;
+  }
+}
+
 .content {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  .date {
+    width: 1.5rem;
+    border-radius: 0.75rem;
+    text-align: center;
+  }
 }
 
 .current_month_day {

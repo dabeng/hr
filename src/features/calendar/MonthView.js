@@ -75,13 +75,15 @@ const MonthView = () => {
                 + (i * 7 + j < startDay ? " has-text-grey" : "")
                 + ((i * 7 + j >= startDay && i * 7 + j <= startDay + days -1) ? " has-text-black" : "")
                 + (i * 7 + j > startDay + days - 1 ? " has-text-grey" : "")
-                + (i * 7 + j === dayjs().date() + startDay - 1 && increment === 0 ? " has-text-white has-background-danger-dark": "")
+                + (i * 7 + j === dayjs().date() + startDay - 1 && increment === 0 ? " " + styles.today_card: "")
               }
               onClick={e => toggleDay(i, j)}
             >
               <div className="card-content">
                 <div className={`content ${styles.content}`}>
-                  <span>
+                  <span className={
+                    styles.date
+                    }>
                     {
                       i * 7 + j < startDay ? previousDays - startDay + j + 1 : (
                         i * 7 + j > startDay + days - 1 ? ((i * 7 + j) - (startDay + days - 1)) : i * 7 + j + 1 - startDay

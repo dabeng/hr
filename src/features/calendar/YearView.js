@@ -29,17 +29,20 @@ const YearView = () => {
       let daysInMonth = dayjs().add(increment, 'year').month(i).daysInMonth();
       for (let j = 0; j < 32; j++) {
         columns.push(<div className={`column ${styles.column}`} key={j}>
-          <div className={"card"
+          <div className={
+            "card"
             + (j === 0 ? " " + styles.month : "")
             + (j > daysInMonth ? " " + styles.placeholder : "")
-            + (increment === 0 && dayjs().month() === i && dayjs().date() === j ? " has-text-white has-background-danger-dark" : "")
-            + ((i === 4 || i === 9) && (j>0 && j <8) ? " has-text-primary has-background-primary-light": "")
+            + (increment === 0 && dayjs().month() === i && dayjs().date() === j ? " " + styles.today_card : "")
           }>
             <div className={`card-content ${styles.card_content}`}>
-              <div className="content">
-                {j === 0 ? i + 1 :
-                  (j > daysInMonth ? 0 : j)
-                }
+              <div className={"content " + styles.content}>
+                <span className={styles.date}>
+                  {j === 0 ? i + 1 :
+                    (j > daysInMonth ? 0 : j)
+                  }
+                </span>
+                <span className={styles.status}></span>
               </div>
             </div>
           </div>
