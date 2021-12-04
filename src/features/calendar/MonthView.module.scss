@@ -7,6 +7,12 @@
   border-top: 1px solid #000;
 }
 
+.content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .current_month_day {
   color: #000;
 }

@@ -30,14 +30,6 @@ const MonthView = () => {
     setIsNewLeaveModalOpen(false);
   };
 
-  const deleteLeave = e => {
-    
-  };
-
-  const editLeave = e => {
-    
-  };
-
   const toggleDay = (row, column) => {
     const copy = [...monthMatrix];
     if (copy[row][column] === 0) {
@@ -84,21 +76,23 @@ const MonthView = () => {
                 + ((i * 7 + j >= startDay && i * 7 + j <= startDay + days -1) ? " has-text-black" : "")
                 + (i * 7 + j > startDay + days - 1 ? " has-text-grey" : "")
                 + (i * 7 + j === dayjs().date() + startDay - 1 && increment === 0 ? " has-text-white has-background-danger-dark": "")
-                + (monthMatrix[i][j] === 1 ? " has-text-white has-background-grey-light" : (
-                    monthMatrix[i][j] === 2 ? " has-text-white has-background-info-dark" : (
-                      monthMatrix[i][j] === 3 ? " has-text-white has-background-link-dark" : ""
-                    )
-                  ))
               }
               onClick={e => toggleDay(i, j)}
             >
               <div className="card-content">
-                <div className="content">
-                  {
-                    i * 7 + j < startDay ? previousDays - startDay + j + 1 : (
-                      i * 7 + j > startDay + days - 1 ? ((i * 7 + j) - (startDay + days - 1)) : i * 7 + j + 1 - startDay
+                <div className={`content ${styles.content}`}>
+                  <span>
+                    {
+                      i * 7 + j < startDay ? previousDays - startDay + j + 1 : (
+                        i * 7 + j > startDay + days - 1 ? ((i * 7 + j) - (startDay + days - 1)) : i * 7 + j + 1 - startDay
+                      )
+                    }
+                  </span>
+                  <span className={
+                    monthMatrix[i][j] === 1 ? "far fa-check-circle fa-lg" : (
+                      monthMatrix[i][j] === 2 ? "fas fa-check-circle" : ""
                     )
-                  }
+                  }></span>
                 </div>
               </div>
             </div>
@@ -132,12 +126,6 @@ const MonthView = () => {
         <div className="column is-4">
           <div className="buttons is-right">
             <button className="button" onClick={openNewLeaveModal}>
-              <i className="fas fa-plus fa-lg"></i>
-            </button>
-            <button className="button" onClick={deleteLeave}>
-            <i className="fas fa-trash-alt fa-lg"></i>
-            </button>
-            <button className="button" onClick={editLeave}>
               <i className="fas fa-pencil-alt fa-lg"></i>
             </button>
           </div>

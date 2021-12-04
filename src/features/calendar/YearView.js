@@ -22,18 +22,6 @@ const YearView = () => {
     setIncrement(prev => prev + 1);
   };
 
-  const newLeave = e => {
-    
-  };
-
-  const deleteLeave = e => {
-    
-  };
-
-  const editLeave = e => {
-    
-  };
-
   const createCards = () => {
     let rows = [];
     for (let i = 0; i < 12; i++) {
@@ -78,23 +66,10 @@ const YearView = () => {
             </button>
           </div>
         </div>
-        <div className="column is-4">
+        <div className="column is-8">
           <h1 className="title is-2">
             {dayjs().add(increment, 'year').year()}
           </h1>
-        </div>
-        <div className="column is-4">
-          <div className="buttons is-right">
-            <button className="button" onClick={newLeave}>
-              <i className="fas fa-plus fa-lg"></i>
-            </button>
-            <button className="button" onClick={deleteLeave}>
-            <i className="fas fa-trash-alt fa-lg"></i>
-            </button>
-            <button className="button" onClick={editLeave}>
-              <i className="fas fa-pencil-alt fa-lg"></i>
-            </button>
-          </div>
         </div>
       </div>
       {createCards()}
