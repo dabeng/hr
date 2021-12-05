@@ -8,6 +8,7 @@ import styles from "./YearView.module.scss";
 const YearView = () => {
   dayjs.extend(DayOfYear);
 
+  const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
   const [increment, setIncrement] = useState(0);
 
   const resetToToday = e => {
@@ -31,16 +32,14 @@ const YearView = () => {
         columns.push(<div className={`column ${styles.column}`} key={j}>
           <div className={
             "card"
-            + (j === 0 ? " " + styles.month : "")
+            + (j === 0 ? " " + styles.month_card : "")
             + (j > daysInMonth ? " " + styles.placeholder : "")
             + (increment === 0 && dayjs().month() === i && dayjs().date() === j ? " " + styles.today_card : "")
           }>
             <div className={`card-content ${styles.card_content}`}>
               <div className={"content " + styles.content}>
-                <span className={styles.date}>
-                  {j === 0 ? i + 1 :
-                    (j > daysInMonth ? 0 : j)
-                  }
+                <span className={j === 0 ? styles.month_name : styles.date}>
+                  {j === 0 ? monthNames[i] : (j > daysInMonth ? 0 : j)}
                 </span>
                 <span className={styles.status}></span>
               </div>
