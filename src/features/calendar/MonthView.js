@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 
 import dayjs from 'dayjs';
+import { useForm } from "react-hook-form";
 
 import styles from "./MonthView.module.scss";
 
@@ -43,6 +44,30 @@ const MonthView = () => {
     }
     setMonthMatrix(copy);
   };
+
+  const leaveTypes = ['Additional Time Off - Paid', 'Additional Time Off - Unpaid', 'Annual Leave', 'Sick Leave'];
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    getValues,
+    reset,
+    formState: { dirtyFields },
+  } = useForm({
+    defaultValues: {
+      beginDate: dayjs().format('YYYY-MM-DD'),
+      endDate: dayjs().format('YYYY-MM-DD'),
+      leaveType: 'Sick Leave',
+      comment: ''
+    }
+  });
+
+  const saveLeave = (data) => {
+    const updatedData = {};
+    // for (const key of Object.keys(dirtyFields)) {
+    //   updatedData[key] = data[key];
+    // }
+  }
 
   const createCards = () => {
     let rows = [];
@@ -142,10 +167,41 @@ const MonthView = () => {
             <button className="delete" aria-label="close" onClick={closeNewLeaveModal}></button>
           </header>
           <section className="modal-card-body">
-            123
+            <form id="leaveForm" onSubmit={handleSubmit(saveLeave)}>
+              <div className="field">
+                <label className="label">Begin Date</label>
+                <div className="control">
+                  <input type="date" className="input" {...register("beginDate", { required: true })}/>
+                </div>
+              </div>
+              <div className="field">
+                <label className="label">End Date</label>
+                <div className="control">
+                  <input type="date" className="input" {...register("endDate", { required: true })}/>
+                </div>
+              </div>
+              <div className="field">
+                <label className="label">Leave Type</label>
+                <div className="control">
+                  <div className="select is-fullwidth">
+                    <select {...register("leaveType")}>
+                      {leaveTypes.map(type =>
+                        <option key={type} value={type}>{type}</option>
+                      )}
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div className="field">
+                <label className="label">Comment</label>
+                <div className="control">
+                  <textarea className="textarea" {...register("comment")}/>
+                </div>
+              </div>
+            </form>
           </section>
           <footer className="modal-card-foot">
-            <button className="button is-success">Submit</button>
+            <button className="button is-success submit" form="leaveForm">Submit</button>
             <button className="button" onClick={closeNewLeaveModal}>Cancel</button>
           </footer>
        </div>
