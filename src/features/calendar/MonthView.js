@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 import dayjs from 'dayjs';
 import { useForm } from "react-hook-form";
+import LeaveService from "../core/leave.service";
 
 import styles from "./MonthView.module.scss";
 
@@ -62,11 +63,9 @@ const MonthView = () => {
     }
   });
 
-  const saveLeave = (data) => {
-    const updatedData = {};
-    // for (const key of Object.keys(dirtyFields)) {
-    //   updatedData[key] = data[key];
-    // }
+  const addLeave = (data) => {
+    LeaveService.addLeave(data);
+    setIsNewLeaveModalOpen(false);
   }
 
   const createCards = () => {
@@ -167,7 +166,7 @@ const MonthView = () => {
             <button className="delete" aria-label="close" onClick={closeNewLeaveModal}></button>
           </header>
           <section className="modal-card-body">
-            <form id="leaveForm" onSubmit={handleSubmit(saveLeave)}>
+            <form id="leaveForm" onSubmit={handleSubmit(addLeave)}>
               <div className="field">
                 <label className="label">Begin Date</label>
                 <div className="control">
