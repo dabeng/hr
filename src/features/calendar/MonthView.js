@@ -8,8 +8,23 @@ import styles from "./MonthView.module.scss";
 
 const MonthView = () => {
   const [increment, setIncrement] = useState(0);
-  // 0代表为未选中，1代表被选中，2代表被占用请假，3代表被占用请假的日期的被选中状态
-  const [monthMatrix, setMonthMatrix] = useState(Array.from({length: 6},() => Array.from({length: 7}, () => 0)));
+  // 0代表为未选中，1代表被选中，2代表被占用请假
+  const [monthMatrix, setMonthMatrix] = useState(() => {
+    let startDay = dayjs(dayjs().format(`YYYY-MM`)).day();
+    let days = dayjs().add(increment, 'month').daysInMonth();
+    let previousDays = dayjs().add(increment - 1, 'month').daysInMonth();
+    const firstDate = previousDays - startDay + 1;
+    const lastDate = startDay + days - 1;
+    const leave = LeaveService.getLeave();
+    return Array.from({length: 6}, (e, i) => {
+      return Array.from({length: 7}, (e, j) => {
+        if () {
+          
+        }
+        return getLeave
+      });
+    })
+  });
   const [isNewLeaveModalOpen, setIsNewLeaveModalOpen] = useState(false);
 
   const previousMonth = e => {
@@ -39,9 +54,9 @@ const MonthView = () => {
     } else if (copy[row][column] === 1) {
       copy[row][column] = 0;
     } else if (copy[row][column] === 2) {
-      copy[row][column] = 3;
+      // copy[row][column] = 3;
     } else {
-      copy[row][column] = 2;
+      // copy[row][column] = 2;
     }
     setMonthMatrix(copy);
   };
