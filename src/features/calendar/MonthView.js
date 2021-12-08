@@ -10,7 +10,7 @@ const MonthView = () => {
   const [increment, setIncrement] = useState(0);
   // 0代表为未选中，1代表被选中，2代表被占用请假
   const [monthMatrix, setMonthMatrix] = useState(() => {
-    let startDay = dayjs(dayjs().format(`YYYY-MM`)).day();
+    let startDay = dayjs(dayjs().add(increment, 'month').format(`YYYY-MM`)).day();
     let days = dayjs().add(increment, 'month').daysInMonth();
     let previousDays = dayjs().add(increment - 1, 'month').daysInMonth();
     const firstDate = previousDays - startDay + 1;
@@ -18,10 +18,12 @@ const MonthView = () => {
     const leave = LeaveService.getLeave();
     return Array.from({length: 6}, (e, i) => {
       return Array.from({length: 7}, (e, j) => {
-        if () {
-          
+        if (leave) {
+          const day = dayjs(dayjs().add(increment-1, 'month').format('YYYY-MM') + '-' +  firstDate).add(i * 7 + j, 'day').format('YYYY-MM-DD');
+          return leave.some(l => day >= l.beginDate && day <= l.endDate) ? 2 : 0;
+        } else {
+          return 0;
         }
-        return getLeave
       });
     })
   });
@@ -102,7 +104,7 @@ const MonthView = () => {
     );
     for (let i = 0; i < 6; i++) {
       let columns = [];
-      let startDay = dayjs(dayjs().format(`YYYY-MM`)).day(); // 当前月份第一天是星期几
+      let startDay = dayjs(dayjs().add(increment, 'month').format(`YYYY-MM`)).day(); // 当前月份第一天是星期几
       let days = dayjs().add(increment, 'month').daysInMonth(); // 当前月份一共有多少天
       let previousDays = dayjs().add(increment-1, 'month').daysInMonth(); // 前一个月份一共有多少天
       for (let j = 0; j < 7; j++) {
@@ -131,7 +133,7 @@ const MonthView = () => {
                   </span>
                   <span className={
                     monthMatrix[i][j] === 1 ? "far fa-check-circle fa-lg" : (
-                      monthMatrix[i][j] === 2 ? "fas fa-check-circle" : ""
+                      monthMatrix[i][j] === 2 ? "fas fa-check-circle fa-lg" : ""
                     )
                   }></span>
                 </div>
