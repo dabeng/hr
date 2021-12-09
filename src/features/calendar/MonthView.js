@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import dayjs from 'dayjs';
 import { useForm } from "react-hook-form";
@@ -28,6 +28,26 @@ const MonthView = () => {
     })
   });
   const [isNewLeaveModalOpen, setIsNewLeaveModalOpen] = useState(false);
+
+  useEffect(() => {
+    let startDay = dayjs(dayjs().add(increment, 'month').format(`YYYY-MM`)).day();
+    let days = dayjs().add(increment, 'month').daysInMonth();
+    let previousDays = dayjs().add(increment - 1, 'month').daysInMonth();
+    const firstDate = previousDays - startDay + 1;
+    const lastDate = startDay + days - 1;
+    const leave = LeaveService.getLeave();
+    const arr = Array.from({length: 6}, (e, i) => {
+      return Array.from({length: 7}, (e, j) => {
+        if (leave) {
+          const day = dayjs(dayjs().add(increment-1, 'month').format('YYYY-MM') + '-' +  firstDate).add(i * 7 + j, 'day').format('YYYY-MM-DD');
+          return leave.some(l => day >= l.beginDate && day <= l.endDate) ? 2 : 0;
+        } else {
+          return 0;
+        }
+      });
+    })
+    setMonthMatrix(arr);
+  }, [increment]);
 
   const previousMonth = e => {
     setIncrement(prev => prev - 1);
