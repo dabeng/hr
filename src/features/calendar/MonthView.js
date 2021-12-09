@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import dayjs from 'dayjs';
 import { useForm } from "react-hook-form";
@@ -9,44 +9,29 @@ import styles from "./MonthView.module.scss";
 const MonthView = () => {
   const [increment, setIncrement] = useState(0);
   // 0代表为未选中，1代表被选中，2代表被占用请假
-  const [monthMatrix, setMonthMatrix] = useState(() => {
-    let startDay = dayjs(dayjs().add(increment, 'month').format(`YYYY-MM`)).day();
-    let days = dayjs().add(increment, 'month').daysInMonth();
-    let previousDays = dayjs().add(increment - 1, 'month').daysInMonth();
-    const firstDate = previousDays - startDay + 1;
-    const lastDate = startDay + days - 1;
-    const leave = LeaveService.getLeave();
-    return Array.from({length: 6}, (e, i) => {
-      return Array.from({length: 7}, (e, j) => {
-        if (leave) {
-          const day = dayjs(dayjs().add(increment-1, 'month').format('YYYY-MM') + '-' +  firstDate).add(i * 7 + j, 'day').format('YYYY-MM-DD');
-          return leave.some(l => day >= l.beginDate && day <= l.endDate) ? 2 : 0;
-        } else {
-          return 0;
-        }
-      });
-    })
-  });
+  const [monthMatrix, setMonthMatrix] = useState(Array.from({length: 6}, () => Array.from({length: 7}, () => 0)));
   const [isNewLeaveModalOpen, setIsNewLeaveModalOpen] = useState(false);
 
   useEffect(() => {
-    let startDay = dayjs(dayjs().add(increment, 'month').format(`YYYY-MM`)).day();
-    let days = dayjs().add(increment, 'month').daysInMonth();
-    let previousDays = dayjs().add(increment - 1, 'month').daysInMonth();
+    // 当前月份1号是星期几
+    const startDay = dayjs().add(increment, 'month').date(1).day();
+    // 前一月份一共有多少天
+    const previousDays = dayjs().add(increment - 1, 'month').daysInMonth();
+    // 月历中第一个单元格是几号
     const firstDate = previousDays - startDay + 1;
-    const lastDate = startDay + days - 1;
+    // 从localStorage里读出假期数组
     const leave = LeaveService.getLeave();
-    const arr = Array.from({length: 6}, (e, i) => {
+    // 遍历月历中的所有单元格，落在假期里的，标识出来
+    setMonthMatrix(Array.from({length: 6}, (e, i) => {
       return Array.from({length: 7}, (e, j) => {
         if (leave) {
-          const day = dayjs(dayjs().add(increment-1, 'month').format('YYYY-MM') + '-' +  firstDate).add(i * 7 + j, 'day').format('YYYY-MM-DD');
+          const day = dayjs().add(increment-1, 'month').date(firstDate).add(i * 7 + j, 'day').format('YYYY-MM-DD');
           return leave.some(l => day >= l.beginDate && day <= l.endDate) ? 2 : 0;
         } else {
           return 0;
         }
       });
-    })
-    setMonthMatrix(arr);
+    }));
   }, [increment]);
 
   const previousMonth = e => {
@@ -124,9 +109,12 @@ const MonthView = () => {
     );
     for (let i = 0; i < 6; i++) {
       let columns = [];
-      let startDay = dayjs(dayjs().add(increment, 'month').format(`YYYY-MM`)).day(); // 当前月份第一天是星期几
-      let days = dayjs().add(increment, 'month').daysInMonth(); // 当前月份一共有多少天
-      let previousDays = dayjs().add(increment-1, 'month').daysInMonth(); // 前一个月份一共有多少天
+      // 当前月份第一天是星期几
+      let startDay = dayjs().add(increment, 'month').date(1).day();
+      // 当前月份一共有多少天
+      let days = dayjs().add(increment, 'month').daysInMonth();
+      // 前一个月份一共有多少天
+      let previousDays = dayjs().add(increment-1, 'month').daysInMonth();
       for (let j = 0; j < 7; j++) {
         columns.push(
           <div className={`column ${styles.column}`} key={j}>
