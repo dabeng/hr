@@ -3,8 +3,9 @@ const getLeave = () => {
 };
 
 const isDulplicateLeave = (leave) => {
-  return JSON.parse(localStorage.getItem("user"))?.leave.some(({beginDate, endDate}) => {
-    return leave.beginDate >= beginDate && leave.beginDate <= endDate;
+  return !!JSON.parse(localStorage.getItem("user"))?.leave?.some(({beginDate, endDate}) => {
+    return (leave.beginDate >= beginDate && leave.beginDate <= endDate)
+      || (leave.endDate >= beginDate && leave.endDate <= endDate);
   });
 };
 
@@ -28,6 +29,8 @@ const deleteLeave = (leave) => {
 const LeaveService = {
   getLeave,
   addLeave,
+  deleteLeave,
+  isDulplicateLeave
 };
 
 export default LeaveService;
