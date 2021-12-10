@@ -51,6 +51,7 @@ const MonthView = () => {
   };
 
   const closeNewLeaveModal = e => {
+    reset();
     setIsNewLeaveModalOpen(false);
   };
 
@@ -95,7 +96,7 @@ const MonthView = () => {
       return;
     }
     LeaveService.addLeave(data);
-    setIsNewLeaveModalOpen(false);
+    closeNewLeaveModal();
   }
 
   const createCards = () => {
