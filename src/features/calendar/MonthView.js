@@ -59,8 +59,10 @@ const MonthView = () => {
     const copy = [...monthMatrix];
     if (copy[row][column] === 0) {
       copy[row][column] = 1;
+      // updateExpectedLeave();
     } else if (copy[row][column] === 1) {
       copy[row][column] = 0;
+      // updateExpectedLeave();
     } else if (copy[row][column] === 2) {
       // copy[row][column] = 3;
     } else {
