@@ -81,10 +81,10 @@ const MonthView = () => {
     const copy = [...monthMatrix];
     if (copy[row][column] === 0) {
       copy[row][column] = 1;
-      updateExpectedLeave({row, column}, 'delete');
+      updateExpectedLeave({row, column}, 'add');
     } else if (copy[row][column] === 1) {
       copy[row][column] = 0;
-      updateExpectedLeave({row, column}, 'add');
+      updateExpectedLeave({row, column}, 'delete');
     } else if (copy[row][column] === 2) {
       // copy[row][column] = 3;
     } else {
@@ -234,7 +234,7 @@ const MonthView = () => {
         </div>
         <div className="column is-4">
           <div className="buttons is-right">
-            <button className="button" onClick={openNewLeaveModal}>
+            <button className="button" disabled={expectedLeave.length === 0} onClick={openNewLeaveModal}>
               <i className="fas fa-pencil-alt fa-lg"></i>
             </button>
           </div>
