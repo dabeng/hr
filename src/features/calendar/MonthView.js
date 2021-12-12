@@ -11,6 +11,8 @@ const MonthView = () => {
   // 0代表为未选中，1代表被选中，2代表被占用请假
   const [monthMatrix, setMonthMatrix] = useState(Array.from({length: 6}, () => Array.from({length: 7}, () => 0)));
   const [isNewLeaveModalOpen, setIsNewLeaveModalOpen] = useState(false);
+  // 选中的日期数组，我们会基于它来初始化请假对话框
+  const [expectedLeave, setExpectedLeave] = useState([]);
 
   useEffect(() => {
     // 当前月份1号是星期几
@@ -55,14 +57,34 @@ const MonthView = () => {
     setIsNewLeaveModalOpen(false);
   };
 
+  const getDateFromMonthMatrix = (row, column) => {
+    // 当前月份1号是星期几
+    const startDay = dayjs().add(increment, 'month').date(1).day();
+    // 前一月份一共有多少天
+    const previousDays = dayjs().add(increment - 1, 'month').daysInMonth();
+    // 月历中第一个单元格是几号
+    const firstDate = previousDays - startDay + 1;
+    // 基于第一个单元格的日期，算出任意单元格的日期
+    return dayjs().add(increment-1, 'month').date(firstDate).add(row * 7 + column, 'day').format('YYYY-MM-DD');
+  };
+
+  const updateExpectedLeave = ({row, column}, action) => {
+    const day = getDateFromMonthMatrix(row, column);
+    if (action === 'add') {
+      setExpectedLeave([...expectedLeave, day].sort());
+    } else {
+      setExpectedLeave(expectedLeave.filter(item => item !== day));
+    }
+  };
+
   const toggleDay = (row, column) => {
     const copy = [...monthMatrix];
     if (copy[row][column] === 0) {
       copy[row][column] = 1;
-      // updateExpectedLeave();
+      updateExpectedLeave({row, column}, 'delete');
     } else if (copy[row][column] === 1) {
       copy[row][column] = 0;
-      // updateExpectedLeave();
+      updateExpectedLeave({row, column}, 'add');
     } else if (copy[row][column] === 2) {
       // copy[row][column] = 3;
     } else {
