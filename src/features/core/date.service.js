@@ -11,6 +11,10 @@ function areConsecutive(a, b) {
 return toDateUTC(b) - toDateUTC(a) == ONE_DAY_IN_MILLIS;
 }
 
+/* 
+ * array是排过序的日期数组
+ * 本函数会将连续的日期用起止日期表示，这样最终会得到精简的日期数组
+ */
 function findConsecutive(array) {
   const result = [];
   let current = null;
@@ -29,7 +33,7 @@ function findConsecutive(array) {
           current.end = entry;
       }
   }
-  return result;
+  return result.map(period => period.start === period.end ? period.start : period.start + '~' + period.end);
 }
 
 const DateService = {

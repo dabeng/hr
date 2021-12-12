@@ -3,6 +3,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import dayjs from 'dayjs';
 import { useForm } from "react-hook-form";
 import LeaveService from "../core/leave.service";
+import DateService from "../core/date.service";
 
 import styles from "./MonthView.module.scss";
 
@@ -50,6 +51,7 @@ const MonthView = () => {
 
   const openNewLeaveModal = e => {
     setIsNewLeaveModalOpen(true);
+    setValue('when', DateService.findConsecutive(expectedLeave));
   };
 
   const closeNewLeaveModal = e => {
@@ -106,6 +108,7 @@ const MonthView = () => {
     defaultValues: {
       beginDate: dayjs().format('YYYY-MM-DD'),
       endDate: dayjs().format('YYYY-MM-DD'),
+      when: '',
       leaveType: 'Sick Leave',
       comment: ''
     }
@@ -267,6 +270,12 @@ const MonthView = () => {
                 <label className="label">End Date</label>
                 <div className="control">
                   <input type="date" className="input" {...register("endDate", { required: true })}/>
+                </div>
+              </div>
+              <div className="field">
+                <label className="label">When</label>
+                <div className="control">
+                  <input type="text" className="input" {...register("when", { required: true })}/>
                 </div>
               </div>
               <div className="field">
