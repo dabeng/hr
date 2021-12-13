@@ -275,7 +275,16 @@ const MonthView = () => {
               <div className="field">
                 <label className="label">When</label>
                 <div className="control">
-                  <input type="text" className="input" {...register("when", { required: true })}/>
+                  <ul>{getValues("when") && getValues("when").map((period,index) => (
+                    <li key={index}>
+                      {period.includes("~")
+                        ? dayjs(period.split("~")[0]).format("dddd, MMMM D, YYYY") + "~" + dayjs(period.split("~")[1]).format("dddd, MMMM D, YYYY")
+                        : dayjs(period).format("dddd, MMMM D, YYYY")
+                      }
+                    </li>
+                  ))
+                  }</ul>
+                  <input type="hidden" className="input" {...register("when")}/>
                 </div>
               </div>
               <div className="field">
