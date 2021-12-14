@@ -130,23 +130,30 @@ const MonthView = () => {
     // 月历中第一个单元格是几号
     const firstDate = previousDays - startDay + 1;
     // 从localStorage里读出假期数组
-    // const leave = LeaveService.getLeave();
+    const leave = LeaveService.getLeave();
     // 遍历月历中的所有单元格，落在假期里的，标识出来
     setMonthMatrix(Array.from({length: 6}, (e, i) => {
       return Array.from({length: 7}, (e, j) => {
-        // if (leave) {
-          const day = dayjs().add(increment-1, 'month').date(firstDate).add(i * 7 + j, 'day').format('YYYY-MM-DD');
-          // return day >= beginDate && day <= endDate ? 2 : 0;
-          return when.some(period => {
+        const day = dayjs().add(increment-1, 'month').date(firstDate).add(i * 7 + j, 'day').format('YYYY-MM-DD');
+        if (leave) {
+          return leave.some(l => {
+            return l.when.some(period => {
               if (period.includes('~')) {
                 return day >= period.split('~')[0] && day <= period.split('~')[1];
               } else {
                 return day === period;
               }
-            }) ? 2 : 0;
-        // } else {
-        //   return 0;
-        // }
+            });
+          }) ? 2 : 0;
+        } else {
+          return when.some(period => {
+            if (period.includes('~')) {
+              return day >= period.split('~')[0] && day <= period.split('~')[1];
+            } else {
+              return day === period;
+            }
+          }) ? 2 : 0;
+        }
       });
     }));
   };
