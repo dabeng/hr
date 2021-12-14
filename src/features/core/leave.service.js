@@ -4,12 +4,12 @@ const getLeave = () => {
   return JSON.parse(localStorage.getItem("user"))?.leave;
 };
 
-const isDulplicateLeave = (leave) => {
-  return !!JSON.parse(localStorage.getItem("user"))?.leave?.some(({beginDate, endDate}) => {
-    return (leave.beginDate >= beginDate && leave.beginDate <= endDate)
-      || (leave.endDate >= beginDate && leave.endDate <= endDate);
-  });
-};
+// const isDulplicateLeave = (leave) => {
+//   return !!JSON.parse(localStorage.getItem("user"))?.leave?.some(({beginDate, endDate}) => {
+//     return (leave.beginDate >= beginDate && leave.beginDate <= endDate)
+//       || (leave.endDate >= beginDate && leave.endDate <= endDate);
+//   });
+// };
 
 const isCurrentMonthLeave = (leave, increment) => {
     // 当前月份1号是星期几
@@ -20,7 +20,9 @@ const isCurrentMonthLeave = (leave, increment) => {
     const firstDate = previousDays - startDay + 1;
     const firstCellDate = dayjs().add(increment-1, 'month').date(firstDate).add(0, 'day').format('YYYY-MM-DD');
     const lastCellDate = dayjs().add(increment-1, 'month').date(firstDate).add(41, 'day').format('YYYY-MM-DD');
-    return leave.beginDate >= firstCellDate && leave.endDate <= lastCellDate;
+    // 把要请假里的第一天取出来
+    const beginDate = leave.when[0].includes('~') ? leave.when[0].split('~')[0] : leave.when[0];
+    return beginDate >= firstCellDate && beginDate <= lastCellDate;
 };
 
 const addLeave = (leave) => {
@@ -44,7 +46,7 @@ const LeaveService = {
   getLeave,
   addLeave,
   deleteLeave,
-  isDulplicateLeave,
+  // isDulplicateLeave,
   isCurrentMonthLeave
 };
 

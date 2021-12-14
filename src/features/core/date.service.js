@@ -8,7 +8,7 @@ function toDateUTC(str) {
 }
 
 function areConsecutive(a, b) {
-return toDateUTC(b) - toDateUTC(a) == ONE_DAY_IN_MILLIS;
+return toDateUTC(b) - toDateUTC(a) === ONE_DAY_IN_MILLIS;
 }
 
 /* 

@@ -29,7 +29,15 @@ const MonthView = () => {
       return Array.from({length: 7}, (e, j) => {
         if (leave) {
           const day = dayjs().add(increment-1, 'month').date(firstDate).add(i * 7 + j, 'day').format('YYYY-MM-DD');
-          return leave.some(l => day >= l.beginDate && day <= l.endDate) ? 2 : 0;
+          return leave.some(l => {
+            return l.when.some(period => {
+              if (period.includes('~')) {
+                return day >= period.split('~')[0] && day <= period.split('~')[1];
+              } else {
+                return day === period;
+              }
+            });
+          }) ? 2 : 0;
         } else {
           return 0;
         }
@@ -114,7 +122,7 @@ const MonthView = () => {
     }
   });
   /* 当新请的假期落在当前月历中时，用本方法更新月历 */
-  const updateMonthMatrix = (beginDate, endDate) => {
+  const updateMonthMatrix = (when) => {
     // 当前月份1号是星期几
     const startDay = dayjs().add(increment, 'month').date(1).day();
     // 前一月份一共有多少天
@@ -122,31 +130,38 @@ const MonthView = () => {
     // 月历中第一个单元格是几号
     const firstDate = previousDays - startDay + 1;
     // 从localStorage里读出假期数组
-    const leave = LeaveService.getLeave();
+    // const leave = LeaveService.getLeave();
     // 遍历月历中的所有单元格，落在假期里的，标识出来
     setMonthMatrix(Array.from({length: 6}, (e, i) => {
       return Array.from({length: 7}, (e, j) => {
-        if (leave) {
+        // if (leave) {
           const day = dayjs().add(increment-1, 'month').date(firstDate).add(i * 7 + j, 'day').format('YYYY-MM-DD');
-          return day >= beginDate && day <= endDate ? 2 : 0;
-        } else {
-          return 0;
-        }
+          // return day >= beginDate && day <= endDate ? 2 : 0;
+          return when.some(period => {
+              if (period.includes('~')) {
+                return day >= period.split('~')[0] && day <= period.split('~')[1];
+              } else {
+                return day === period;
+              }
+            }) ? 2 : 0;
+        // } else {
+        //   return 0;
+        // }
       });
     }));
   };
 
   const addLeave = (data) => {
-    if (LeaveService.isDulplicateLeave(data)) {
-      setError('beginDate', {
-        type: 'manual',
-        message: 'Begin date or end date has been occupied. Please reselect.',
-      });
-      return;
-    }
+    // if (LeaveService.isDulplicateLeave(data)) {
+    //   setError('beginDate', {
+    //     type: 'manual',
+    //     message: 'Begin date or end date has been occupied. Please reselect.',
+    //   });
+    //   return;
+    // }
     LeaveService.addLeave(data);
     if (LeaveService.isCurrentMonthLeave(data, increment)) {
-      updateMonthMatrix(data.beginDate, data.endDate);
+      updateMonthMatrix(data.when);
     }
     closeNewLeaveModal();
   }
