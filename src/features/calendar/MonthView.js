@@ -157,11 +157,16 @@ const MonthView = () => {
   };
 
   const addLeave = (data) => {
+    // 先将请的假保存到localstorage中。在实际项目中，这里应该替换为保存到远程数据库的restful API调用
     LeaveService.addLeave(data);
+    // 如果请的假处在当前月历范围内，则需要刷新月历，以体现已申请假期的那些日期
     if (LeaveService.isCurrentMonthLeave(data, increment)) {
       updateMonthMatrix(data.when);
     }
+    // 关闭请假对话框
     closeNewLeaveModal();
+    // 清空待请假的日期数组
+    setExpectedLeave([]);
   }
 
   const createCards = () => {
