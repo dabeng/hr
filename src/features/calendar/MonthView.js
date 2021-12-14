@@ -11,7 +11,7 @@ const MonthView = () => {
   const [increment, setIncrement] = useState(0);
   // 0代表为未选中，1代表被选中，2代表被占用请假
   const [monthMatrix, setMonthMatrix] = useState(Array.from({length: 6}, () => Array.from({length: 7}, () => 0)));
-  const [isNewLeaveModalOpen, setIsNewLeaveModalOpen] = useState(false);
+  const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
   // 选中的日期数组，我们会基于它来初始化请假对话框
   const [expectedLeave, setExpectedLeave] = useState([]);
 
@@ -58,13 +58,13 @@ const MonthView = () => {
   };
 
   const openNewLeaveModal = e => {
-    setIsNewLeaveModalOpen(true);
+    setIsLeaveModalOpen(true);
     setValue('when', DateService.findConsecutive(expectedLeave));
   };
 
   const closeNewLeaveModal = e => {
     reset();
-    setIsNewLeaveModalOpen(false);
+    setIsLeaveModalOpen(false);
   };
 
   const getDateFromMonthMatrix = (row, column) => {
@@ -87,7 +87,7 @@ const MonthView = () => {
     }
   };
 
-  const toggleDay = (row, column) => {
+  const toggleSelectCell = (row, column) => {
     const copy = [...monthMatrix];
     if (copy[row][column] === 0) {
       copy[row][column] = 1;
@@ -95,12 +95,33 @@ const MonthView = () => {
     } else if (copy[row][column] === 1) {
       copy[row][column] = 0;
       updateExpectedLeave({row, column}, 'delete');
-    } else if (copy[row][column] === 2) {
-      // copy[row][column] = 3;
-    } else {
-      // copy[row][column] = 2;
     }
     setMonthMatrix(copy);
+  };
+
+  const openDeleteLeaveModal = (row, column) => {
+    setIsLeaveModalOpen(true);
+    const day = getDateFromMonthMatrix(row, column);
+    // 从localStorage里读出假期数组
+    const leave = LeaveService.getLeave();
+    // 找出当前选中的是哪次假期，用来初始化假期对话框
+    setValue('when', leave.find(l => {
+      return l.when.some(period => {
+        if (period.includes('~')) {
+          return day >= period.split('~')[0] && day <= period.split('~')[1];
+        } else {
+          return day === period;
+        }
+      });
+    }).when);
+  };
+
+  const clickMonthCell = (row, column) => {
+    if (monthMatrix[row][column] === 2) {
+      openDeleteLeaveModal(row, column);
+    } else {
+      toggleSelectCell(row, column);
+    }
   };
 
   const leaveTypes = ['Additional Time Off - Paid', 'Additional Time Off - Unpaid', 'Annual Leave', 'Sick Leave'];
@@ -205,7 +226,7 @@ const MonthView = () => {
                 + (i * 7 + j > startDay + days - 1 ? " has-text-grey" : "")
                 + (i * 7 + j === dayjs().date() + startDay - 1 && increment === 0 ? " " + styles.today_card: "")
               }
-              onClick={e => toggleDay(i, j)}
+              onClick={e => clickMonthCell(i, j)}
             >
               <div className="card-content">
                 <div className={`content ${styles.content}`}>
@@ -262,7 +283,7 @@ const MonthView = () => {
         </div>
       </div>
       {createCards()}
-      <div className={"modal" + (isNewLeaveModalOpen ? " is-active" : "")}>
+      <div className={"modal" + (isLeaveModalOpen ? " is-active" : "")}>
         <div className="modal-background"></div>
         <div className="modal-card">
           <header className="modal-card-head">
