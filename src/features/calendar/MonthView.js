@@ -114,8 +114,6 @@ const MonthView = () => {
     formState: { dirtyFields, errors },
   } = useForm({
     defaultValues: {
-      beginDate: dayjs().format('YYYY-MM-DD'),
-      endDate: dayjs().format('YYYY-MM-DD'),
       when: '',
       leaveType: 'Sick Leave',
       comment: ''
@@ -159,13 +157,6 @@ const MonthView = () => {
   };
 
   const addLeave = (data) => {
-    // if (LeaveService.isDulplicateLeave(data)) {
-    //   setError('beginDate', {
-    //     type: 'manual',
-    //     message: 'Begin date or end date has been occupied. Please reselect.',
-    //   });
-    //   return;
-    // }
     LeaveService.addLeave(data);
     if (LeaveService.isCurrentMonthLeave(data, increment)) {
       updateMonthMatrix(data.when);
@@ -275,25 +266,6 @@ const MonthView = () => {
           </header>
           <section className="modal-card-body">
             <form id="leaveForm" onSubmit={handleSubmit(addLeave)}>
-              {errors.beginDate &&
-                <article class="message is-danger">
-                  <div class="message-body">
-                    {errors.beginDate.message}
-                  </div>
-                </article>
-              }
-              <div className="field">
-                <label className="label">Begin Date</label>
-                <div className="control">
-                  <input type="date" className="input" {...register("beginDate", { required: true })}/>
-                </div>
-              </div>
-              <div className="field">
-                <label className="label">End Date</label>
-                <div className="control">
-                  <input type="date" className="input" {...register("endDate", { required: true })}/>
-                </div>
-              </div>
               <div className="field">
                 <label className="label">When</label>
                 <div className="control">

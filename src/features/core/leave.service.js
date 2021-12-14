@@ -4,13 +4,6 @@ const getLeave = () => {
   return JSON.parse(localStorage.getItem("user"))?.leave;
 };
 
-// const isDulplicateLeave = (leave) => {
-//   return !!JSON.parse(localStorage.getItem("user"))?.leave?.some(({beginDate, endDate}) => {
-//     return (leave.beginDate >= beginDate && leave.beginDate <= endDate)
-//       || (leave.endDate >= beginDate && leave.endDate <= endDate);
-//   });
-// };
-
 const isCurrentMonthLeave = (leave, increment) => {
     // 当前月份1号是星期几
     const startDay = dayjs().add(increment, 'month').date(1).day();
@@ -46,7 +39,6 @@ const LeaveService = {
   getLeave,
   addLeave,
   deleteLeave,
-  // isDulplicateLeave,
   isCurrentMonthLeave
 };
 
