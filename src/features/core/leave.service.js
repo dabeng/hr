@@ -31,7 +31,7 @@ const addLeave = (leave) => {
 
 const deleteLeave = (leave) => {
   let user = JSON.parse(localStorage.getItem("user"));
-  user.leave.push(leave);
+  user.leave = user.leave.filter(l => l.when.join('') !== leave.when.join(''));
   localStorage.setItem("user", JSON.stringify(user));
 };
 

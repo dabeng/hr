@@ -10,7 +10,7 @@ import styles from "./MonthView.module.scss";
 const MonthView = () => {
   const [increment, setIncrement] = useState(0);
   // 0代表为未选中，1代表被选中，2代表被占用请假
-  const [monthMatrix, setMonthMatrix] = useState(Array.from({length: 6}, () => Array.from({length: 7}, () => 0)));
+  const [monthMatrix, setMonthMatrix] = useState(Array.from({ length: 6 }, () => Array.from({ length: 7 }, () => 0)));
   const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
   // 选中的日期数组，我们会基于它来初始化请假对话框
   const [expectedLeave, setExpectedLeave] = useState([]);
@@ -25,10 +25,10 @@ const MonthView = () => {
     // 从localStorage里读出假期数组
     const leave = LeaveService.getLeave();
     // 遍历月历中的所有单元格，落在假期里的，标识出来
-    setMonthMatrix(Array.from({length: 6}, (e, i) => {
-      return Array.from({length: 7}, (e, j) => {
+    setMonthMatrix(Array.from({ length: 6 }, (e, i) => {
+      return Array.from({ length: 7 }, (e, j) => {
         if (leave) {
-          const day = dayjs().add(increment-1, 'month').date(firstDate).add(i * 7 + j, 'day').format('YYYY-MM-DD');
+          const day = dayjs().add(increment - 1, 'month').date(firstDate).add(i * 7 + j, 'day').format('YYYY-MM-DD');
           return leave.some(l => {
             return l.when.some(period => {
               if (period.includes('~')) {
@@ -62,7 +62,7 @@ const MonthView = () => {
     setValue('when', DateService.findConsecutive(expectedLeave));
   };
 
-  const closeNewLeaveModal = e => {
+  const closeLeaveModal = e => {
     reset();
     setIsLeaveModalOpen(false);
   };
@@ -75,10 +75,10 @@ const MonthView = () => {
     // 月历中第一个单元格是几号
     const firstDate = previousDays - startDay + 1;
     // 基于第一个单元格的日期，算出任意单元格的日期
-    return dayjs().add(increment-1, 'month').date(firstDate).add(row * 7 + column, 'day').format('YYYY-MM-DD');
+    return dayjs().add(increment - 1, 'month').date(firstDate).add(row * 7 + column, 'day').format('YYYY-MM-DD');
   };
 
-  const updateExpectedLeave = ({row, column}, action) => {
+  const updateExpectedLeave = ({ row, column }, action) => {
     const day = getDateFromMonthMatrix(row, column);
     if (action === 'add') {
       setExpectedLeave([...expectedLeave, day].sort());
@@ -91,20 +91,19 @@ const MonthView = () => {
     const copy = [...monthMatrix];
     if (copy[row][column] === 0) {
       copy[row][column] = 1;
-      updateExpectedLeave({row, column}, 'add');
+      updateExpectedLeave({ row, column }, 'add');
     } else if (copy[row][column] === 1) {
       copy[row][column] = 0;
-      updateExpectedLeave({row, column}, 'delete');
+      updateExpectedLeave({ row, column }, 'delete');
     }
     setMonthMatrix(copy);
   };
 
   const openDeleteLeaveModal = (row, column) => {
     setIsLeaveModalOpen(true);
-    const day = getDateFromMonthMatrix(row, column);
-    // 从localStorage里读出假期数组
+    // 从localStorage里读出假期数组，然后找出当前选中的是哪次假期，用来初始化假期对话框
     const leave = LeaveService.getLeave();
-    // 找出当前选中的是哪次假期，用来初始化假期对话框
+    const day = getDateFromMonthMatrix(row, column);
     setValue('when', leave.find(l => {
       return l.when.some(period => {
         if (period.includes('~')) {
@@ -151,9 +150,9 @@ const MonthView = () => {
     // 从localStorage里读出假期数组
     const leave = LeaveService.getLeave();
     // 遍历月历中的所有单元格，落在假期里的，标识出来
-    setMonthMatrix(Array.from({length: 6}, (e, i) => {
-      return Array.from({length: 7}, (e, j) => {
-        const day = dayjs().add(increment-1, 'month').date(firstDate).add(i * 7 + j, 'day').format('YYYY-MM-DD');
+    setMonthMatrix(Array.from({ length: 6 }, (e, i) => {
+      return Array.from({ length: 7 }, (e, j) => {
+        const day = dayjs().add(increment - 1, 'month').date(firstDate).add(i * 7 + j, 'day').format('YYYY-MM-DD');
         if (leave) {
           return leave.some(l => {
             return l.when.some(period => {
@@ -177,24 +176,29 @@ const MonthView = () => {
     }));
   };
 
-  const addLeave = (data) => {
-    // 先将请的假保存到localstorage中。在实际项目中，这里应该替换为保存到远程数据库的restful API调用
-    LeaveService.addLeave(data);
-    // 如果请的假处在当前月历范围内，则需要刷新月历，以体现已申请假期的那些日期
-    if (LeaveService.isCurrentMonthLeave(data, increment)) {
-      updateMonthMatrix(data.when);
+  const updateLeave = (data, e) => {
+    if (e.nativeEvent.submitter.id === 'delete_leave_btn') {
+      LeaveService.deleteLeave(data);
+      updateMonthMatrix();
+    } else {
+      // 先将请的假保存到localstorage中。在实际项目中，这里应该替换为保存到远程数据库的restful API调用
+      LeaveService.addLeave(data);
+      // 如果请的假处在当前月历范围内，则需要刷新月历，以体现已申请假期的那些日期
+      if (LeaveService.isCurrentMonthLeave(data, increment)) {
+        updateMonthMatrix(data.when);
+      }
+      // 清空待请假的日期数组
+      setExpectedLeave([]);
     }
     // 关闭请假对话框
-    closeNewLeaveModal();
-    // 清空待请假的日期数组
-    setExpectedLeave([]);
+    closeLeaveModal();
   }
 
   const createCards = () => {
     let rows = [];
     rows.push(
       <div className="columns is-mobile" key={0}>
-        {['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map((caption, i) =>
+        {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((caption, i) =>
           <div className={`column ${styles.column}`} key={i}>
             <div className={`card ${styles.week_card}`}>
               <div className="card-content">
@@ -214,7 +218,7 @@ const MonthView = () => {
       // 当前月份一共有多少天
       let days = dayjs().add(increment, 'month').daysInMonth();
       // 前一个月份一共有多少天
-      let previousDays = dayjs().add(increment-1, 'month').daysInMonth();
+      let previousDays = dayjs().add(increment - 1, 'month').daysInMonth();
       for (let j = 0; j < 7; j++) {
         columns.push(
           <div className={`column ${styles.column}`} key={j}>
@@ -222,9 +226,9 @@ const MonthView = () => {
               className={
                 "card"
                 + (i * 7 + j < startDay ? " has-text-grey" : "")
-                + ((i * 7 + j >= startDay && i * 7 + j <= startDay + days -1) ? " has-text-black" : "")
+                + ((i * 7 + j >= startDay && i * 7 + j <= startDay + days - 1) ? " has-text-black" : "")
                 + (i * 7 + j > startDay + days - 1 ? " has-text-grey" : "")
-                + (i * 7 + j === dayjs().date() + startDay - 1 && increment === 0 ? " " + styles.today_card: "")
+                + (i * 7 + j === dayjs().date() + startDay - 1 && increment === 0 ? " " + styles.today_card : "")
               }
               onClick={e => clickMonthCell(i, j)}
             >
@@ -232,7 +236,7 @@ const MonthView = () => {
                 <div className={`content ${styles.content}`}>
                   <span className={
                     styles.date
-                    }>
+                  }>
                     {
                       i * 7 + j < startDay ? previousDays - startDay + j + 1 : (
                         i * 7 + j > startDay + days - 1 ? ((i * 7 + j) - (startDay + days - 1)) : i * 7 + j + 1 - startDay
@@ -288,14 +292,14 @@ const MonthView = () => {
         <div className="modal-card">
           <header className="modal-card-head">
             <p className="modal-card-title">Request Time Off</p>
-            <button className="delete" aria-label="close" onClick={closeNewLeaveModal}></button>
+            <button className="delete" aria-label="close" onClick={closeLeaveModal}></button>
           </header>
           <section className="modal-card-body">
-            <form id="leaveForm" onSubmit={handleSubmit(addLeave)}>
+            <form id="leaveForm" onSubmit={handleSubmit(updateLeave)}>
               <div className="field">
                 <label className="label">When</label>
                 <div className="control">
-                  <ul>{getValues("when") && getValues("when").map((period,index) => (
+                  <ul>{getValues("when") && getValues("when").map((period, index) => (
                     <li key={index}>
                       {period.includes("~")
                         ? dayjs(period.split("~")[0]).format("dddd, MMMM D, YYYY") + "~" + dayjs(period.split("~")[1]).format("dddd, MMMM D, YYYY")
@@ -304,7 +308,7 @@ const MonthView = () => {
                     </li>
                   ))
                   }</ul>
-                  <input type="hidden" className="input" {...register("when")}/>
+                  <input type="hidden" className="input" {...register("when")} />
                 </div>
               </div>
               <div className="field">
@@ -322,16 +326,17 @@ const MonthView = () => {
               <div className="field">
                 <label className="label">Comment</label>
                 <div className="control">
-                  <textarea className="textarea" {...register("comment")}/>
+                  <textarea className="textarea" {...register("comment")} />
                 </div>
               </div>
             </form>
           </section>
           <footer className="modal-card-foot">
             <button className="button is-success submit" form="leaveForm">Submit</button>
-            <button className="button" onClick={closeNewLeaveModal}>Cancel</button>
+            <button className="button is-danger" form="leaveForm" id="delete_leave_btn">Delete</button>
+            <button className="button" onClick={closeLeaveModal}>Cancel</button>
           </footer>
-       </div>
+        </div>
       </div>
     </div>
   );
