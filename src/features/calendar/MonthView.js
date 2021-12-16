@@ -15,6 +15,7 @@ const MonthView = () => {
   // 选中的日期数组，我们会基于它来初始化请假对话框
   const [expectedLeave, setExpectedLeave] = useState([]);
 
+  // 在浏览之前月份或之后月份的时候，标示出该月份的请假情况
   useEffect(() => {
     // 当前月份1号是星期几
     const startDay = dayjs().add(increment, 'month').date(1).day();
@@ -27,9 +28,9 @@ const MonthView = () => {
     // 遍历月历中的所有单元格，落在假期里的，标识出来
     setMonthMatrix(Array.from({ length: 6 }, (e, i) => {
       return Array.from({ length: 7 }, (e, j) => {
+        const day = dayjs().add(increment - 1, 'month').date(firstDate).add(i * 7 + j, 'day').format('YYYY-MM-DD');
         if (leave) {
-          const day = dayjs().add(increment - 1, 'month').date(firstDate).add(i * 7 + j, 'day').format('YYYY-MM-DD');
-          return leave.some(l => {
+          let isLeave = leave.some(l => {
             return l.when.some(period => {
               if (period.includes('~')) {
                 return day >= period.split('~')[0] && day <= period.split('~')[1];
@@ -37,10 +38,18 @@ const MonthView = () => {
                 return day === period;
               }
             });
-          }) ? 2 : 0;
-        } else {
-          return 0;
+          });
+          if (isLeave) {
+            return 2;
+          }
         }
+        if (expectedLeave.length > 0) {
+          let isExpectedLeave = expectedLeave.includes(day);
+          if (isExpectedLeave) {
+            return 1;
+          }
+        }
+        return 0;
       });
     }));
   }, [increment]);
