@@ -12,6 +12,7 @@ const MonthView = () => {
   // 0代表为未选中，1代表被选中，2代表被占用请假
   const [monthMatrix, setMonthMatrix] = useState(Array.from({ length: 6 }, () => Array.from({ length: 7 }, () => 0)));
   const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
+  const [isDeleteLeaveModal, setIsDeleteLeaveModal] = useState(false);
   // 选中的日期数组，我们会基于它来初始化请假对话框
   const [expectedLeave, setExpectedLeave] = useState([]);
 
@@ -68,6 +69,7 @@ const MonthView = () => {
 
   const openNewLeaveModal = e => {
     setIsLeaveModalOpen(true);
+    setIsDeleteLeaveModal(false);
     setValue('when', DateService.findConsecutive(expectedLeave));
   };
 
@@ -110,6 +112,7 @@ const MonthView = () => {
 
   const openDeleteLeaveModal = (row, column) => {
     setIsLeaveModalOpen(true);
+    setIsDeleteLeaveModal(true);
     // 从localStorage里读出假期数组，然后找出当前选中的是哪次假期，用来初始化假期对话框
     const leave = LeaveService.getLeave();
     const day = getDateFromMonthMatrix(row, column);
@@ -126,6 +129,7 @@ const MonthView = () => {
 
   const clickMonthCell = (row, column) => {
     if (monthMatrix[row][column] === 2) {
+      setIsDeleteLeaveModal(true);
       openDeleteLeaveModal(row, column);
     } else {
       toggleSelectCell(row, column);
@@ -314,7 +318,7 @@ const MonthView = () => {
                 <label className="label">Leave Type</label>
                 <div className="control">
                   <div className="select is-fullwidth">
-                    <select {...register("leaveType")}>
+                    <select disabled={isDeleteLeaveModal} {...register("leaveType")}>
                       {leaveTypes.map(type =>
                         <option key={type} value={type}>{type}</option>
                       )}
@@ -325,14 +329,18 @@ const MonthView = () => {
               <div className="field">
                 <label className="label">Comment</label>
                 <div className="control">
-                  <textarea className="textarea" {...register("comment")} />
+                  <textarea className="textarea" disabled={isDeleteLeaveModal} {...register("comment")} />
                 </div>
               </div>
             </form>
           </section>
           <footer className="modal-card-foot">
-            <button className="button is-success submit" form="leaveForm">Submit</button>
-            <button className="button is-danger" form="leaveForm" id="delete_leave_btn">Delete</button>
+            {!isDeleteLeaveModal &&
+              <button className="button is-success submit" form="leaveForm">Submit</button>
+            }
+            {isDeleteLeaveModal &&
+              <button className="button is-danger" form="leaveForm" id="delete_leave_btn">Delete</button>
+            }
             <button className="button" onClick={closeLeaveModal}>Cancel</button>
           </footer>
         </div>
