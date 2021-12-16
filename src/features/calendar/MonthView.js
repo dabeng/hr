@@ -114,9 +114,8 @@ const MonthView = () => {
     setIsLeaveModalOpen(true);
     setIsDeleteLeaveModal(true);
     // 从localStorage里读出假期数组，然后找出当前选中的是哪次假期，用来初始化假期对话框
-    const leave = LeaveService.getLeave();
     const day = getDateFromMonthMatrix(row, column);
-    setValue('when', leave.find(l => {
+    const leave = LeaveService.getLeave().find(l => {
       return l.when.some(period => {
         if (period.includes('~')) {
           return day >= period.split('~')[0] && day <= period.split('~')[1];
@@ -124,7 +123,11 @@ const MonthView = () => {
           return day === period;
         }
       });
-    }).when);
+    })
+    
+    setValue('when', leave.when);
+    setValue('leaveType', leave.leaveType);
+    setValue('comment', leave.comment);
   };
 
   const clickMonthCell = (row, column) => {
