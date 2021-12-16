@@ -139,8 +139,8 @@ const MonthView = () => {
       comment: ''
     }
   });
-  /* 当新请的假期落在当前月历中时，用本方法更新月历 */
-  const updateMonthMatrix = (when) => {
+  /* 当新请的假期落在当前月历中时，在当前月历中标识出已请的假 */
+  const updateMonthMatrix = () => {
     // 当前月份1号是星期几
     const startDay = dayjs().add(increment, 'month').date(1).day();
     // 前一月份一共有多少天
@@ -153,25 +153,15 @@ const MonthView = () => {
     setMonthMatrix(Array.from({ length: 6 }, (e, i) => {
       return Array.from({ length: 7 }, (e, j) => {
         const day = dayjs().add(increment - 1, 'month').date(firstDate).add(i * 7 + j, 'day').format('YYYY-MM-DD');
-        if (leave) {
-          return leave.some(l => {
-            return l.when.some(period => {
-              if (period.includes('~')) {
-                return day >= period.split('~')[0] && day <= period.split('~')[1];
-              } else {
-                return day === period;
-              }
-            });
-          }) ? 2 : 0;
-        } else {
-          return when.some(period => {
+        return leave.some(l => {
+          return l.when.some(period => {
             if (period.includes('~')) {
               return day >= period.split('~')[0] && day <= period.split('~')[1];
             } else {
               return day === period;
             }
-          }) ? 2 : 0;
-        }
+          });
+        }) ? 2 : 0;
       });
     }));
   };
@@ -185,7 +175,7 @@ const MonthView = () => {
       LeaveService.addLeave(data);
       // 如果请的假处在当前月历范围内，则需要刷新月历，以体现已申请假期的那些日期
       if (LeaveService.isCurrentMonthLeave(data, increment)) {
-        updateMonthMatrix(data.when);
+        updateMonthMatrix();
       }
       // 清空待请假的日期数组
       setExpectedLeave([]);
