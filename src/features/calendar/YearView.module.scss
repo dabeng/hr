@@ -15,6 +15,7 @@
 }
 
 .content {
+  position: relative;
 
   .date {
     display: block;
@@ -25,6 +26,8 @@
   }
   .status {
     position: absolute;
+    top: -8px;
+    right: -8px;
   }
 }
 

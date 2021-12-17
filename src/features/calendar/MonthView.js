@@ -16,7 +16,7 @@ const MonthView = () => {
   // 选中的日期数组，我们会基于它来初始化请假对话框
   const [expectedLeave, setExpectedLeave] = useState([]);
 
-  // 在浏览之前月份或之后月份的时候，标示出该月份的请假情况
+  // 在浏览不同月份的时候，标识出该月份的请假情况
   useEffect(() => {
     // 当前月份1号是星期几
     const startDay = dayjs().add(increment, 'month').date(1).day();
