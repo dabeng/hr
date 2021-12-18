@@ -24,6 +24,9 @@ const YearView = () => {
         if (j === 0 || j > daysInMonth) {
           return undefined;
         }
+        if (!leave) {
+          return 0;
+        }
         const day = dayjs().add(increment, 'year').month(i).date(j).format('YYYY-MM-DD');
         return leave.some(l => {
           return l.when.some(period => {
