@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import dayjs from 'dayjs';
 import { useForm } from "react-hook-form";
@@ -13,8 +13,13 @@ const MonthView = () => {
   const [monthMatrix, setMonthMatrix] = useState(Array.from({ length: 6 }, () => Array.from({ length: 7 }, () => 0)));
   const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
   const [isDeleteLeaveModal, setIsDeleteLeaveModal] = useState(false);
-  // 选中的日期数组，我们会基于它来初始化请假对话框
-  const [expectedLeave, setExpectedLeave] = useState([]);
+  /* 选中的日期数组，我们会基于它来初始化请假对话框
+   * NOTE: 这里我们没有使用const expectedLeave = useState([])的形式，是因为我们只需要一个变量去保存待请假日期，
+   * 而无需根据“待请假日期”的变化而去执行任何的副作用。换个角度来考虑，如果我们基于上面提到的expectedLeave的变化，来
+   * 执行副作用--刷新月历，标记出哪些天是用来请假的，哪天是已请假的。比方说用户只是在切换选中与否的状态，而副作用中还
+   * 徒劳的要去检查哪些天是已请的假期，那这部分计算就是浪费。
+   */
+  const expectedLeaveRef = useRef([]);
 
   // 在浏览不同月份的时候，标识出该月份的请假情况
   useEffect(() => {
@@ -44,9 +49,8 @@ const MonthView = () => {
             return 2;
           }
         }
-        if (expectedLeave.length > 0) {
-          let isExpectedLeave = expectedLeave.includes(day);
-          if (isExpectedLeave) {
+        if (expectedLeaveRef.current.length > 0) {
+          if (expectedLeaveRef.current.includes(day)) {
             return 1;
           }
         }
@@ -70,7 +74,7 @@ const MonthView = () => {
   const openNewLeaveModal = e => {
     setIsLeaveModalOpen(true);
     setIsDeleteLeaveModal(false);
-    setValue('when', DateService.findConsecutive(expectedLeave));
+    setValue('when', DateService.findConsecutive(expectedLeaveRef.current));
   };
 
   const closeLeaveModal = e => {
@@ -92,9 +96,9 @@ const MonthView = () => {
   const updateExpectedLeave = ({ row, column }, action) => {
     const day = getDateFromMonthMatrix(row, column);
     if (action === 'add') {
-      setExpectedLeave([...expectedLeave, day].sort());
+      expectedLeaveRef.current = [...expectedLeaveRef.current, day].sort();
     } else {
-      setExpectedLeave(expectedLeave.filter(item => item !== day));
+      expectedLeaveRef.current = expectedLeaveRef.current.filter(item => item !== day);
     }
   };
 
@@ -194,7 +198,7 @@ const MonthView = () => {
         updateMonthMatrix();
       }
       // 清空待请假的日期数组
-      setExpectedLeave([]);
+      expectedLeaveRef.current = [];
     }
     // 关闭请假对话框
     closeLeaveModal();
@@ -286,7 +290,7 @@ const MonthView = () => {
         </div>
         <div className="column is-4">
           <div className="buttons is-right">
-            <button className="button" disabled={expectedLeave.length === 0} onClick={openNewLeaveModal}>
+            <button className="button" disabled={expectedLeaveRef.current.length === 0} onClick={openNewLeaveModal}>
               <i className="fas fa-pencil-alt fa-lg"></i>
             </button>
           </div>
