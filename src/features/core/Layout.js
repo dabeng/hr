@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   NavLink,
   Outlet,
@@ -43,6 +43,14 @@ const Layout = () => {
       TokenService.removeUser();
     }
   };
+
+  useEffect(() => {
+    const handleUnload = () => {
+      TokenService.removeUser();
+    };
+    window.addEventListener("unload", handleUnload);
+    return () => window.removeEventListener("unload", handleUnload);
+  }, []);
 
   return (
     <>
