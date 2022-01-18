@@ -20,7 +20,7 @@ const EditProfile = lazy(() => import('./features/profile/EditProfile'));
 const Employees = lazy(() => import('./features/employees/Employees'));
 const Departments = lazy(() => import('./features/departments/Departments'));
 const Calendar = lazy(() => import('./features/calendar/Calendar'));
-
+const Goals = lazy(() => import('./features/goals/Goals'));
 
 function App() {
 
@@ -75,6 +75,14 @@ function App() {
               element={
                 <RequireAuth>
                   <Calendar />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="goals/*"
+              element={
+                <RequireAuth>
+                  <Goals />
                 </RequireAuth>
               }
             />
