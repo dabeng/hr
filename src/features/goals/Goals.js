@@ -7,18 +7,23 @@ import {
 // import { DepartmentTableView } from "./DepartmentTableView/DepartmentTableView";
 // import { DepartmentCardView } from "./DepartmentCardView/DepartmentCardView";
 // import { DepartmentChartView } from "./DepartmentChartView/DepartmentChartView";
+import { useGetGoalsQuery } from '../core/apiSlice';
 
 const Goals = () => {
 
+  const {
+    data: goals,
+    isLoading,
+    isSuccess,
+    isError,
+    error
+  } = useGetGoalsQuery();
 
   return (
     <div>
-      <div className="columns">
-        <div className="column">
-         Goals
-        </div>
-        <div className="column"></div>
-      </div>
+      {isLoading && <i className={"fas fa-circle-notch fa-spin fa-4x "}></i>}
+      {isSuccess && goals.map(goal => <h1 className="title is-2" key={goal.id}>{goal.title}</h1>)}
+      {isError && error.toString()}
 
 
       {/* <Routes>

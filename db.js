@@ -84,5 +84,19 @@ module.exports = {
     { id: 23, name: 'No.2 Security Department', leader: 49, superior: 8, 'establish_date': '2000-01-01', description: '' },
     { id: 24, name: 'No.1 Purchasing Department', leader: 52, superior: 9, 'establish_date': '2000-01-01', description: '' },
     { id: 25, name: 'No.2 Purchasing Department', leader: 53, superior: 9, 'establish_date': '2000-01-01', description: '' }
+  ],
+  goals: [
+    { id: 1, year: '2020', title: '111', content: '', status: ''},
+    { id: 2, year: '2020', title: '222', content: '', status: ''},
+    { id: 3, year: '2020', title: '333', content: '', status: ''},
+    { id: 4, year: '2021', title: '444', content: '', status: ''},
+    { id: 5, year: '2021', title: '555', content: '', status: ''},
+    { id: 6, year: '2021', title: '666', content: '', status: ''},
+    { id: 7, year: '2021', title: '777', content: '', status: ''},
+    { id: 8, year: '2022', title: '888', content: '', status: ''},
+    { id: 9, year: '2022', title: '999', content: '', status: ''},
+    { id: 10, year: '2022', title: '1010', content: '', status: ''},
+    { id: 11, year: '2022', title: '1111111', content: '', status: ''},
+    { id: 12, year: '2022', title: '121212', content: '', status: ''},
   ]
 };

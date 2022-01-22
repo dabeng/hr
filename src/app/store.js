@@ -7,6 +7,8 @@ import employeeReducer from '../features/employees/employeeSlice';
 import employeesReducer from '../features/employees/employeesSlice';
 import departmentsReducer from '../features/departments/departmentsSlice';
 
+import { apiSlice } from '../features/core/apiSlice';
+
 export default configureStore({
   reducer: {
     error: errorReducer,
@@ -14,5 +16,7 @@ export default configureStore({
     employee: employeeReducer,
     employees: employeesReducer,
     departments: departmentsReducer,
+    [apiSlice.reducerPath]: apiSlice.reducer
   },
+  middleware: getDefaultMiddleware => getDefaultMiddleware().concat(apiSlice.middleware)
 });
