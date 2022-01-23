@@ -11,6 +11,11 @@ import LoginPage from "./features/core/LoginPage";
 import NotFoundPage from "./features/core/NotFoundPage";
 import RequireAuth from "./features/core/RequireAuth";
 
+import Goals from './features/goals/Goals';
+import GoalPage from './features/goals/GoalPage';
+import CreateGoalPage from './features/goals/CreateGoalPage';
+import EditGoalPage from './features/goals/EditGoalPage';
+
 import "bulma";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "./App.scss";
@@ -20,7 +25,8 @@ const EditProfile = lazy(() => import('./features/profile/EditProfile'));
 const Employees = lazy(() => import('./features/employees/Employees'));
 const Departments = lazy(() => import('./features/departments/Departments'));
 const Calendar = lazy(() => import('./features/calendar/Calendar'));
-const Goals = lazy(() => import('./features/goals/Goals'));
+
+
 
 function App() {
 
@@ -79,13 +85,23 @@ function App() {
               }
             />
             <Route
-              path="goals/*"
+              path="goals/"
               element={
                 <RequireAuth>
                   <Goals />
                 </RequireAuth>
               }
             />
+            <Route
+              path="goals/:id"
+              element={
+                <RequireAuth>
+                  <GoalPage />
+                </RequireAuth>
+              }
+            />
+            <Route path="/goals/create" element={<CreateGoalPage />}/>
+            <Route path="/goals/edit/:id" element={<EditGoalPage />}/>
             <Route path="login" element={<LoginPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Route>
