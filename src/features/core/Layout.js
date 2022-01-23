@@ -44,13 +44,13 @@ const Layout = () => {
     }
   };
 
-  useEffect(() => {
-    const handleUnload = () => {
-      TokenService.removeUser();
-    };
-    window.addEventListener("unload", handleUnload);
-    return () => window.removeEventListener("unload", handleUnload);
-  }, []);
+  // useEffect(() => {
+  //   const handleUnload = () => {
+  //     TokenService.removeUser();
+  //   };
+  //   window.addEventListener("unload", handleUnload);
+  //   return () => window.removeEventListener("unload", handleUnload);
+  // }, []);
 
   return (
     <>
