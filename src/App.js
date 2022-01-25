@@ -93,7 +93,7 @@ function App() {
               }
             />
             <Route
-              path="goals/:id"
+              path="goals/:goalId"
               element={
                 <RequireAuth>
                   <GoalPage />
@@ -101,7 +101,7 @@ function App() {
               }
             />
             <Route path="/goals/create" element={<CreateGoalPage />}/>
-            <Route path="/goals/edit/:id" element={<EditGoalPage />}/>
+            <Route path="/goals/edit/:goalId" element={<EditGoalPage />}/>
             <Route path="login" element={<LoginPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Route>

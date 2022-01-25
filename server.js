@@ -240,6 +240,8 @@ router.render = (req, res) => {
       res.json(res.locals.data);
     } else if (req.path === "/goals") {
       res.json(res.locals.data);
+    } else if (req.path === "/goals/" + res.locals.data.id) {
+      res.json(res.locals.data);
     }
   } else if (req.method === "PATCH") {
     if (req.path === "/employees/" + res.locals.data.id) {
