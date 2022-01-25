@@ -253,6 +253,8 @@ router.render = (req, res) => {
       }
       res.json(res.locals.data);
     }
+  } else if (req.method === "POST") {
+    res.json(res.locals.data);
   }
 };
 

@@ -27,9 +27,17 @@ export const apiSlice = createApi({
     }),
     getGoal: builder.query({
       query: goalId => `/goals/${goalId}`
+    }),
+    createGoal: builder.mutation({
+      query: initialPost => ({
+        url: '/goals',
+        method: 'POST',
+        // Include the entire post object as the body of the request
+        body: initialPost
+      })
     })
   })
 })
 
 // Export the auto-generated hook for the `getPosts` query endpoint
-export const { useGetGoalsQuery, useGetGoalQuery } = apiSlice;
+export const { useGetGoalsQuery, useGetGoalQuery, useCreateGoalMutation } = apiSlice;

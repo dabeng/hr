@@ -26,6 +26,7 @@ const Goals = () => {
 
   return (
     <div>
+      <Link to="/goals/create" className="button is-primary">Create Goal</Link>
       {isLoading && <i className={"fas fa-circle-notch fa-spin fa-4x "}></i>}
       {isSuccess && sortedGoals.map(goal =>
         <article className="post-excerpt" key={goal.id}>
