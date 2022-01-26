@@ -24,7 +24,7 @@
   "scripts": {
     "start": "react-scripts start & node server.js",
     "build": "react-scripts build",
-    "start:build": "node server.js & http-server build --push-state",
+    "start:build": "node server.js & http-server build --gzip",
     "test": "react-scripts test --testPathIgnorePatterns=.*e2e.test.js",
     "e2e": "react-scripts test --testPathPattern=.*e2e.test.js$",
     "eject": "react-scripts eject"
