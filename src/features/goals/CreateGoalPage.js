@@ -24,15 +24,16 @@ const CreateGoalPage = () => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
+      {isLoading && <i className={"fas fa-circle-notch fa-spin fa-4x"}></i>}
       <input type="text"  {...register("title", {required: true, maxLength: 200})} />
       <textarea placeholder="content" {...register("content", {required: true, maxLength: 3000})} />
 
       <div class="field is-grouped">
         <div class="control">
-          <button class="button is-link">Submit</button>
+          <button type="submit" class="button is-link">Submit</button>
         </div>
         <div class="control">
-          <button class="button is-link is-light">Cancel</button>
+          <button type="reset" class="button is-link is-light">Reset</button>
         </div>
       </div>
     </form>

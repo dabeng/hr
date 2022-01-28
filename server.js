@@ -252,8 +252,12 @@ router.render = (req, res) => {
         employee.inferior_names = employee.inferiors.map(inferiorId => db.employees.find(e => e.id === inferiorId).name);
       }
       res.json(res.locals.data);
+    } else {
+      res.json(res.locals.data);
     }
   } else if (req.method === "POST") {
+    res.json(res.locals.data);
+  } else if (req.method === "DELETE") {
     res.json(res.locals.data);
   }
 };

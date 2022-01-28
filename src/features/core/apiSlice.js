@@ -18,26 +18,50 @@ export const apiSlice = createApi({
       return headers;
     },
   }),
+  tagTypes: ['Goal'],
   // The "endpoints" represent operations and requests for this server
   endpoints: builder => ({
     // The `getPosts` endpoint is a "query" operation that returns data
     getGoals: builder.query({
       // The URL for the request is '/fakeApi/posts'
-      query: () => '/goals'
+      query: () => '/goals',
+      providesTags: ['Goal']
     }),
     getGoal: builder.query({
-      query: goalId => `/goals/${goalId}`
+      query: goalId => `/goals/${goalId}`,
+      providesTags: ['Goal']
     }),
     createGoal: builder.mutation({
-      query: initialPost => ({
+      query: initialGoal => ({
         url: '/goals',
         method: 'POST',
-        // Include the entire post object as the body of the request
-        body: initialPost
-      })
+        body: initialGoal
+      }),
+      invalidatesTags: ['Goal']
+    }),
+    updateGoal: builder.mutation({
+      query: goal => ({
+        url: `/goals/${goal.id}`,
+        method: 'PATCH',
+        body: goal
+      }),
+      invalidatesTags: ['Goal']
+    }),
+    deleteGoal: builder.mutation({
+      query: goalId => ({
+        url: `/goals/${goalId}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Goal']
     })
   })
 })
 
 // Export the auto-generated hook for the `getPosts` query endpoint
-export const { useGetGoalsQuery, useGetGoalQuery, useCreateGoalMutation } = apiSlice;
+export const {
+  useGetGoalsQuery,
+  useGetGoalQuery,
+  useCreateGoalMutation,
+  useUpdateGoalMutation,
+  useDeleteGoalMutation
+} = apiSlice;
