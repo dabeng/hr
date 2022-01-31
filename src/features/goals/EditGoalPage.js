@@ -38,6 +38,10 @@ const EditGoalPage = () => {
     navigate('/goals');
   };
 
+  const resetForm = () => {
+    reset();
+  };
+
   return (
     <form onSubmit={handleSubmit(saveGoal)}>
       {isLoading && <i className={"fas fa-circle-notch fa-spin fa-4x"}></i>}
@@ -49,7 +53,7 @@ const EditGoalPage = () => {
           <button type="submit" className="button is-link">Save</button>
         </div>
         <div className="control">
-          <button type="reset" className="button is-link is-light">Reset</button>
+          <button type="button" className="button is-link is-light" onClick={resetForm}>Reset</button>
         </div>
       </div>
     </form>

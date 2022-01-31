@@ -25,11 +25,19 @@ export const apiSlice = createApi({
     getGoals: builder.query({
       // The URL for the request is '/fakeApi/posts'
       query: () => '/goals',
-      providesTags: ['Goal']
+      providesTags: (result = [], error, arg) => [
+        'Goal',
+        ...result.map(({ id }) => ({ type: 'Goal', id }))
+      ]
     }),
+    /*
+     * We could add a 'Post' tag to both the getPost query and the editPost mutation, but that would force all the other individual goals
+     * to be refetched as well. Fortunately, RTK Query lets us define specific tags, which let us be more selective in invalidating data.
+     * These specific tags look like {type: 'Goal', id: 123}.
+    */
     getGoal: builder.query({
       query: goalId => `/goals/${goalId}`,
-      providesTags: ['Goal']
+      providesTags: (result, error, arg) => [{ type: 'Goal', id: arg }] // 这里的arg即goalId
     }),
     createGoal: builder.mutation({
       query: initialGoal => ({
@@ -45,7 +53,7 @@ export const apiSlice = createApi({
         method: 'PATCH',
         body: goal
       }),
-      invalidatesTags: ['Goal']
+      invalidatesTags: (result, error, arg) => [{ type: 'Goal', id: arg.id }] // 这里的arg即goal
     }),
     deleteGoal: builder.mutation({
       query: goalId => ({
