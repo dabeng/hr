@@ -18,17 +18,20 @@ export const apiSlice = createApi({
       return headers;
     },
   }),
-  tagTypes: ['Goal'],
+  tagTypes: ['Goals'],
   // The "endpoints" represent operations and requests for this server
   endpoints: builder => ({
     // The `getPosts` endpoint is a "query" operation that returns data
     getGoals: builder.query({
       // The URL for the request is '/fakeApi/posts'
       query: () => '/goals',
-      providesTags: (result = [], error, arg) => [
-        'Goal',
-        ...result.map(({ id }) => ({ type: 'Goal', id }))
-      ]
+      providesTags: (result, error, arg) =>
+        result
+          ? [
+              ...result.map(({ id }) => ({ type: 'Goals', id })),
+              { type: 'Goals', id: 'LIST' },
+            ]
+          : [{ type: 'Goals', id: 'LIST' }],
     }),
     /*
      * We could add a 'Post' tag to both the getPost query and the editPost mutation, but that would force all the other individual goals
@@ -37,7 +40,7 @@ export const apiSlice = createApi({
     */
     getGoal: builder.query({
       query: goalId => `/goals/${goalId}`,
-      providesTags: (result, error, arg) => [{ type: 'Goal', id: arg }] // 这里的arg即goalId
+      providesTags: (result, error, arg) => [{ type: 'Goals', id: arg }] // 这里的arg即goalId
     }),
     createGoal: builder.mutation({
       query: initialGoal => ({
@@ -45,7 +48,7 @@ export const apiSlice = createApi({
         method: 'POST',
         body: initialGoal
       }),
-      invalidatesTags: ['Goal']
+      invalidatesTags: [{ type: 'Goals', id: 'LIST' }],
     }),
     updateGoal: builder.mutation({
       query: goal => ({
@@ -53,14 +56,14 @@ export const apiSlice = createApi({
         method: 'PATCH',
         body: goal
       }),
-      invalidatesTags: (result, error, arg) => [{ type: 'Goal', id: arg.id }] // 这里的arg即goal
+      invalidatesTags: (result, error, arg) => [{ type: 'Goals', id: arg.id }] // 这里的arg即goal
     }),
     deleteGoal: builder.mutation({
       query: goalId => ({
         url: `/goals/${goalId}`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['Goal']
+      invalidatesTags: [{ type: 'Goals', id: 'LIST' }]
     })
   })
 })
