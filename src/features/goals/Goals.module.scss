@@ -1,0 +1,18 @@
+@import 'bulma';
+
+$breakpoint: 768px;
+.goal_list {
+  .goal_excerpt {
+    @include from($breakpoint) {
+      display: inline-block;
+      width: calc(50% - 0.5rem);
+
+      &:nth-child(odd) {
+        margin-right: 0.5rem;
+      }
+      &:nth-child(even) {
+        margin-left: 0.5rem;
+      }
+    }
+  }
+}

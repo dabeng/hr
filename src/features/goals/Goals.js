@@ -4,6 +4,8 @@ import classnames from "classnames";
 
 import { useGetGoalsQuery, useDeleteGoalMutation } from "../core/apiSlice";
 
+import styles from "./Goals.module.scss";
+
 const Goals = () => {
   const {
     data: goals = [],
@@ -39,11 +41,11 @@ const Goals = () => {
       <Link to="/goals/create" className="button is-primary">
         Create Goal
       </Link>
-      <div>
+      <div className={styles.goal_list}>
         {(isLoading || isFetching) && <i className={"fas fa-circle-notch fa-spin fa-4x "}></i>}
         {isSuccess && 
           sortedGoals.map(goal =>
-            <article className="post-excerpt" key={goal.id}>
+            <article className={'box ' + styles.goal_excerpt} key={goal.id}>
               <Link to={`/goals/${goal.id}`}>{goal.title}</Link>
               <p className="post-content">{goal.content.substring(0, 100)}</p>
               <button className="button is-danger" onClick={e => removeGoal(goal.id)}>
