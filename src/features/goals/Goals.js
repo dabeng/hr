@@ -38,7 +38,7 @@ const Goals = () => {
 
   return (
     <div>
-      <Link to="/goals/create" className="button is-primary">
+      <Link to="/goals/create" className="button is-primary mb-4">
         Create Goal
       </Link>
       <div className={styles.goal_list}>

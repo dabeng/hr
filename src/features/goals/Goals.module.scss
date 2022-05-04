@@ -3,6 +3,12 @@
 $breakpoint: 768px;
 .goal_list {
   .goal_excerpt {
+    @include until($breakpoint) {
+      width: calc(100% - 2rem);
+      margin-right: 1rem;
+      margin-left: 1rem;
+    }
+
     @include from($breakpoint) {
       display: inline-block;
       width: calc(50% - 0.5rem);
