@@ -20,5 +20,13 @@ $breakpoint: 768px;
         margin-left: 0.5rem;
       }
     }
+
+    .post_content {
+      height: 3rem;
+      overflow:hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
   }
 }

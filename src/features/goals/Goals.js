@@ -46,8 +46,10 @@ const Goals = () => {
         {isSuccess && 
           sortedGoals.map(goal =>
             <article className={'box ' + styles.goal_excerpt} key={goal.id}>
-              <Link to={`/goals/${goal.id}`}>{goal.title}</Link>
-              <p className="post-content">{goal.content.substring(0, 100)}</p>
+              <h6 className="title is-6">
+                <Link to={`/goals/${goal.id}`}>{goal.title}</Link>
+              </h6>
+              <p className={styles.post_content}>{goal.content}</p>
               <button className="button is-danger" onClick={e => removeGoal(goal.id)}>
                 Delete
               </button>
