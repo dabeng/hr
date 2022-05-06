@@ -13,9 +13,9 @@ const GoalPage = () => {
       {isFetching && <i className={"fas fa-circle-notch fa-spin fa-4x "}></i>}
       {isSuccess &&
         <article className="goal">
-          <h2>{goal.title}</h2>
-          <p className="post-content">{goal.content}</p>
-          <Link to={`/goals/edit/${goal.id}`} className="button">
+          <h4 className="title is-4 px-4">{goal.title}</h4>
+          <p className="post-content px-4">{goal.content}</p>
+          <Link to={`/goals/edit/${goal.id}`} className="button is-pulled-right mr-4">
             Edit Goal
           </Link>
         </article>

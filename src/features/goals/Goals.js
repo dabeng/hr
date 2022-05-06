@@ -50,9 +50,11 @@ const Goals = () => {
                 <Link to={`/goals/${goal.id}`}>{goal.title}</Link>
               </h6>
               <p className={styles.post_content}>{goal.content}</p>
-              <button className="button is-danger" onClick={e => removeGoal(goal.id)}>
+              <div className="buttons is-right pt-4">
+                <button className="button is-danger is-small" onClick={e => removeGoal(goal.id)}>
                 Delete
-              </button>
+                </button>
+              </div>
             </article>
           )
         }
