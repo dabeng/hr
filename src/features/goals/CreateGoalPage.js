@@ -14,21 +14,33 @@ const CreateGoalPage = () => {
   const [createGoal, { isLoading }] = useCreateGoalMutation();
 
   const onSubmit = async (data) => {
-      try {
-        await createGoal(data).unwrap();
-        reset();
-      } catch (err) {
-        console.error('Failed to save the post: ', err)
-      }
+    try {
+      await createGoal(data).unwrap();
+      reset();
+    } catch (err) {
+      console.error('Failed to save the post: ', err)
+    }
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       {isLoading && <i className={"fas fa-circle-notch fa-spin fa-4x"}></i>}
-      <input type="text"  {...register("title", {required: true, maxLength: 200})} />
-      <textarea placeholder="content" {...register("content", {required: true, maxLength: 3000})} />
+      <div class="field">
+        <label class="label">Title</label>
+        <div class="control">
+          <input className="input" type="text"  {...register("title", { required: true, maxLength: 200 })} />
+        </div>
+      </div>
+      <div class="field">
+        <label class="label">Description</label>
+        <div class="control">
+          <textarea className="textarea" placeholder="at least 100 words" {...register("content", { required: true, maxLength: 3000 })} />
+        </div>
+      </div>
 
-      <div class="field is-grouped">
+
+
+      <div class="field is-grouped is-grouped-right">
         <div class="control">
           <button type="submit" class="button is-link">Submit</button>
         </div>
