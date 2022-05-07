@@ -42,7 +42,11 @@ const Goals = () => {
         Create Goal
       </Link>
       <div className={styles.goal_list}>
-        {(isLoading || isFetching) && <i className={"fas fa-circle-notch fa-spin fa-4x "}></i>}
+        {(isLoading || isFetching) &&
+          <div className="has-text-centered">
+            <i className={"fas fa-circle-notch fa-spin fa-4x mt-6"}></i>
+          </div>
+        }
         {isSuccess && 
           sortedGoals.map(goal =>
             <article className={'box ' + styles.goal_excerpt} key={goal.id}>
