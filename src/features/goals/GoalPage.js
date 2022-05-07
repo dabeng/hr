@@ -10,7 +10,11 @@ const GoalPage = () => {
 
   return (
     <div>
-      {isFetching && <i className={"fas fa-circle-notch fa-spin fa-4x "}></i>}
+      {isFetching && 
+        <div className="has-text-centered pt-6">
+          <i className={"fas fa-circle-notch fa-spin fa-4x "}></i>
+        </div>
+      }
       {isSuccess &&
         <article className="goal">
           <h4 className="title is-4 px-4">{goal.title}</h4>

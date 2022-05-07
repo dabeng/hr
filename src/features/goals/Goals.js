@@ -43,8 +43,8 @@ const Goals = () => {
       </Link>
       <div className={styles.goal_list}>
         {(isLoading || isFetching) &&
-          <div className="has-text-centered">
-            <i className={"fas fa-circle-notch fa-spin fa-4x mt-6"}></i>
+          <div className="has-text-centered pt-6">
+            <i className={"fas fa-circle-notch fa-spin fa-4x"}></i>
           </div>
         }
         {isSuccess && 
