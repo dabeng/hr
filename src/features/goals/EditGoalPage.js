@@ -45,9 +45,19 @@ const EditGoalPage = () => {
   return (
     <form onSubmit={handleSubmit(saveGoal)}>
       {isLoading && <i className={"fas fa-circle-notch fa-spin fa-4x"}></i>}
-      <input type="text"  {...register("title", {required: true, maxLength: 200})} />
-      <textarea placeholder="content" {...register("content", {required: true, maxLength: 3000})} />
 
+      <div className="field">
+        <label className="label">Title</label>
+        <div className="control">
+          <input className="input" type="text"  {...register("title", { required: true, maxLength: 200 })} />
+        </div>
+      </div>
+      <div className="field">
+        <label className="label">Description</label>
+        <div className="control">
+          <textarea className="textarea" placeholder="at least 100 words" {...register("content", { required: true, maxLength: 3000 })} />
+        </div>
+      </div>
       <div className="field is-grouped">
         <div className="control">
           <button type="submit" className="button is-link">Save</button>

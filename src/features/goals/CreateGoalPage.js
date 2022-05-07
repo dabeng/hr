@@ -25,27 +25,24 @@ const CreateGoalPage = () => {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       {isLoading && <i className={"fas fa-circle-notch fa-spin fa-4x"}></i>}
-      <div class="field">
-        <label class="label">Title</label>
-        <div class="control">
+      <div className="field">
+        <label className="label">Title</label>
+        <div className="control">
           <input className="input" type="text"  {...register("title", { required: true, maxLength: 200 })} />
         </div>
       </div>
-      <div class="field">
-        <label class="label">Description</label>
-        <div class="control">
+      <div className="field">
+        <label className="label">Description</label>
+        <div className="control">
           <textarea className="textarea" placeholder="at least 100 words" {...register("content", { required: true, maxLength: 3000 })} />
         </div>
       </div>
-
-
-
-      <div class="field is-grouped is-grouped-right">
-        <div class="control">
-          <button type="submit" class="button is-link">Submit</button>
+      <div className="field is-grouped is-grouped-right">
+        <div className="control">
+          <button type="submit" className="button is-link">Submit</button>
         </div>
-        <div class="control">
-          <button type="reset" class="button is-link is-light">Reset</button>
+        <div className="control">
+          <button type="reset" className="button is-link is-light">Reset</button>
         </div>
       </div>
     </form>
