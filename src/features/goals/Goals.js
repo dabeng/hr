@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import { Routes, Route, Link } from "react-router-dom";
 import classnames from "classnames";
 
-import { useGetGoalsQuery, useDeleteGoalMutation } from "../core/apiSlice";
+import { useGetGoalsQuery, useDeleteGoalMutation } from "./GoalsSlice";
 
 import styles from "./Goals.module.scss";
 

@@ -6,7 +6,7 @@ import {
 } from "react-router-dom";
 import { useForm } from 'react-hook-form';
 
-import { useCreateGoalMutation } from '../core/apiSlice';
+import { useCreateGoalMutation } from './GoalsSlice';
 
 const CreateGoalPage = () => {
   const { register, handleSubmit, reset, formState: { errors } } = useForm();

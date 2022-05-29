@@ -1,7 +1,7 @@
 import React from 'react'
 import { useParams, Link } from 'react-router-dom';
 
-import { useGetGoalQuery } from '../core/apiSlice';
+import { useGetGoalQuery } from './GoalsSlice';
 
 const GoalPage = () => {
   const { goalId } = useParams();

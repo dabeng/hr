@@ -7,7 +7,7 @@ import employeeReducer from '../features/employees/employeeSlice';
 import employeesReducer from '../features/employees/employeesSlice';
 import departmentsReducer from '../features/departments/departmentsSlice';
 
-import { apiSlice } from '../features/core/apiSlice';
+import apiSlice from '../features/core/apiSlice';
 
 export default configureStore({
   reducer: {

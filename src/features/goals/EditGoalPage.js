@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useParams, useNavigate } from 'react-router-dom';
 import { useForm } from "react-hook-form";
 
-import { useGetGoalQuery, useUpdateGoalMutation } from '../core/apiSlice';
+import { useGetGoalQuery, useUpdateGoalMutation } from './GoalsSlice';
 
 const EditGoalPage = () => {
 
