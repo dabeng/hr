@@ -50,6 +50,9 @@ const Goals = () => {
         {isSuccess && 
           sortedGoals.map(goal =>
             <article className={'box ' + styles.goal_excerpt} key={goal.id}>
+              <div class="tags are-small">
+                <span class="tag is-info">{goal.year}</span>
+              </div>
               <h6 className="title is-6">
                 <Link to={`/goals/${goal.id}`}>{goal.title}</Link>
               </h6>
