@@ -6,7 +6,7 @@ const extendedApiSlice = apiSlice.injectEndpoints({
     // The `getPosts` endpoint is a "query" operation that returns data
     getGoals: builder.query({
       // The URL for the request is '/fakeApi/posts'
-      query: () => "/goals",
+      query: (page = 1, pageSize = 4) => `/goals?_page=${page}&_limit=${pageSize}`,
       providesTags: (result, error, arg) =>
         result
           ? [

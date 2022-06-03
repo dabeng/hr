@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { Routes, Route, Link } from "react-router-dom";
 import classnames from "classnames";
 
@@ -7,6 +7,8 @@ import { useGetGoalsQuery, useDeleteGoalMutation } from "./GoalsSlice";
 import styles from "./Goals.module.scss";
 
 const Goals = () => {
+  const [page, setPage] = useState(1);
+  const pageSize = 4;
   const {
     data: goals = [],
     isLoading,
@@ -48,7 +50,7 @@ const Goals = () => {
           </div>
         }
         {isSuccess && 
-          sortedGoals.map(goal =>
+          goals.map(goal =>
             <article className={'box ' + styles.goal_excerpt} key={goal.id}>
               <div class="tags are-small">
                 <span class="tag is-info">{goal.year}</span>
