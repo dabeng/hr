@@ -16,7 +16,7 @@ const Goals = () => {
     isSuccess,
     isError,
     error,
-  } = useGetGoalsQuery();
+  } = useGetGoalsQuery(page, pageSize);
 
   const [deleteGoal, {
     isLoading2,
@@ -49,8 +49,9 @@ const Goals = () => {
             <i className={"fas fa-circle-notch fa-spin fa-4x"}></i>
           </div>
         }
-        {isSuccess && 
-          goals.map(goal =>
+        {isSuccess &&
+        <>
+          {goals.map(goal =>
             <article className={'box ' + styles.goal_excerpt} key={goal.id}>
               <div class="tags are-small">
                 <span class="tag is-info">{goal.year}</span>
@@ -65,7 +66,26 @@ const Goals = () => {
                 </button>
               </div>
             </article>
-          )
+          )}
+                <nav
+        className="pagination is-small"
+        role="navigation"
+        aria-label="pagination"
+      >
+        <a
+          className="pagination-previous"
+          onClick={() => setPage(page - 1)}
+        >
+          Previous
+        </a>
+        <a
+          className="pagination-next"
+          onClick={() => setPage(page + 1)}
+        >
+          Next
+        </a>
+      </nav>
+          </>
         }
         {isError && error.toString()}
       </div>
