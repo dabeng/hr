@@ -10,7 +10,7 @@ const extendedApiSlice = apiSlice.injectEndpoints({
       providesTags: (result, error, arg) =>
         result
           ? [
-              ...result.map(({ id }) => ({ type: "Goals", id })),
+              ...result.data.map(({ id }) => ({ type: "Goals", id })),
               { type: "Goals", id: "LIST" },
             ]
           : [{ type: "Goals", id: "LIST" }],

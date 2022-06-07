@@ -239,7 +239,14 @@ router.render = (req, res) => {
     } else if (req.path === "/departments") {
       res.json(res.locals.data);
     } else if (req.path === "/goals") {
-      res.json(res.locals.data);
+      let totalPages = 0;
+      const params = new URLSearchParams(req._parsedUrl.query);
+      if (params.get("_limit")) {
+        totalPages = Math.ceil(db.goals.length / params.get("_limit"));
+      } else if (res.locals.data.length > 0) {
+        totalPages = 1;
+      }
+      res.json({"data": res.locals.data, totalPages });
     } else if (req.path === "/goals/" + res.locals.data.id) {
       res.json(res.locals.data);
     }
