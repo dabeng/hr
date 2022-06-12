@@ -52,11 +52,6 @@ const Goals = () => {
         Create Goal
       </Link>
       <div className={styles.goal_list}>
-        {isFetching && (
-          <div className="has-text-centered pt-6">
-            <i className={"fas fa-circle-notch fa-spin fa-4x"}></i>
-          </div>
-        )}
         {isSuccess &&
           goals.data.map((goal) => (
             <article className={"box " + styles.goal_excerpt} key={goal.id}>
@@ -76,7 +71,15 @@ const Goals = () => {
                 </button>
               </div>
             </article>
-          ))}
+          ))
+        }
+        {isFetching &&
+          <div className={styles.loading_spinner_wrapper}>
+            <span className={"icon " + styles.loading_spinner}>
+              <i className="fas fa-circle-notch fa-spin fa-4x"></i>
+            </span>
+          </div>
+        }
         {isError && error.toString()}
       </div>
       {isSuccess && (

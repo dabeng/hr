@@ -1,7 +1,28 @@
 @import 'bulma';
 
+
+
 $breakpoint: 768px;
 .goal_list {
+  position: relative;
+  height: 31rem;
+
+  .loading_spinner_wrapper {
+    @include overlay(0rem);
+    background-color: #fff;
+    border-radius: 0.25em;
+    color: white;
+    opacity: 0.5;
+    bottom: 1.5rem;
+
+    .loading_spinner {
+      @include center(4rem);
+      width: 4rem;
+      height: 4rem;
+      color: #666;
+    }
+  }
+
   .goal_excerpt {
     @include until($breakpoint) {
       width: calc(100% - 2rem);
