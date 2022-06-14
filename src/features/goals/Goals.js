@@ -35,6 +35,7 @@ const Goals = () => {
     }
   };
 
+  const pageSpan = 3;
   const isPrevBtnDisabled = page === 1;
   const isNextBtnDisabled = page === goals.totalPages;
 
@@ -44,6 +45,10 @@ const Goals = () => {
 
   const nextPage = () => {
     setPage((prev) => prev + 1);
+  };
+
+  const gotoPage = (e) => {
+    setPage(parseInt(e.target.textContent));
   };
 
   return (
@@ -71,15 +76,14 @@ const Goals = () => {
                 </button>
               </div>
             </article>
-          ))
-        }
-        {isFetching &&
+          ))}
+        {isFetching && (
           <div className={styles.loading_spinner_wrapper}>
             <span className={"icon " + styles.loading_spinner}>
               <i className="fas fa-circle-notch fa-spin fa-4x"></i>
             </span>
           </div>
-        }
+        )}
         {isError && error.toString()}
       </div>
       {isSuccess && (
@@ -106,29 +110,118 @@ const Goals = () => {
           >
             Next
           </a>
-          <ul class="pagination-list">
-            <li>
-              <a class="pagination-link" aria-label="Goto page 1">1</a>
-            </li>
-            <li>
-              <span class="pagination-ellipsis">&hellip;</span>
-            </li>
-            <li>
-              <a class="pagination-link" aria-label="Goto page 45">45</a>
-            </li>
-            <li>
-              <a class="pagination-link is-current" aria-label="Page 46" aria-current="page">46</a>
-            </li>
-            <li>
-              <a class="pagination-link" aria-label="Goto page 47">47</a>
-            </li>
-            <li>
-              <span class="pagination-ellipsis">&hellip;</span>
-            </li>
-            <li>
-              <a class="pagination-link" aria-label="Goto page 86">86</a>
-            </li>
-          </ul>
+          {goals.totalPages > 0 && (
+            <ul className="pagination-list">
+              {goals.totalPages === 1 && (
+                <li>
+                  <a className="pagination-link" aria-label="Goto page 1">
+                    1
+                  </a>
+                </li>
+              )}
+              {goals.totalPages - pageSpan <= 2 &&
+                Array(goals.totalPages)
+                  .fill(0)
+                  .map((v, index) => (
+                    <li key={index}>
+                      <a
+                        className={
+                          "pagination-link" +
+                          (index + 1 === page ? " is-current" : "")
+                        }
+                        aria-label={"Goto page " + (index + 1)}
+                        aria-current={index + 1 === page ? "page" : undefined}
+                        onClick={gotoPage}
+                      >
+                        {index + 1}
+                      </a>
+                    </li>
+                  ))}
+              {goals.totalPages - pageSpan > 2 && (
+                <>
+                  <li>
+                    <a
+                      className="pagination-link"
+                      aria-label="Goto page 1"
+                      onClick={gotoPage}
+                    >
+                      1
+                    </a>
+                  </li>
+                  {page - Math.ceil(pageSpan / 2) > 1 && (
+                    <li>
+                      <span className="pagination-ellipsis">&hellip;</span>
+                    </li>
+                  )}
+                  {page - Math.ceil(pageSpan / 2) <= 1 &&
+                    Array(page + Math.ceil(pageSpan / 2))
+                      .fill(0)
+                      .map((v, index) => (
+                        <li key={index}>
+                          <a
+                            className={
+                              "pagination-link" +
+                              (index + 2 === page ? " is-current" : "")
+                            }
+                            aria-label={"Goto page " + (index + 2)}
+                            aria-current={
+                              index + 2 === page ? "page" : undefined
+                            }
+                            onClick={gotoPage}
+                          >
+                            {index + 2}
+                          </a>
+                        </li>
+                      ))}
+                  {page - Math.ceil(pageSpan / 2) > 1 && (
+                    <>
+                      <li>
+                        <a
+                          className="pagination-link"
+                          aria-label={"Goto page " + (page - 1)}
+                          onClick={gotoPage}
+                        >
+                          {page - 1}
+                        </a>
+                      </li>
+                      <li>
+                        <a
+                          className="pagination-link"
+                          aria-label={"Goto page " + page}
+                          onClick={gotoPage}
+                        >
+                          {page}
+                        </a>
+                      </li>
+                      <li>
+                        <a
+                          className="pagination-link"
+                          aria-label={"Goto page " + (page + 1)}
+                          onClick={gotoPage}
+                        >
+                          {page + 1}
+                        </a>
+                      </li>
+                    </>
+                  )}
+                  {page + 2 < goals.totalPages && (
+                    <li>
+                      <span className="pagination-ellipsis">&hellip;</span>
+                    </li>
+                  )}
+                  <li>
+                    <a
+                      className="pagination-link"
+                      aria-label={"Goto page " + goals.totalPages}
+                      onClick={gotoPage}
+                    >
+                      {goals.totalPages}
+                    </a>
+                  </li>
+                </>
+              )}
+            </ul>
+          )}
         </nav>
       )}
     </>
